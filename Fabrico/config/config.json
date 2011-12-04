@@ -1,0 +1,18 @@
+{
+    "access": {
+        "user": "admin",
+        "pass": "admin"
+    },
+    "db": {
+        "user": "root",
+        "pass": "",
+        "dbname": "fabrico_test"
+    },
+    "paths": {
+        "files": "/Fabrico",
+        "http": "/fabrico"
+    },
+    "workers": {
+        
+    }
+}
