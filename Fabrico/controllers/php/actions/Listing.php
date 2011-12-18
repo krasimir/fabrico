@@ -1,46 +1,36 @@
 <?php
 
     require_once("actions/Action.php");
-    require_once("workers/Worker.php");
+    require_once("presenters/Presenter.php");
 
     class Listing extends Action {
         
-        public function __construct($router) {
-            parent::__construct($router->controller);
-            $this->fieldsToIgnore []= "id";
-            $this->fieldsToIgnore []= "position";
-        }
         public function __toString() {
             return "Listing";
         }
         public function run($req, $res) {
             parent::run($req, $res);
             
-            $items = R::getAll("SELECT * FROM ".$this->controller->table." ORDER BY position DESC");
-            $numOfItems = count($items);
-            $workerProperties = array(
-                "controller" => $this->controller,
-                "req" => $req,
-                "res" => $res
-            );
+            $items = $this->model->get()->order("position")->desc()->flush();
             
-            if($numOfItems > 0) {
+            $fields = $this->model->fields;
+            
+            if($items) {
                 
                 $tableRows = '';
                 
                 // adding rows
                 foreach($items as $item) {
                     $tableColumns = '';
-                    foreach($item as $field => $value) {
-                        if(!in_array($field, $this->fieldsToIgnore)) {
-                            $worker = WorkerFactory::get($field, $workerProperties);
-                            $tableColumns .= $this->view("column.html", array(
-                                "data" => $worker ? $worker->listing($value) : $value
-                            ));
-                        }
+                    foreach($fields as $field) {
+                        $value = $item->{$field->name};
+                        $presenter = $this->getPresenter($field);
+                        $tableColumns .= $this->view("column.html", array(
+                            "data" => $presenter ? $presenter->listing($value) : $value
+                        ));
                     }
                     $tableColumns .= $this->view("columnOptions.html", array(
-                        "id" => $item["id"],
+                        "id" => $item->id,
                         "http" => $req->fabrico->root->http.$this->controller->url
                     ));
                     $tableRows .= $this->view("row.html", array(
@@ -52,12 +42,10 @@
                 $fieldsColumns = '';
                 
                 // adding table headers
-                foreach($this->fields as $field => $type) {
-                    if(!in_array($field, $this->fieldsToIgnore)) {
-                        $fieldsColumns .= $this->view("column.html", array(
-                            "data" => isset($this->fieldsMap[$field]) ? $this->fieldsMap[$field] : $field
-                        ));
-                    }
+                foreach($fields as $field) {
+                    $fieldsColumns .= $this->view("column.html", array(
+                        "data" => isset($field->label) ? $field->label : $field->name
+                    ));
                 }
                 $fieldsColumns .= $this->view("column.html", array(
                     "data" => "Actions"

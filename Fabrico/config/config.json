@@ -3,16 +3,22 @@
         "user": "admin",
         "pass": "admin"
     },
-    "db": {
-        "user": "root",
-        "pass": "",
-        "dbname": "fabrico_test"
-    },
     "paths": {
         "files": "/Fabrico",
         "http": "/fabrico"
     },
-    "workers": {
-        
+    "routes": [
+        {"url": "/sample(.*)?", "controller": "pages/Page.php", "model": "models/sample.json"},
+        {"url": "/logout(.*)?", "controller": "pages/Logout.php"},
+        {"url": "/login(.*)?", "controller": "pages/Login.php"},
+        {"url": "/(.*)?", "controller": "pages/Home.php"}
+    ],
+    "adapters": {
+        "MySQL": {
+            "host": "localhost",
+            "user": "root",
+            "pass": "",
+            "dbname": "fabrico_test"
+        }
     }
 }

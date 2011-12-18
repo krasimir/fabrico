@@ -1,0 +1,21 @@
+{    
+    "adapter": "tools/adapters/MySQL.php",
+    "freeze": false,
+    "fields": [
+        {
+            "name": "time",
+            "presenter": "presenters/Text.php"
+        },
+        {
+            "name": "lastName",
+            "label": "The name:",
+            "default": "...",
+            "description": "Some description here.",
+            "presenter": "presenters/Text.php"
+        },
+        {
+            "name": "date",
+            "presenter": "presenters/Date.php"
+        }
+    ]
+}

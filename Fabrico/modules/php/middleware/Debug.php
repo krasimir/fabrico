@@ -2,7 +2,7 @@
     
     require_once("tools/RedBean.php");
     require_once("tools/view.php");
-    require_once("workers/Worker.php");
+    require_once("presenters/Presenter.php");
 
     class Debug {
     
@@ -21,11 +21,8 @@
             // showing all the loaded views
             ViewConfig::config(array("debug" => $this->enable));
             
-            // showing all the db queries
-            R::debug($this->enable);
-            
             // showing all the loaded workers
-            WorkerFactory::debug($this->enable);
+            PresenterFactory::debug($this->enable);
             
         }
     }

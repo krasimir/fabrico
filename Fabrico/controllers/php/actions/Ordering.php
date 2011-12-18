@@ -5,7 +5,7 @@
     class Ordering extends Action {
         
         public function __construct($router) {
-            parent::__construct($router->controller);
+            parent::__construct($router);
         }
         public function __toString() {
             return "Ordering";
@@ -15,42 +15,42 @@
             
             $type = $req->params["type"];
             $id = $req->params["id"];
-            $beans = R::find($this->controller->table, " 1 ORDER BY position DESC");
-            if(isset($beans) && isset($type) && isset($id)) {
+            $items = $this->model->get()->order("position")->desc()->flush();
+            
+            if($items && isset($type) && isset($id)) {
                 $previous = null;
                 $next = null;
                 $found = false;
-                $currentBean = null;
-                foreach($beans as $bean){
-                    var_dump($bean->name_Text." - ".$bean->position." - ".$bean->id);
+                $currentRecord = null;
+                foreach($items as $item){
                     if($found && $previous == null) {
-                        $previous = $bean;
+                        $previous = $item;
                     }
-                    if($bean->id == $id) {
+                    if($item->id == $id) {
                         $found = true;
-                        $currentBean = $bean;
+                        $currentRecord = $item;
                     }
                     if($found == false) {
-                        $next = $bean;
+                        $next = $item;
                     }
                 }
                 switch($type) {
                     case "up":
-                        if($next && $currentBean) {
-                            $position = $currentBean->position;
-                            $currentBean->position = $next->position;
+                        if($next && $currentRecord) {
+                            $position = $currentRecord->position;
+                            $currentRecord->position = $next->position;
                             $next->position = $position;
-                            R::store($currentBean);
-                            R::store($next);
+                            $this->model->store($currentRecord);
+                            $this->model->store($next);
                         }
                     break;
                     case "down":
-                        if($previous && $currentBean) {
-                            $position = $currentBean->position;
-                            $currentBean->position = $previous->position;
+                        if($previous && $currentRecord) {
+                            $position = $currentRecord->position;
+                            $currentRecord->position = $previous->position;
                             $previous->position = $position;
-                            R::store($currentBean);
-                            R::store($previous);
+                            $this->model->store($currentRecord);
+                            $this->model->store($previous);
                         }
                     break;
                 }

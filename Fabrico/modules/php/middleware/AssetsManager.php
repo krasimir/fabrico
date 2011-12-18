@@ -7,7 +7,7 @@
     class AssetsManager extends Middleware {
         
         public $DEBUG = TRUE;
-        public $root = "";
+        public $root = "/";
 
         private $dirs = array();
         private $assets;

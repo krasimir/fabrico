@@ -35,7 +35,9 @@
                 // it stores the configurations and also setup redbean
                 "benchmark" => "middleware/Benchmark.php",
                 // it stores the configurations and also setup redbean
-                "config" => "middleware/Config.php",
+                "config" => "tools/JSONConfig.php",
+                // read and construct the current application's models
+                "models" => "middleware/ModelsManager.php",
                 // debugging
                 "debug" => "middleware/Debug.php",
                 // $request->body will be parsed to object if incoming request is POST or PUT
@@ -53,7 +55,10 @@
                 "fabrico" => FABRICO_ROOT.$configFile
             ));
             
-            // routes of the adminer managed by AdminerRoutes.php
+            // the ModelsManager uses the path to find the models' json files
+            $this->models->root = FABRICO_ROOT;
+            
+            // setting the routes of fabrico
             $this->router->using("Routes.php");
             
             // assets configuration
@@ -74,17 +79,21 @@
         
             // enable debug mode if ?debug=1
             $this->debug->enable = isset($req->params["debug"]) && $req->params["debug"] == 1;
-        
-            // setting a pointer to the fabrico
-            $req->fabrico = $this;
             
             // showing benchmark information if fabrico is in debug mode
             if($this->debug->enable) {
                 $benchmark = $this->benchmark;
-                $res->beforeExitHandler = function() use ($benchmark) {
+                $self = $this;
+                $res->beforeExitHandler = function() use ($benchmark, $self) {
                     var_dump("Benchmark: ".$benchmark->elpasedTime());
+                    foreach($self->models->models as $model) {
+                        $model->report();
+                    }
                 };
             }
+            
+             // setting a pointer to the fabrico
+            $req->fabrico = $this;
             
             // running middleware
             parent::run($req, $res);
