@@ -1,5 +1,9 @@
 <?php
-
+    
+    /**
+     * Take cares for the main routing of Fabrico
+     * @package Fabrico\Controllers
+     */
     class Routes {
         
         public function run($req, $res) {

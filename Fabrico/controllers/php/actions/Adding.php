@@ -1,8 +1,13 @@
 <?php
     
-    inject("actions/Action.php");
-    inject("tools/Signal.php");
+    inject(array(
+        "actions/Action.php",
+        "tools/Signal.php"
+    ));
 
+    /**
+    * @package Fabrico\Controllers\Actions
+    */
     class Adding extends Action {
         
         public function __construct($router) {

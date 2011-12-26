@@ -2,6 +2,9 @@
     
     inject("pages/Page.php");
 
+    /**
+    * @package Fabrico\Controllers\Pages
+    */
     class Error extends Page {
         public function __construct(Exception $e) {
             header("Status: 500 Internal Server Error");

@@ -1,5 +1,8 @@
 <?php
 
+    /**
+    * @package Fabrico\Modules\Tools
+    */
     class Signal {
     
         private $listeners = array();

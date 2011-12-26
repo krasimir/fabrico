@@ -1,5 +1,8 @@
 <?php
 
+    /**
+    * @package Fabrico\Modules\Presenters
+    */
     class Presenter {
     
         private $responseValue = "...";

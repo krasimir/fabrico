@@ -1,6 +1,13 @@
 <?php
 
-    inject("pages/Page.php");
+    inject(array(
+        "pages/Page.php",
+        "tools/view.php"
+    ));
+
+    /**
+    * @package Fabrico\Controllers\Pages
+    */
 
     class Missing extends Page {
         public function run($req, $res) {

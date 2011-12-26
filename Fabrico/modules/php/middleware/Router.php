@@ -1,5 +1,8 @@
 <?php
 
+    /**
+    * @package Fabrico\Modules\Middleware
+    */
     class Router {
 
         private $_rules;

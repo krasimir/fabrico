@@ -1,19 +1,20 @@
 <?php
 
-    /*
-    
-    {
-        "name": "date",
-        "presenter": "presenters/Date.php",
-        "config": {
-            "showsTime": true
-        }
-    }
-    
-    */
-
     inject("presenters/Text.php");
 
+    /**
+    * Configuration:
+    * <code><pre>
+    * {
+    *    "name": "date",
+    *    "presenter": "presenters/Date.php",
+    *    "config": {
+    *        "showsTime": true
+    *    }
+    * }
+    * </pre></code>
+    * @package Fabrico\Modules\Presenters
+    */
     class Date extends Text {
         
         public function __construct($properties = array()) {

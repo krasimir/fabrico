@@ -1,9 +1,14 @@
 <?php
     
-    inject("tools/RedBean.php");
-    inject("tools/view.php");
-    inject("presenters/Presenter.php");
+    inject(array(
+        "tools/RedBean.php",
+        "tools/view.php",
+        "presenters/Presenter.php"
+    ));
 
+    /**
+    * @package Fabrico\Modules\Middleware
+    */
     class Debug {
     
         public $enable = false;

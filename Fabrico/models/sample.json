@@ -14,8 +14,18 @@
             }
         },
         {
-            "name": "description33",
-            "presenter": "presenters/TextRich.php"
+            "name": "email",
+            "presenter": "presenters/Text.php",
+            "validators": [
+                {
+                    "class": "validators/NotEmpty.php",
+                    "message": "please type in your email"
+                },
+                {
+                    "class": "validators/ValidEmail.php",
+                    "message": "wrong email"
+                }
+            ]
         },
         {
             "name": "image",

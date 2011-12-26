@@ -1,7 +1,13 @@
 <?php
 
-    require_once("pages/Page.php");
+    inject(array(
+        "Middleware.php",
+        "middleware/Router.php"
+    ));
 
+    /**
+    * @package Fabrico\Controllers\Pages
+    */
     class SampleStatic extends Page {
     
         public function __construct($router) {

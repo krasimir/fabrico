@@ -1,9 +1,14 @@
 <?php
     
-    inject("presenters/Presenter.php");
-    inject("actions/Action.php");
-    inject("tools/Signal.php");
+    inject(array(
+        "presenters/Presenter.php",
+        "actions/Action.php",
+        "tools/Signal.php"
+    ));
 
+    /**
+    * @package Fabrico\Controllers\Actions
+    */
     class Editing extends Action {
         
         public function __construct($router) {

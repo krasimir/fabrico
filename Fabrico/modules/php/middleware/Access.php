@@ -2,6 +2,9 @@
     
     @session_start();
 
+    /**
+    * @package Fabrico\Modules\Middleware
+    */
     class Access {
     
         public $credentials;

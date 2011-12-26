@@ -2,6 +2,9 @@
 
     inject("actions/Action.php");
 
+    /**
+    * @package Fabrico\Controllers\Actions
+    */
     class Ordering extends Action {
         
         public function __construct($router) {

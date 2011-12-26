@@ -1,14 +1,8 @@
 <?php
 
 /**
- * Modified by outbounder, based on:
- * 
- * Flight: An extensible micro-framework.
- *
- * @copyright   Copyright (c) 2011, Mike Cao <mike@mikecao.com>
- * @license     http://www.opensource.org/licenses/mit-license.php
- */
-
+* @package Fabrico\Modules
+*/
 class ResponseStatusCodes {
     public static $codes = array(
         200 => 'OK',
@@ -54,6 +48,15 @@ class ResponseStatusCodes {
     );
 }
  
+/**
+* Modified by outbounder, based on:
+* 
+* Flight: An extensible micro-framework.
+*
+* @copyright   Copyright (c) 2011, Mike Cao <mike@mikecao.com>
+* @license     http://www.opensource.org/licenses/mit-license.php
+* @package Fabrico\Modules
+*/
 class Response {
 
     public $beforeExitHandler;

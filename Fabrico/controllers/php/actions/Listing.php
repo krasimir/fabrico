@@ -1,8 +1,13 @@
 <?php
 
-    inject("actions/Action.php");
-    inject("presenters/Presenter.php");
+    inject(array(
+        "presenters/Presenter.php",
+        "actions/Action.php"
+    ));
 
+    /**
+    * @package Fabrico\Controllers\Actions
+    */
     class Listing extends Action {
         
         public function __toString() {

@@ -1,8 +1,13 @@
 <?php
 
-    inject("tools/view.php");
-    inject("presenters/Presenter.php");
+    inject(array(
+        "tools/view.php",
+        "presenters/Presenter.php"
+    ));
 
+    /**
+    * @package Fabrico\Controllers\Actions
+    */
     class Action {
     
         protected $controller;

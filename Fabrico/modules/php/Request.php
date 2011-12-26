@@ -4,6 +4,7 @@
  *
  * @copyright   Copyright (c) 2011, Mike Cao <mike@mikecao.com>
  * @license     http://www.opensource.org/licenses/mit-license.php
+ * @package Fabrico\Modules
  */
 class Request {
     /**

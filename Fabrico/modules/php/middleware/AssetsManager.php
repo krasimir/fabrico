@@ -1,9 +1,14 @@
 <?php
 
-    inject("tools/rglob.php");
-    inject("tools/FileJoin.php");
-    inject("Middleware.php");
+    inject(array(
+        "tools/rglob.php",
+        "tools/FileJoin.php",
+        "Middleware.php"
+    ));
     
+    /**
+    * @package Fabrico\Modules\Middleware
+    */
     class AssetsManager extends Middleware {
         
         public $DEBUG = TRUE;

@@ -1,5 +1,8 @@
 <?php
 
+    /**
+    * @package Fabrico\Modules\Middleware
+    */
     class ModelsManager {
     
         public $root = "/";
@@ -25,6 +28,9 @@
             $jsonConfig = new JSONConfig();
             $jsonConfig->source(array("model" => $this->root."/".$modelJSONFile));
             $jsonConfig = $jsonConfig->data->model;
+            if($jsonConfig === null) {
+                throw new Exception($this.": error reading '".$modelJSONFile."'");
+            }
             $jsonConfig->adapter = isset($jsonConfig->adapter) ? $jsonConfig->adapter : "tools/adapters/MySQL.php";
             
             // getting model's classes names

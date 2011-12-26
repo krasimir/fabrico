@@ -31,6 +31,10 @@
         "searchIn" => "Default"
     ));
     
+    /**
+     * Main class of Fabrico.
+     * @package Fabrico
+     */
     class Fabrico extends Middleware {
         
         public function __construct($configFile = "/config/config.json", $req = null, $res = null) {
@@ -105,7 +109,7 @@
             parent::run($req, $res);
             
         }
-        public function onExit() {
+        private function onExit() {
             var_dump("Benchmark: ".$this->benchmark->elpasedTime());
             foreach($this->models->models as $model) {
                 $model->report();

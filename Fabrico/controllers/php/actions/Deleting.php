@@ -1,8 +1,13 @@
 <?php
     
-    inject("presenters/Presenter.php");
-    inject("actions/Action.php");
+    inject(array(
+        "presenters/Presenter.php",
+        "actions/Action.php"
+    ));
 
+    /**
+    * @package Fabrico\Controllers\Actions
+    */
     class Deleting extends Action {
         
         public function __construct($router) {

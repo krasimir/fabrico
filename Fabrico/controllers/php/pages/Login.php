@@ -1,7 +1,13 @@
 <?php
 
-    inject("pages/Page.php");
-    inject("tools/view.php");
+    inject(array(
+        "pages/Page.php",
+        "tools/view.php"
+    ));
+
+    /**
+    * @package Fabrico\Controllers\Pages
+    */
 
     class Login extends Page {
         

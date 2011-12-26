@@ -1,9 +1,13 @@
 <?php
-
-    inject("Middleware.php");
-    inject("middleware/Router.php");
-    inject("middleware/Router.php");
     
+    inject(array(
+        "Middleware.php",
+        "middleware/Router.php"
+    ));
+
+    /**
+    * @package Fabrico\Controllers\Pages
+    */
     class Page extends Middleware {
     
         public $model;
