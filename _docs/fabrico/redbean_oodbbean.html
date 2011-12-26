@@ -1,0 +1,302 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
+<meta name="when" content="Mon, 26 Dec 2011 21:37:41 +0000">
+
+<link rel="stylesheet" type="text/css" href="../stylesheet.css">
+<link rel="start" href="../overview-summary.html">
+
+<title>RedBean_OODBBean (Fabrico)</title>
+
+</head>
+<body id="definition" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../overview-summary.html">Overview</a></li>
+<li><a href="../fabrico/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../fabrico/package-tree.html">Tree</a></li>
+<li><a href="../overview-files.html">Files</a></li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../todo-list.html">Todo</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../index.html" target="_top">Frames</a>
+<a href="../fabrico\redbean_oodbbean.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<div class="qualifiedName">Fabrico\RedBean_OODBBean</div>
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line248" class="location">Fabrico\modules\php\tools\RedBean.php at line 248</a>
+
+<h1>Class RedBean_OODBBean</h1>
+
+<pre class="tree"><strong>RedBean_OODBBean</strong><br /></pre>
+
+<hr>
+
+<p class="signature">public  class <strong>RedBean_OODBBean</strong></p>
+
+<hr>
+
+<table id="summary_field">
+<tr><th colspan="2">Field Summary</th></tr>
+<tr>
+<td class="type">static  mixed</td>
+<td class="description"><p class="name"><a href="#fetchType">$fetchType</a></p></td>
+</tr>
+</table>
+
+<table id="summary_method">
+<tr><th colspan="2">Method Summary</th></tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#setBeanHelper()">setBeanHelper</a>(<a href="../fabrico/redbean_ibeanhelper.html">RedBean_IBeanHelper</a> helper)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#getIterator()">getIterator</a>()</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#import()">import</a>(mixed arr, bool selection, bool notrim)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#export()">export</a>(bool meta)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#exportToObj()">exportToObj</a>(mixed obj)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#getID()">getID</a>()</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#removeProperty()">removeProperty</a>(mixed property)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#getMeta()">getMeta</a>(mixed path, mixed default)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#setMeta()">setMeta</a>(mixed path, mixed value)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#copyMetaFrom()">copyMetaFrom</a>(<a href="../fabrico/redbean_oodbbean.html">RedBean_OODBBean</a> bean)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#offsetSet()">offsetSet</a>(mixed offset, mixed value)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#offsetExists()">offsetExists</a>(mixed offset)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#offsetUnset()">offsetUnset</a>(mixed offset)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#offsetGet()">offsetGet</a>(mixed offset)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#fetchAs()">fetchAs</a>(mixed type)</p></td>
+</tr>
+</table>
+
+<h2 id="detail_field">Field Detail</h2>
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line253" class="location">Fabrico\modules\php\tools\RedBean.php at line 253</a>
+
+<h3 id="fetchType">fetchType</h3>
+<code class="signature">public static  mixed <strong>$fetchType</strong> = NULL</code>
+<div class="details">
+</div>
+
+<hr>
+
+<h2 id="detail_method">Method Detail</h2>
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line254" class="location">Fabrico\modules\php\tools\RedBean.php at line 254</a>
+
+<h3 id="setBeanHelper()">setBeanHelper</h3>
+<code class="signature">public  void <strong>setBeanHelper</strong>(<a href="../fabrico/redbean_ibeanhelper.html">RedBean_IBeanHelper</a> helper)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line257" class="location">Fabrico\modules\php\tools\RedBean.php at line 257</a>
+
+<h3 id="getIterator()">getIterator</h3>
+<code class="signature">public  void <strong>getIterator</strong>()</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line260" class="location">Fabrico\modules\php\tools\RedBean.php at line 260</a>
+
+<h3 id="import()">import</h3>
+<code class="signature">public  void <strong>import</strong>(mixed arr, bool selection, bool notrim)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line272" class="location">Fabrico\modules\php\tools\RedBean.php at line 272</a>
+
+<h3 id="export()">export</h3>
+<code class="signature">public  void <strong>export</strong>(bool meta)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line280" class="location">Fabrico\modules\php\tools\RedBean.php at line 280</a>
+
+<h3 id="exportToObj()">exportToObj</h3>
+<code class="signature">public  void <strong>exportToObj</strong>(mixed obj)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line289" class="location">Fabrico\modules\php\tools\RedBean.php at line 289</a>
+
+<h3 id="getID()">getID</h3>
+<code class="signature">public  void <strong>getID</strong>()</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line304" class="location">Fabrico\modules\php\tools\RedBean.php at line 304</a>
+
+<h3 id="removeProperty()">removeProperty</h3>
+<code class="signature">public  void <strong>removeProperty</strong>(mixed property)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line359" class="location">Fabrico\modules\php\tools\RedBean.php at line 359</a>
+
+<h3 id="getMeta()">getMeta</h3>
+<code class="signature">public  void <strong>getMeta</strong>(mixed path, mixed default)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line362" class="location">Fabrico\modules\php\tools\RedBean.php at line 362</a>
+
+<h3 id="setMeta()">setMeta</h3>
+<code class="signature">public  void <strong>setMeta</strong>(mixed path, mixed value)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line365" class="location">Fabrico\modules\php\tools\RedBean.php at line 365</a>
+
+<h3 id="copyMetaFrom()">copyMetaFrom</h3>
+<code class="signature">public  void <strong>copyMetaFrom</strong>(<a href="../fabrico/redbean_oodbbean.html">RedBean_OODBBean</a> bean)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line393" class="location">Fabrico\modules\php\tools\RedBean.php at line 393</a>
+
+<h3 id="offsetSet()">offsetSet</h3>
+<code class="signature">public  void <strong>offsetSet</strong>(mixed offset, mixed value)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line396" class="location">Fabrico\modules\php\tools\RedBean.php at line 396</a>
+
+<h3 id="offsetExists()">offsetExists</h3>
+<code class="signature">public  void <strong>offsetExists</strong>(mixed offset)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line399" class="location">Fabrico\modules\php\tools\RedBean.php at line 399</a>
+
+<h3 id="offsetUnset()">offsetUnset</h3>
+<code class="signature">public  void <strong>offsetUnset</strong>(mixed offset)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line402" class="location">Fabrico\modules\php\tools\RedBean.php at line 402</a>
+
+<h3 id="offsetGet()">offsetGet</h3>
+<code class="signature">public  void <strong>offsetGet</strong>(mixed offset)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../source/fabrico/modules/php/tools/redbean.php.html#line405" class="location">Fabrico\modules\php\tools\RedBean.php at line 405</a>
+
+<h3 id="fetchAs()">fetchAs</h3>
+<code class="signature">public  void <strong>fetchAs</strong>(mixed type)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../overview-summary.html">Overview</a></li>
+<li><a href="../fabrico/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../fabrico/package-tree.html">Tree</a></li>
+<li><a href="../overview-files.html">Files</a></li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../todo-list.html">Todo</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../index.html" target="_top">Frames</a>
+<a href="../fabrico\redbean_oodbbean.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>

@@ -1,0 +1,3106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
+<meta name="when" content="Mon, 26 Dec 2011 21:37:42 +0000">
+
+<link rel="stylesheet" type="text/css" href="../stylesheet.css">
+<link rel="start" href="../overview-summary.html">
+
+<title>Fabrico\modules\php\tools\RedBean.php (Fabrico)</title>
+
+</head>
+<body id="file" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../overview-summary.html">Overview</a></li>
+<li>Package</li><li>Class</li><li>Tree</li><li><a href="../overview-files.html">Files</a></li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../todo-list.html">Todo</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../index.html" target="_top">Frames</a>
+<a href="../source\fabrico\modules\php\tools\redbean.php.html" target="_top">No frames</a>
+</div>
+<hr>
+
+<h1>Fabrico\modules\php\tools\RedBean.php</h1>
+<hr>
+
+<a name="line1"></a><pre><?php
+<a name="line2"></a>//Written by Gabor de Mooij and the RedBeanPHP Community, copyright 2009-2011
+<a name="line3"></a>//Licensed New BSD/GPLV2 - see license.txt
+<a name="line4"></a> 
+<a name="line5"></a>interface RedBean_Driver {
+<a name="line6"></a>	public static function getInstance( $host, $user, $pass, $dbname );
+<a name="line7"></a>	public function GetAll( $sql, $aValues=array() );
+<a name="line8"></a>	public function GetCol( $sql, $aValues=array() );
+<a name="line9"></a>	public function GetCell( $sql, $aValues=array() );
+<a name="line10"></a>	public function GetRow( $sql, $aValues=array() );
+<a name="line11"></a>	public function ErrorNo();
+<a name="line12"></a>	public function Errormsg();
+<a name="line13"></a>	public function Execute( $sql, $aValues=array() );
+<a name="line14"></a>	public function Escape( $str );
+<a name="line15"></a>	public function GetInsertID();
+<a name="line16"></a>	public function Affected_Rows();
+<a name="line17"></a>	public function setDebugMode( $tf );
+<a name="line18"></a>	public function GetRaw();
+<a name="line19"></a>	public function CommitTrans();
+<a name="line20"></a>	public function StartTrans();
+<a name="line21"></a>	public function FailTrans();
+<a name="line22"></a>}
+<a name="line23"></a>class RedBean_Driver_PDO implements RedBean_Driver {
+<a name="line24"></a>	private $dsn;
+<a name="line25"></a>	private static $instance;
+<a name="line26"></a>	private $debug = false;
+<a name="line27"></a>	private $pdo;
+<a name="line28"></a>	private $affected_rows;
+<a name="line29"></a>	private $rs;
+<a name="line30"></a>	private $exc =0;
+<a name="line31"></a>	private $connectInfo = array();
+<a name="line32"></a>	public $flagUseStringOnlyBinding = false;
+<a name="line33"></a>	private $isConnected = false;
+<a name="line34"></a>	public static function getInstance($dsn, $user, $pass, $dbname) {
+<a name="line35"></a>		if(is_null(self::$instance)) {
+<a name="line36"></a>			self::$instance = new RedBean_Driver_PDO($dsn, $user, $pass);
+<a name="line37"></a>		}
+<a name="line38"></a>		return self::$instance;
+<a name="line39"></a>	}
+<a name="line40"></a>	public function __construct($dsn, $user = NULL, $pass = NULL) {
+<a name="line41"></a>		if ($dsn instanceof PDO) {
+<a name="line42"></a>			$this->pdo = $dsn;
+<a name="line43"></a>			$this->isConnected = true;
+<a name="line44"></a>			$this->pdo->setAttribute(1002, 'SET NAMES utf8');
+<a name="line45"></a>			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+<a name="line46"></a>			$this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+<a name="line47"></a>			$this->dsn = $this->getDatabaseType();
+<a name="line48"></a>		} else {
+<a name="line49"></a>			$this->dsn = $dsn;
+<a name="line50"></a>			$this->connectInfo = array( "pass"=>$pass, "user"=>$user );
+<a name="line51"></a>		}
+<a name="line52"></a>	}
+<a name="line53"></a>	public function connect() {
+<a name="line54"></a>		if ($this->isConnected) return;
+<a name="line55"></a>		$user = $this->connectInfo["user"];
+<a name="line56"></a>		$pass = $this->connectInfo["pass"];
+<a name="line57"></a>		$this->pdo = new PDO(
+<a name="line58"></a>				  $this->dsn,
+<a name="line59"></a>				  $user,
+<a name="line60"></a>				  $pass,
+<a name="line61"></a>				  array(1002 => 'SET NAMES utf8',
+<a name="line62"></a>							 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+<a name="line63"></a>							 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+<a name="line64"></a>				  )
+<a name="line65"></a>		);
+<a name="line66"></a>		$this->pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, TRUE);
+<a name="line67"></a>		$this->isConnected = true;
+<a name="line68"></a>	}
+<a name="line69"></a>	protected function bindParams($s,$aValues) {
+<a name="line70"></a>		foreach($aValues as $key=>&$value) {
+<a name="line71"></a>			if (is_integer($key)) {
+<a name="line72"></a>				if (is_null($value)){
+<a name="line73"></a>					$s->bindValue($key+1,null,PDO::PARAM_NULL);
+<a name="line74"></a>				}elseif (!$this->flagUseStringOnlyBinding && RedBean_QueryWriter_AQueryWriter::canBeTreatedAsInt($value) && $value < 2147483648) {
+<a name="line75"></a>					$s->bindParam($key+1,$value,PDO::PARAM_INT);
+<a name="line76"></a>				}
+<a name="line77"></a>				else {
+<a name="line78"></a>					$s->bindParam($key+1,$value,PDO::PARAM_STR);
+<a name="line79"></a>				}
+<a name="line80"></a>			}
+<a name="line81"></a>			else {
+<a name="line82"></a>				if (is_null($value)){
+<a name="line83"></a>					$s->bindValue($key,null,PDO::PARAM_NULL);
+<a name="line84"></a>				}
+<a name="line85"></a>				elseif (!$this->flagUseStringOnlyBinding && RedBean_QueryWriter_AQueryWriter::canBeTreatedAsInt($value) &&  $value < 2147483648) {
+<a name="line86"></a>					$s->bindParam($key,$value,PDO::PARAM_INT);
+<a name="line87"></a>				}
+<a name="line88"></a>				else { 
+<a name="line89"></a>					$s->bindParam($key,$value,PDO::PARAM_STR);
+<a name="line90"></a>				}
+<a name="line91"></a>			}
+<a name="line92"></a>		}
+<a name="line93"></a>	}
+<a name="line94"></a>	public function GetAll( $sql, $aValues=array() ) {
+<a name="line95"></a>		$this->connect();
+<a name="line96"></a>		$this->exc = 0;
+<a name="line97"></a>		if ($this->debug) {
+<a name="line98"></a>			echo "<HR>" . $sql.print_r($aValues,1);
+<a name="line99"></a>		}
+<a name="line100"></a>		try {
+<a name="line101"></a>			if (strpos("pgsql",$this->dsn)===0) {
+<a name="line102"></a>				$s = $this->pdo->prepare($sql, array(PDO::PGSQL_ATTR_DISABLE_NATIVE_PREPARED_STATEMENT => true));
+<a name="line103"></a>			}
+<a name="line104"></a>			else {
+<a name="line105"></a>				$s = $this->pdo->prepare($sql);
+<a name="line106"></a>			}
+<a name="line107"></a>			$this->bindParams( $s, $aValues );
+<a name="line108"></a>			$s->execute();
+<a name="line109"></a>		  	if ($s->columnCount()) {
+<a name="line110"></a>		    	$this->rs = $s->fetchAll();
+<a name="line111"></a>	    	}
+<a name="line112"></a>		  	else {
+<a name="line113"></a>		    	$this->rs = null;
+<a name="line114"></a>		  	}
+<a name="line115"></a>			$rows = $this->rs;
+<a name="line116"></a>		}catch(PDOException $e) {
+<a name="line117"></a>			if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+<a name="line118"></a>				$x = new RedBean_Exception_SQL( $e->getMessage(), 0);
+<a name="line119"></a>			}
+<a name="line120"></a>			else {
+<a name="line121"></a>				$x = new RedBean_Exception_SQL( $e->getMessage(), 0, $e );
+<a name="line122"></a>			}
+<a name="line123"></a>			$x->setSQLState( $e->getCode() );
+<a name="line124"></a>			throw $x;
+<a name="line125"></a>		}
+<a name="line126"></a>		if(!$rows) {
+<a name="line127"></a>			$rows = array();
+<a name="line128"></a>		}
+<a name="line129"></a>		if ($this->debug) {
+<a name="line130"></a>			if (count($rows) > 0) {
+<a name="line131"></a>				echo "<br><b style='color:green'>resultset: " . count($rows) . " rows</b>";
+<a name="line132"></a>			}
+<a name="line133"></a>		}
+<a name="line134"></a>		return $rows;
+<a name="line135"></a>	}
+<a name="line136"></a>	public function GetCol($sql, $aValues=array()) {
+<a name="line137"></a>		$this->connect();
+<a name="line138"></a>		$this->exc = 0;
+<a name="line139"></a>		$rows = $this->GetAll($sql,$aValues);
+<a name="line140"></a>		$cols = array();
+<a name="line141"></a>		if ($rows && is_array($rows) && count($rows)>0) {
+<a name="line142"></a>			foreach ($rows as $row) {
+<a name="line143"></a>				$cols[] = array_shift($row);
+<a name="line144"></a>			}
+<a name="line145"></a>		}
+<a name="line146"></a>		return $cols;
+<a name="line147"></a>	}
+<a name="line148"></a>	public function GetCell($sql, $aValues=array()) {
+<a name="line149"></a>		$this->connect();
+<a name="line150"></a>		$this->exc = 0;
+<a name="line151"></a>		$arr = $this->GetAll($sql,$aValues);
+<a name="line152"></a>		$row1 = array_shift($arr);
+<a name="line153"></a>		$col1 = array_shift($row1);
+<a name="line154"></a>		return $col1;
+<a name="line155"></a>	}
+<a name="line156"></a>	public function GetRow($sql, $aValues=array()) {
+<a name="line157"></a>		$this->connect();
+<a name="line158"></a>		$this->exc = 0;
+<a name="line159"></a>		$arr = $this->GetAll($sql, $aValues);
+<a name="line160"></a>		return array_shift($arr);
+<a name="line161"></a>	}
+<a name="line162"></a>	public function ErrorNo() {
+<a name="line163"></a>		$this->connect();
+<a name="line164"></a>		if (!$this->exc) return 0;
+<a name="line165"></a>		$infos = $this->pdo->errorInfo();
+<a name="line166"></a>		return $infos[1];
+<a name="line167"></a>	}
+<a name="line168"></a>	public function Errormsg() {
+<a name="line169"></a>		$this->connect();
+<a name="line170"></a>		if (!$this->exc) return "";
+<a name="line171"></a>		$infos = $this->pdo->errorInfo();
+<a name="line172"></a>		return $infos[2];
+<a name="line173"></a>	}
+<a name="line174"></a>	public function Execute( $sql, $aValues=array() ) {
+<a name="line175"></a>		$this->connect();
+<a name="line176"></a>		$this->exc = 0;
+<a name="line177"></a>		if ($this->debug) {
+<a name="line178"></a>			echo "<HR>" . $sql.print_r($aValues,1);
+<a name="line179"></a>		}
+<a name="line180"></a>		try {
+<a name="line181"></a>			if (strpos("pgsql",$this->dsn)===0) {
+<a name="line182"></a>				$s = $this->pdo->prepare($sql, array(PDO::PGSQL_ATTR_DISABLE_NATIVE_PREPARED_STATEMENT => true));
+<a name="line183"></a>			}
+<a name="line184"></a>			else {
+<a name="line185"></a>				$s = $this->pdo->prepare($sql);
+<a name="line186"></a>			}
+<a name="line187"></a>			$this->bindParams( $s, $aValues );
+<a name="line188"></a>			$s->execute();
+<a name="line189"></a>			$this->affected_rows=$s->rowCount();
+<a name="line190"></a>			return $this->affected_rows;
+<a name="line191"></a>		}
+<a name="line192"></a>		catch(PDOException $e) {
+<a name="line193"></a>			if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+<a name="line194"></a>				$x = new RedBean_Exception_SQL( $e->getMessage(), 0);
+<a name="line195"></a>			}
+<a name="line196"></a>			else {
+<a name="line197"></a>				$x = new RedBean_Exception_SQL( $e->getMessage()." SQL:".$sql, 0, $e );
+<a name="line198"></a>			}
+<a name="line199"></a>			$x->setSQLState( $e->getCode() );
+<a name="line200"></a>			throw $x;
+<a name="line201"></a>		}
+<a name="line202"></a>	}
+<a name="line203"></a>	public function Escape( $str ) {
+<a name="line204"></a>		$this->connect();
+<a name="line205"></a>		return substr(substr($this->pdo->quote($str), 1), 0, -1);
+<a name="line206"></a>	}
+<a name="line207"></a>	public function GetInsertID() {
+<a name="line208"></a>		$this->connect();
+<a name="line209"></a>		return (int) $this->pdo->lastInsertId();
+<a name="line210"></a>	}
+<a name="line211"></a>	public function Affected_Rows() {
+<a name="line212"></a>		$this->connect();
+<a name="line213"></a>		return (int) $this->affected_rows;
+<a name="line214"></a>	}
+<a name="line215"></a>	public function setDebugMode( $tf ) {
+<a name="line216"></a>		$this->connect();
+<a name="line217"></a>		$this->debug = (bool)$tf;
+<a name="line218"></a>	}
+<a name="line219"></a>	public function GetRaw() {
+<a name="line220"></a>		$this->connect();
+<a name="line221"></a>		return $this->rs;
+<a name="line222"></a>	}
+<a name="line223"></a>	public function StartTrans() {
+<a name="line224"></a>		$this->connect();
+<a name="line225"></a>		$this->pdo->beginTransaction();
+<a name="line226"></a>	}
+<a name="line227"></a>	public function CommitTrans() {
+<a name="line228"></a>		$this->connect();
+<a name="line229"></a>		$this->pdo->commit();
+<a name="line230"></a>	}
+<a name="line231"></a>	public function FailTrans() {
+<a name="line232"></a>		$this->connect();
+<a name="line233"></a>		$this->pdo->rollback();
+<a name="line234"></a>	}
+<a name="line235"></a>	public function getDatabaseType() {
+<a name="line236"></a>		$this->connect();
+<a name="line237"></a>		return $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+<a name="line238"></a>	}
+<a name="line239"></a>	public function getDatabaseVersion() {
+<a name="line240"></a>		$this->connect();
+<a name="line241"></a>		return $this->pdo->getAttribute(PDO::ATTR_CLIENT_VERSION);
+<a name="line242"></a>	}
+<a name="line243"></a>	public function getPDO() {
+<a name="line244"></a>		$this->connect();
+<a name="line245"></a>		return $this->pdo;
+<a name="line246"></a>	}
+<a name="line247"></a>}
+<a name="line248"></a>class RedBean_OODBBean implements IteratorAggregate, ArrayAccess {
+<a name="line249"></a>    private $null = null;
+<a name="line250"></a>	private $properties = array();
+<a name="line251"></a>	private $__info = NULL;
+<a name="line252"></a>	private $beanHelper = NULL;
+<a name="line253"></a>	public static $fetchType = NULL;
+<a name="line254"></a>	public function setBeanHelper(RedBean_IBeanHelper $helper) {
+<a name="line255"></a>		$this->beanHelper = $helper;
+<a name="line256"></a>	}
+<a name="line257"></a>	public function getIterator() {
+<a name="line258"></a>		return new ArrayIterator($this->properties);
+<a name="line259"></a>	}
+<a name="line260"></a>	public function import( $arr, $selection=false, $notrim=false ) {
+<a name="line261"></a>		if (is_string($selection)) $selection = explode(",",$selection);
+<a name="line262"></a>		if (!$notrim && is_array($selection)) foreach($selection as $k=>$s){ $selection[$k]=trim($s); }
+<a name="line263"></a>		foreach($arr as $k=>$v) {
+<a name="line264"></a>			if ($k != "__info") {
+<a name="line265"></a>				if (!$selection || ($selection && in_array($k,$selection))) {
+<a name="line266"></a>					$this->$k = $v;
+<a name="line267"></a>				}
+<a name="line268"></a>			}
+<a name="line269"></a>		}
+<a name="line270"></a>		return $this;
+<a name="line271"></a>	}
+<a name="line272"></a>	public function export($meta = false) {
+<a name="line273"></a>		$arr = $this->properties;
+<a name="line274"></a>		foreach($arr as $k=>$v) {
+<a name="line275"></a>			if (is_array($v) || is_object($v)) unset($arr[$k]);
+<a name="line276"></a>		}
+<a name="line277"></a>		if ($meta) $arr["__info"] = $this->__info;
+<a name="line278"></a>		return $arr;
+<a name="line279"></a>	}
+<a name="line280"></a>	public function exportToObj($obj) {
+<a name="line281"></a>		foreach($this->properties as $k=>$v) {
+<a name="line282"></a>			if (!is_array($v) && !is_object($v)) 
+<a name="line283"></a>			$obj->$k = $v;
+<a name="line284"></a>		}
+<a name="line285"></a>	}
+<a name="line286"></a>	public function __isset( $property ) {
+<a name="line287"></a>		return (isset($this->properties[$property]));
+<a name="line288"></a>	}
+<a name="line289"></a>	public function getID() {
+<a name="line290"></a>		$idfield = $this->getMeta("sys.idfield");
+<a name="line291"></a>		return (string) $this->$idfield;
+<a name="line292"></a>	}
+<a name="line293"></a>	public function __unset($property) {
+<a name="line294"></a>		$this->__get($property);
+<a name="line295"></a>		$fieldLink = $property."_id";
+<a name="line296"></a>		if (isset($this->$fieldLink)) {
+<a name="line297"></a>			$this->$fieldLink = null;
+<a name="line298"></a>			return;
+<a name="line299"></a>		}
+<a name="line300"></a>		if ((isset($this->properties[$property]))) {
+<a name="line301"></a>			unset($this->properties[$property]);
+<a name="line302"></a>		}
+<a name="line303"></a>	}
+<a name="line304"></a>	public function removeProperty( $property ) {
+<a name="line305"></a>		unset($this->properties[$property]);
+<a name="line306"></a>	}
+<a name="line307"></a>	public function &__get( $property ) {
+<a name="line308"></a>		if ($this->beanHelper)
+<a name="line309"></a>		$toolbox = $this->beanHelper->getToolbox();
+<a name="line310"></a>		if (!isset($this->properties[$property])) {
+<a name="line311"></a>			$fieldLink = $property."_id";
+<a name="line312"></a>			if (isset($this->$fieldLink) && $fieldLink != $this->getMeta('sys.idfield')) {
+<a name="line313"></a>				$this->setMeta("tainted",true);
+<a name="line314"></a>				$type =  $toolbox->getWriter()->getAlias($property);
+<a name="line315"></a>				$targetType = $this->properties[$fieldLink];
+<a name="line316"></a>				$bean =  $toolbox->getRedBean()->load($type,$targetType);
+<a name="line317"></a>				return $bean;
+<a name="line318"></a>			}
+<a name="line319"></a>			if (strpos($property,'own')===0) {
+<a name="line320"></a>				$firstCharCode = ord(substr($property,3,1));
+<a name="line321"></a>				if ($firstCharCode>=65 && $firstCharCode<=90) {
+<a name="line322"></a>					$type = (lcfirst(str_replace('own','',$property)));
+<a name="line323"></a>					$myFieldLink = $this->getMeta('type')."_id";
+<a name="line324"></a>					$beans = $toolbox->getRedBean()->find($type,array(),array(" $myFieldLink = ? ",array($this->getID())));
+<a name="line325"></a>					$this->properties[$property] = $beans;
+<a name="line326"></a>					$this->setMeta("sys.shadow.".$property,$beans);
+<a name="line327"></a>					$this->setMeta("tainted",true);
+<a name="line328"></a>					return $this->properties[$property];
+<a name="line329"></a>				}
+<a name="line330"></a>			}
+<a name="line331"></a>			if (strpos($property,'shared')===0) {
+<a name="line332"></a>				$firstCharCode = ord(substr($property,6,1));
+<a name="line333"></a>				if ($firstCharCode>=65 && $firstCharCode<=90) {
+<a name="line334"></a>					$type = (lcfirst(str_replace('shared','',$property)));
+<a name="line335"></a>					$keys = $toolbox->getRedBean()->getAssociationManager()->related($this,$type);
+<a name="line336"></a>					if (!count($keys)) $beans = array(); else
+<a name="line337"></a>					$beans = $toolbox->getRedBean()->batch($type,$keys);
+<a name="line338"></a>					$this->properties[$property] = $beans;
+<a name="line339"></a>					$this->setMeta("sys.shadow.".$property,$beans);
+<a name="line340"></a>					$this->setMeta("tainted",true);
+<a name="line341"></a>					return $this->properties[$property];
+<a name="line342"></a>				}
+<a name="line343"></a>			}
+<a name="line344"></a>			return $this->null;
+<a name="line345"></a>		}
+<a name="line346"></a>		return $this->properties[$property];
+<a name="line347"></a>	}
+<a name="line348"></a>	public function __set( $property, $value ) {
+<a name="line349"></a>		$this->__get($property);
+<a name="line350"></a>		$this->setMeta("tainted",true);
+<a name="line351"></a>		if ($value===false) {
+<a name="line352"></a>			$value = "0";
+<a name="line353"></a>		}
+<a name="line354"></a>		if ($value===true) {
+<a name="line355"></a>			$value = "1";
+<a name="line356"></a>		}
+<a name="line357"></a>		$this->properties[$property] = $value;
+<a name="line358"></a>	}
+<a name="line359"></a>	public function getMeta( $path, $default = NULL) {
+<a name="line360"></a>		return (isset($this->__info[$path])) ? $this->__info[$path] : $default;
+<a name="line361"></a>	}
+<a name="line362"></a>	public function setMeta( $path, $value ) {
+<a name="line363"></a>		$this->__info[$path] = $value;
+<a name="line364"></a>	}
+<a name="line365"></a>	public function copyMetaFrom( RedBean_OODBBean $bean ) {
+<a name="line366"></a>		$this->__info = $bean->__info;
+<a name="line367"></a>		return $this;
+<a name="line368"></a>	}
+<a name="line369"></a>	public function __sleep() {
+<a name="line370"></a>		$this->setMeta("sys.oodb",null);
+<a name="line371"></a>		return array('properties','__info');
+<a name="line372"></a>	}
+<a name="line373"></a>	public function __call($method, $args) {
+<a name="line374"></a>		if (!isset($this->__info["model"])) {
+<a name="line375"></a>			$modelName = RedBean_ModelHelper::getModelName( $this->getMeta("type") );
+<a name="line376"></a>			if (!class_exists($modelName)) return null;
+<a name="line377"></a>			$obj = new $modelName();
+<a name="line378"></a>			$obj->loadBean($this);
+<a name="line379"></a>			$this->__info["model"] = $obj;
+<a name="line380"></a>		}
+<a name="line381"></a>		if (!method_exists($this->__info["model"],$method)) return null;
+<a name="line382"></a>		return call_user_func_array(array($this->__info["model"],$method), $args);
+<a name="line383"></a>	}
+<a name="line384"></a>	public function __toString() {
+<a name="line385"></a>		$string = $this->__call('__toString',array());
+<a name="line386"></a>		if ($string === null) {
+<a name="line387"></a>			return json_encode($this->properties);
+<a name="line388"></a>		}
+<a name="line389"></a>		else {
+<a name="line390"></a>			return $string;
+<a name="line391"></a>		}
+<a name="line392"></a>	}
+<a name="line393"></a>	public function offsetSet($offset, $value) {
+<a name="line394"></a>        $this->__set($offset, $value);
+<a name="line395"></a>    }
+<a name="line396"></a>    public function offsetExists($offset) {
+<a name="line397"></a>        return isset($this->properties[$offset]);
+<a name="line398"></a>    }
+<a name="line399"></a>    public function offsetUnset($offset) {
+<a name="line400"></a>        unset($this->properties[$offset]);
+<a name="line401"></a>    }
+<a name="line402"></a>    public function offsetGet($offset) {
+<a name="line403"></a>        return $this->__get($offset);
+<a name="line404"></a>    }
+<a name="line405"></a>	public function fetchAs($type) {
+<a name="line406"></a>		self::$fetchType = $type;
+<a name="line407"></a>		return $this;
+<a name="line408"></a>	}
+<a name="line409"></a>}
+<a name="line410"></a>abstract class RedBean_Observable {
+<a name="line411"></a>	private $observers = array();
+<a name="line412"></a>	public function addEventListener( $eventname, RedBean_Observer $observer ) {
+<a name="line413"></a>		if (!isset($this->observers[ $eventname ])) {
+<a name="line414"></a>			$this->observers[ $eventname ] = array();
+<a name="line415"></a>		}
+<a name="line416"></a>		foreach($this->observers[$eventname] as $o) if ($o==$observer) return;
+<a name="line417"></a>		$this->observers[ $eventname ][] = $observer;
+<a name="line418"></a>	}
+<a name="line419"></a>	public function signal( $eventname, $info ) {
+<a name="line420"></a>		if (!isset($this->observers[ $eventname ])) {
+<a name="line421"></a>			$this->observers[ $eventname ] = array();
+<a name="line422"></a>		}
+<a name="line423"></a>		foreach($this->observers[$eventname] as $observer) {
+<a name="line424"></a>			$observer->onEvent( $eventname, $info );
+<a name="line425"></a>		}
+<a name="line426"></a>	}
+<a name="line427"></a>}
+<a name="line428"></a>interface RedBean_Observer {
+<a name="line429"></a>	public function onEvent( $eventname, $bean );
+<a name="line430"></a>}
+<a name="line431"></a>interface RedBean_Adapter {
+<a name="line432"></a>	public function getSQL();
+<a name="line433"></a>	public function escape( $sqlvalue );
+<a name="line434"></a>	public function exec( $sql , $aValues=array(), $noevent=false);
+<a name="line435"></a>	public function get( $sql, $aValues = array() );
+<a name="line436"></a>	public function getRow( $sql, $aValues = array() );
+<a name="line437"></a>	public function getCol( $sql, $aValues = array() );
+<a name="line438"></a>	public function getCell( $sql, $aValues = array() );
+<a name="line439"></a>	public function getAssoc( $sql, $values = array() );
+<a name="line440"></a>	public function getInsertID();
+<a name="line441"></a>	public function getAffectedRows();
+<a name="line442"></a>	public function getDatabase();
+<a name="line443"></a>	public function getErrorMsg();
+<a name="line444"></a>	public function startTransaction();
+<a name="line445"></a>	public function commit();
+<a name="line446"></a>	public function rollback();
+<a name="line447"></a>}
+<a name="line448"></a>class RedBean_Adapter_DBAdapter extends RedBean_Observable implements RedBean_Adapter {
+<a name="line449"></a>	private $db = null;
+<a name="line450"></a>	private $sql = "";
+<a name="line451"></a>	public function __construct($database) {
+<a name="line452"></a>		$this->db = $database;
+<a name="line453"></a>	}
+<a name="line454"></a>	public function getSQL() {
+<a name="line455"></a>		return $this->sql;
+<a name="line456"></a>	}
+<a name="line457"></a>	public function escape( $sqlvalue ) {
+<a name="line458"></a>		return $this->db->Escape($sqlvalue);
+<a name="line459"></a>	}
+<a name="line460"></a>	public function exec( $sql , $aValues=array(), $noevent=false) {
+<a name="line461"></a>		if (!$noevent) {
+<a name="line462"></a>			$this->sql = $sql;
+<a name="line463"></a>			$this->signal("sql_exec", $this);
+<a name="line464"></a>		}
+<a name="line465"></a>		return $this->db->Execute( $sql, $aValues );
+<a name="line466"></a>	}
+<a name="line467"></a>	public function get( $sql, $aValues = array() ) {
+<a name="line468"></a>		$this->sql = $sql;
+<a name="line469"></a>		$this->signal("sql_exec", $this);
+<a name="line470"></a>		return $this->db->GetAll( $sql,$aValues );
+<a name="line471"></a>	}
+<a name="line472"></a>	public function getRow( $sql, $aValues = array() ) {
+<a name="line473"></a>		$this->sql = $sql;
+<a name="line474"></a>		$this->signal("sql_exec", $this);
+<a name="line475"></a>		return $this->db->GetRow( $sql,$aValues );
+<a name="line476"></a>	}
+<a name="line477"></a>	public function getCol( $sql, $aValues = array() ) {
+<a name="line478"></a>		$this->sql = $sql;
+<a name="line479"></a>		$this->signal("sql_exec", $this);
+<a name="line480"></a>		return $this->db->GetCol( $sql,$aValues );
+<a name="line481"></a>	}
+<a name="line482"></a>	public function getAssoc( $sql, $aValues = array() ) {
+<a name="line483"></a>		$this->sql = $sql;
+<a name="line484"></a>		$this->signal("sql_exec", $this);
+<a name="line485"></a>		$rows = $this->db->GetAll( $sql, $aValues );
+<a name="line486"></a>		$assoc = array();
+<a name="line487"></a>		if ($rows) {
+<a name="line488"></a>			foreach($rows as $row) {
+<a name="line489"></a>				if (count($row)>0) {
+<a name="line490"></a>					$key = array_shift($row);
+<a name="line491"></a>				}
+<a name="line492"></a>				if (count($row)>0) {
+<a name="line493"></a>					$value = array_shift($row);
+<a name="line494"></a>				}
+<a name="line495"></a>				else {
+<a name="line496"></a>					$value = $key;
+<a name="line497"></a>				}
+<a name="line498"></a>				$assoc[ $key ] = $value;
+<a name="line499"></a>			}
+<a name="line500"></a>		}
+<a name="line501"></a>		return $assoc;
+<a name="line502"></a>	}
+<a name="line503"></a>	public function getCell( $sql, $aValues = array(), $noSignal = null ) {
+<a name="line504"></a>		$this->sql = $sql;
+<a name="line505"></a>		if (!$noSignal) $this->signal("sql_exec", $this);
+<a name="line506"></a>		$arr = $this->db->getCol( $sql, $aValues );
+<a name="line507"></a>		if ($arr && is_array($arr))	return ($arr[0]); else return false;
+<a name="line508"></a>	}
+<a name="line509"></a>	public function getInsertID() {
+<a name="line510"></a>		return $this->db->getInsertID();
+<a name="line511"></a>	}
+<a name="line512"></a>	public function getAffectedRows() {
+<a name="line513"></a>		return $this->db->Affected_Rows();
+<a name="line514"></a>	}
+<a name="line515"></a>	public function getDatabase() {
+<a name="line516"></a>		return $this->db;
+<a name="line517"></a>	}
+<a name="line518"></a>	public function getErrorMsg() {
+<a name="line519"></a>		return $this->db->Errormsg();
+<a name="line520"></a>	}
+<a name="line521"></a>	public function startTransaction() {
+<a name="line522"></a>		return $this->db->StartTrans();
+<a name="line523"></a>	}
+<a name="line524"></a>	public function commit() {
+<a name="line525"></a>		return $this->db->CommitTrans();
+<a name="line526"></a>	}
+<a name="line527"></a>	public function rollback() {
+<a name="line528"></a>		return $this->db->FailTrans();
+<a name="line529"></a>	}
+<a name="line530"></a>}
+<a name="line531"></a>interface RedBean_QueryWriter {
+<a name="line532"></a>	const C_SQLSTATE_NO_SUCH_TABLE = 1;
+<a name="line533"></a>	const C_SQLSTATE_NO_SUCH_COLUMN = 2;
+<a name="line534"></a>	const C_SQLSTATE_INTEGRITY_CONSTRAINT_VIOLATION = 3;
+<a name="line535"></a>	public function getFormattedTableName($type);
+<a name="line536"></a>	public function getTables();
+<a name="line537"></a>	public function createTable($type);
+<a name="line538"></a>	public function getColumns($type);
+<a name="line539"></a>	public function scanType($value);
+<a name="line540"></a>	public function addColumn($type, $column, $field);
+<a name="line541"></a>	public function code($typedescription);
+<a name="line542"></a>	public function widenColumn($type, $column, $datatype);
+<a name="line543"></a>	public function updateRecord($type, $updatevalues, $id=null);
+<a name="line544"></a>	public function selectRecord($type, $conditions, $addSql = null, $delete = false, $inverse = false);
+<a name="line545"></a>	public function addUniqueIndex($type,$columns);
+<a name="line546"></a>	public function getIDField($type);
+<a name="line547"></a>	public function sqlStateIn( $state, $list );
+<a name="line548"></a>	public function wipe($type);
+<a name="line549"></a>	public function count($type);
+<a name="line550"></a>	public function setBeanFormatter(RedBean_IBeanFormatter $beanFormatter);
+<a name="line551"></a>	public function createView($referenceType, $types, $viewID);
+<a name="line552"></a>	public function getFieldType($type = "");
+<a name="line553"></a>	public function safeColumn($name, $noQuotes = false);
+<a name="line554"></a>	public function safeTable($name, $noQuotes = false);
+<a name="line555"></a>	public function addConstraint( RedBean_OODBBean $bean1, RedBean_OODBBean $bean2, $dontCache = false );
+<a name="line556"></a>	public function getAssocTableFormat($types);
+<a name="line557"></a>	public function addFK( $type, $targetType, $field, $targetField);
+<a name="line558"></a>	public function addIndex($type, $name, $column);
+<a name="line559"></a>	public function getAlias($type);
+<a name="line560"></a>	public function getTypeForID();
+<a name="line561"></a>}
+<a name="line562"></a>abstract class RedBean_QueryWriter_AQueryWriter {
+<a name="line563"></a>	protected $fcache = array();
+<a name="line564"></a>	public $tableFormatter;
+<a name="line565"></a>	public $typeno_sqltype = array();
+<a name="line566"></a>	protected $adapter;
+<a name="line567"></a>	protected $idfield = "id";
+<a name="line568"></a>	protected $defaultValue = 'NULL';
+<a name="line569"></a>	protected $quoteCharacter = '';
+<a name="line570"></a>	public function __construct() {
+<a name="line571"></a>		$this->tableFormatter = new RedBean_DefaultBeanFormatter();
+<a name="line572"></a>	}
+<a name="line573"></a>	public function safeTable($name, $noQuotes = false) {
+<a name="line574"></a>		$name = $this->getFormattedTableName($name);
+<a name="line575"></a>		$name = $this->check($name);
+<a name="line576"></a>		if (!$noQuotes) $name = $this->noKW($name);
+<a name="line577"></a>		return $name;
+<a name="line578"></a>	}
+<a name="line579"></a>	public function safeColumn($name, $noQuotes = false) {
+<a name="line580"></a>		$name = $this->check($name);
+<a name="line581"></a>		if (!$noQuotes) $name = $this->noKW($name);
+<a name="line582"></a>		return $name;
+<a name="line583"></a>	}
+<a name="line584"></a>  	protected function getInsertSuffix ($table) {
+<a name="line585"></a>    	return "";
+<a name="line586"></a>  	}
+<a name="line587"></a>	public function getFormattedTableName($type) {
+<a name="line588"></a>		return $this->tableFormatter->formatBeanTable($type);
+<a name="line589"></a>	}
+<a name="line590"></a>	public function getAlias($type) {
+<a name="line591"></a>		return $this->tableFormatter->getAlias($type);
+<a name="line592"></a>	}
+<a name="line593"></a>	public function setBeanFormatter( RedBean_IBeanFormatter $beanFormatter ) {
+<a name="line594"></a>		$this->tableFormatter = $beanFormatter;
+<a name="line595"></a>	}
+<a name="line596"></a>	public function getFieldType( $type = "" ) {
+<a name="line597"></a>		return array_key_exists($type, $this->typeno_sqltype) ? $this->typeno_sqltype[$type] : "";
+<a name="line598"></a>	}
+<a name="line599"></a>	public function getIDField( $type ) {
+<a name="line600"></a>		$nArgs = func_num_args();
+<a name="line601"></a>		if ($nArgs>1) throw new Exception("Deprecated parameter SAFE, use safeColumn() instead.");
+<a name="line602"></a>		return $this->tableFormatter->formatBeanID($type);
+<a name="line603"></a>	}
+<a name="line604"></a>	protected function check($table) {
+<a name="line605"></a>		if ($this->quoteCharacter && strpos($table, $this->quoteCharacter)!==false) {
+<a name="line606"></a>		  throw new Redbean_Exception_Security("Illegal chars in table name");
+<a name="line607"></a>	    }
+<a name="line608"></a>		return $this->adapter->escape($table);
+<a name="line609"></a>	}
+<a name="line610"></a>	protected function noKW($str) {
+<a name="line611"></a>		$q = $this->quoteCharacter;
+<a name="line612"></a>		return $q.$str.$q;
+<a name="line613"></a>	}
+<a name="line614"></a>	public function addColumn( $type, $column, $field ) {
+<a name="line615"></a>		$table = $type;
+<a name="line616"></a>		$type = $field;
+<a name="line617"></a>		$table = $this->safeTable($table);
+<a name="line618"></a>		$column = $this->safeColumn($column);
+<a name="line619"></a>		$type = $this->getFieldType($type);
+<a name="line620"></a>		$sql = "ALTER TABLE $table ADD $column $type ";
+<a name="line621"></a>		$this->adapter->exec( $sql );
+<a name="line622"></a>	}
+<a name="line623"></a>	public function updateRecord( $type, $updatevalues, $id=null) {
+<a name="line624"></a>		$table = $type;
+<a name="line625"></a>		if (!$id) {
+<a name="line626"></a>			$insertcolumns =  $insertvalues = array();
+<a name="line627"></a>			foreach($updatevalues as $pair) {
+<a name="line628"></a>				$insertcolumns[] = $pair["property"];
+<a name="line629"></a>				$insertvalues[] = $pair["value"];
+<a name="line630"></a>			}
+<a name="line631"></a>			return $this->insertRecord($table,$insertcolumns,array($insertvalues));
+<a name="line632"></a>		}
+<a name="line633"></a>		if ($id && !count($updatevalues)) return $id;
+<a name="line634"></a>		$idfield = $this->safeColumn($this->getIDField($table));
+<a name="line635"></a>		$table = $this->safeTable($table);
+<a name="line636"></a>		$sql = "UPDATE $table SET ";
+<a name="line637"></a>		$p = $v = array();
+<a name="line638"></a>		foreach($updatevalues as $uv) {
+<a name="line639"></a>			$p[] = " {$this->safeColumn($uv["property"])} = ? ";
+<a name="line640"></a>			$v[]=$uv["value"];
+<a name="line641"></a>		}
+<a name="line642"></a>		$sql .= implode(",", $p ) ." WHERE $idfield = ".intval($id);
+<a name="line643"></a>		$this->adapter->exec( $sql, $v );
+<a name="line644"></a>		return $id;
+<a name="line645"></a>	}
+<a name="line646"></a>	protected function insertRecord( $table, $insertcolumns, $insertvalues ) {
+<a name="line647"></a>		$default = $this->defaultValue;
+<a name="line648"></a>		$idfield = $this->safeColumn($this->getIDField($table));
+<a name="line649"></a>		$suffix = $this->getInsertSuffix($table);
+<a name="line650"></a>		$table = $this->safeTable($table);
+<a name="line651"></a>		if (count($insertvalues)>0 && is_array($insertvalues[0]) && count($insertvalues[0])>0) {
+<a name="line652"></a>			foreach($insertcolumns as $k=>$v) {
+<a name="line653"></a>				$insertcolumns[$k] = $this->safeColumn($v);
+<a name="line654"></a>			}
+<a name="line655"></a>			$insertSQL = "INSERT INTO $table ( $idfield, ".implode(",",$insertcolumns)." ) VALUES ";
+<a name="line656"></a>			$insertSQL .= "( $default, ". implode(",",array_fill(0,count($insertcolumns)," ? "))." ) $suffix";
+<a name="line657"></a>			foreach($insertvalues as $i=>$insertvalue) {
+<a name="line658"></a>				$ids[] = $this->adapter->getCell( $insertSQL, $insertvalue, $i );
+<a name="line659"></a>			}
+<a name="line660"></a>			$result = count($ids)===1 ? array_pop($ids) : $ids;
+<a name="line661"></a>		}
+<a name="line662"></a>		else {
+<a name="line663"></a>			$result = $this->adapter->getCell( "INSERT INTO $table ($idfield) VALUES($default) $suffix");
+<a name="line664"></a>		}
+<a name="line665"></a>		if ($suffix) return $result;
+<a name="line666"></a>	   $last_id = $this->adapter->getInsertID();
+<a name="line667"></a>		return ($this->adapter->getErrorMsg()=="" ?  $last_id : 0);
+<a name="line668"></a>	}
+<a name="line669"></a>	public function selectRecord( $type, $conditions, $addSql=null, $delete=null, $inverse=false ) {
+<a name="line670"></a>		if (!is_array($conditions)) throw new Exception("Conditions must be an array");
+<a name="line671"></a>		$table = $this->safeTable($type);
+<a name="line672"></a>		$sqlConditions = array();
+<a name="line673"></a>		$bindings=array();
+<a name="line674"></a>		foreach($conditions as $column=>$values) {
+<a name="line675"></a>			$sql = $this->safeColumn($column);
+<a name="line676"></a>			$sql .= " ".($inverse ? " NOT ":"")." IN ( ";
+<a name="line677"></a>			$sql .= implode(",",array_fill(0,count($values),"?")).") ";
+<a name="line678"></a>			$sqlConditions[] = $sql;
+<a name="line679"></a>			if (!is_array($values)) $values = array($values);
+<a name="line680"></a>			foreach($values as $k=>$v) {
+<a name="line681"></a>				$values[$k]=strval($v);
+<a name="line682"></a>			}
+<a name="line683"></a>			$bindings = array_merge($bindings,$values);
+<a name="line684"></a>		}
+<a name="line685"></a>		if (is_array($addSql)) {
+<a name="line686"></a>			if (count($addSql)>1) {
+<a name="line687"></a>				$bindings = array_merge($bindings,$addSql[1]);
+<a name="line688"></a>			}
+<a name="line689"></a>			else {
+<a name="line690"></a>				$bindings = array();
+<a name="line691"></a>			}
+<a name="line692"></a>			$addSql = $addSql[0];
+<a name="line693"></a>		}
+<a name="line694"></a>		$sql="";
+<a name="line695"></a>		if (count($sqlConditions)>0) {
+<a name="line696"></a>			$sql = implode(" AND ",$sqlConditions);
+<a name="line697"></a>			$sql = " WHERE ( $sql ) ";
+<a name="line698"></a>			if ($addSql) $sql .= " AND $addSql ";
+<a name="line699"></a>		}
+<a name="line700"></a>		elseif ($addSql) {
+<a name="line701"></a>			$sql = " WHERE ".$addSql;
+<a name="line702"></a>		}
+<a name="line703"></a>		$sql = (($delete) ? "DELETE FROM " : "SELECT * FROM ").$table.$sql;
+<a name="line704"></a>		$rows = $this->adapter->get($sql,$bindings);
+<a name="line705"></a>		return $rows;
+<a name="line706"></a>	}
+<a name="line707"></a>	public function createView($referenceType, $constraints, $viewID) {
+<a name="line708"></a>		$referenceTable = $referenceType;
+<a name="line709"></a>		$viewID = $this->safeTable($viewID,true);
+<a name="line710"></a>		$safeReferenceTable = $this->safeTable($referenceTable);
+<a name="line711"></a>		try{ $this->adapter->exec("DROP VIEW $viewID"); }catch(Exception $e){}
+<a name="line712"></a>		$columns = array_keys( $this->getColumns( $referenceTable ) );
+<a name="line713"></a>		$referenceTable = ($referenceTable);
+<a name="line714"></a>		$joins = array();
+<a name="line715"></a>		foreach($constraints as $table=>$constraint) {
+<a name="line716"></a>			$safeTable = $this->safeTable($table);
+<a name="line717"></a>			$addedColumns = array_keys($this->getColumns($table));
+<a name="line718"></a>			foreach($addedColumns as $addedColumn) {
+<a name="line719"></a>				$newColName = $addedColumn."_of_".$table;
+<a name="line720"></a>				$newcolumns[] = $this->safeTable($table).".".$this->safeColumn($addedColumn) . " AS ".$this->safeColumn($newColName);
+<a name="line721"></a>			}
+<a name="line722"></a>			if (count($constraint)!==2) throw Exception("Invalid VIEW CONSTRAINT");
+<a name="line723"></a>			$referenceColumn = $constraint[0];
+<a name="line724"></a>			$compareColumn = $constraint[1];
+<a name="line725"></a>			$join = $referenceColumn." = ".$compareColumn;
+<a name="line726"></a>			$joins[] = " LEFT JOIN $safeTable ON $join ";
+<a name="line727"></a>		}
+<a name="line728"></a>		$joins = implode(" ", $joins);
+<a name="line729"></a>		foreach($columns as $k=>$column) {
+<a name="line730"></a>			$columns[$k]=$safeReferenceTable.".".$this->safeColumn($column);
+<a name="line731"></a>		}
+<a name="line732"></a>		$columns = implode("\n,",array_merge($newcolumns,$columns));
+<a name="line733"></a>		$sql = "CREATE VIEW $viewID AS SELECT $columns FROM $safeReferenceTable $joins ";
+<a name="line734"></a>		$this->adapter->exec($sql);
+<a name="line735"></a>		return true;
+<a name="line736"></a>	}
+<a name="line737"></a>	public function wipe($type) {
+<a name="line738"></a>		$table = $type;
+<a name="line739"></a>		$table = $this->safeTable($table);
+<a name="line740"></a>		$sql = "TRUNCATE $table ";
+<a name="line741"></a>		$this->adapter->exec($sql);
+<a name="line742"></a>	}
+<a name="line743"></a>	public function count($beanType) {
+<a name="line744"></a>		$table = $this->safeTable($beanType);
+<a name="line745"></a>		$sql = "SELECT count(*) FROM $table ";
+<a name="line746"></a>		return (int) $this->adapter->getCell($sql);
+<a name="line747"></a>	}
+<a name="line748"></a>	public function addIndex($type, $name, $column) {
+<a name="line749"></a>		$table = $type;
+<a name="line750"></a>		$table = $this->safeTable($table);
+<a name="line751"></a>		$name = preg_replace("/\W/","",$name);
+<a name="line752"></a>		$column = $this->safeColumn($column);
+<a name="line753"></a>		try{ $this->adapter->exec("CREATE INDEX $name ON $table ($column) "); }catch(Exception $e){}
+<a name="line754"></a>	}
+<a name="line755"></a>	public static function canBeTreatedAsInt( $value ) {
+<a name="line756"></a>		return (boolean) (ctype_digit(strval($value)) && strval($value)===strval(intval($value)));
+<a name="line757"></a>	}
+<a name="line758"></a>	public function addFK( $type, $targetType, $field, $targetField) {
+<a name="line759"></a>		$table = $this->safeTable($type);
+<a name="line760"></a>		$tableNoQ = $this->safeTable($type,true);
+<a name="line761"></a>		$targetTable = $this->safeTable($targetType);
+<a name="line762"></a>		$column = $this->safeColumn($field);
+<a name="line763"></a>		$columnNoQ = $this->safeColumn($field,true);
+<a name="line764"></a>		$targetColumn  = $this->safeColumn($targetField);
+<a name="line765"></a>		$db = $this->adapter->getCell("select database()");
+<a name="line766"></a>		$fks =  $this->adapter->getCell("
+<a name="line767"></a>			SELECT count(*)
+<a name="line768"></a>			FROM information_schema.KEY_COLUMN_USAGE
+<a name="line769"></a>			WHERE TABLE_SCHEMA ='$db' AND TABLE_NAME = '$tableNoQ'  AND COLUMN_NAME = '$columnNoQ' AND
+<a name="line770"></a>			CONSTRAINT_NAME <>'PRIMARY' AND REFERENCED_TABLE_NAME is not null
+<a name="line771"></a>		");
+<a name="line772"></a>		if ($fks==0) {
+<a name="line773"></a>			try{
+<a name="line774"></a>				$this->adapter->exec("ALTER TABLE  $table
+<a name="line775"></a>				ADD FOREIGN KEY (  $column ) REFERENCES  $targetTable (
+<a name="line776"></a>				$targetColumn) ON DELETE SET NULL ON UPDATE SET NULL ;");
+<a name="line777"></a>			}
+<a name="line778"></a>			catch(Exception $e) {
+<a name="line779"></a>			}
+<a name="line780"></a>		}
+<a name="line781"></a>	}
+<a name="line782"></a>	public function getAssocTableFormat($types) {
+<a name="line783"></a>		sort($types);
+<a name="line784"></a>		return ( implode("_", $types) );
+<a name="line785"></a>	}
+<a name="line786"></a>	public function addConstraint( RedBean_OODBBean $bean1, RedBean_OODBBean $bean2, $dontCache = false ) {
+<a name="line787"></a>		$table1 = $bean1->getMeta("type");
+<a name="line788"></a>		$table2 = $bean2->getMeta("type");
+<a name="line789"></a>		$writer = $this;
+<a name="line790"></a>		$adapter = $this->adapter;
+<a name="line791"></a>		$table = $this->getAssocTableFormat( array( $table1,$table2) );
+<a name="line792"></a>		$idfield1 = $writer->getIDField($bean1->getMeta("type"));
+<a name="line793"></a>		$idfield2 = $writer->getIDField($bean2->getMeta("type"));
+<a name="line794"></a>		$property1 = $bean1->getMeta("type") . "_id";
+<a name="line795"></a>		$property2 = $bean2->getMeta("type") . "_id";
+<a name="line796"></a>		if ($property1==$property2) $property2 = $bean2->getMeta("type")."2_id";
+<a name="line797"></a>		$table = $adapter->escape($table);
+<a name="line798"></a>		$table1 = $adapter->escape($table1);
+<a name="line799"></a>		$table2 = $adapter->escape($table2);
+<a name="line800"></a>		$property1 = $adapter->escape($property1);
+<a name="line801"></a>		$property2 = $adapter->escape($property2);
+<a name="line802"></a>		$fkCode = "fk".md5($table.$property1.$property2);
+<a name="line803"></a>		if (isset($this->fkcache[$fkCode])) return false;
+<a name="line804"></a>		try {
+<a name="line805"></a>			return $this->constrain($table, $table1, $table2, $property1, $property2, $dontCache);
+<a name="line806"></a>		}
+<a name="line807"></a>		catch(RedBean_Exception_SQL $e) {
+<a name="line808"></a>			if (!$writer->sqlStateIn($e->getSQLState(),
+<a name="line809"></a>			array(
+<a name="line810"></a>			RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+<a name="line811"></a>			RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line812"></a>			)) throw $e;
+<a name="line813"></a>		}
+<a name="line814"></a>		return false;
+<a name="line815"></a>	}
+<a name="line816"></a>	abstract protected function constrain($table, $table1, $table2, $p1, $p2, $cache);
+<a name="line817"></a>}
+<a name="line818"></a>class RedBean_QueryWriter_MySQL extends RedBean_QueryWriter_AQueryWriter implements RedBean_QueryWriter {
+<a name="line819"></a>	const C_DATATYPE_BOOL = 0;
+<a name="line820"></a>	const C_DATATYPE_UINT8 = 1;
+<a name="line821"></a>	const C_DATATYPE_UINT32 = 2;
+<a name="line822"></a>	const C_DATATYPE_DOUBLE = 3;
+<a name="line823"></a>	const C_DATATYPE_TEXT8 = 4;
+<a name="line824"></a>	const C_DATATYPE_TEXT16 = 5;
+<a name="line825"></a>	const C_DATATYPE_TEXT32 = 6;
+<a name="line826"></a>	const C_DATATYPE_SPECIFIED = 99;
+<a name="line827"></a>	public $typeno_sqltype = array(
+<a name="line828"></a>			  RedBean_QueryWriter_MySQL::C_DATATYPE_BOOL=>"  SET('1')  ",
+<a name="line829"></a>			  RedBean_QueryWriter_MySQL::C_DATATYPE_UINT8=>" TINYINT(3) UNSIGNED ",
+<a name="line830"></a>			  RedBean_QueryWriter_MySQL::C_DATATYPE_UINT32=>" INT(11) UNSIGNED ",
+<a name="line831"></a>			  RedBean_QueryWriter_MySQL::C_DATATYPE_DOUBLE=>" DOUBLE ",
+<a name="line832"></a>			  RedBean_QueryWriter_MySQL::C_DATATYPE_TEXT8=>" VARCHAR(255) ",
+<a name="line833"></a>			  RedBean_QueryWriter_MySQL::C_DATATYPE_TEXT16=>" TEXT ",
+<a name="line834"></a>			  RedBean_QueryWriter_MySQL::C_DATATYPE_TEXT32=>" LONGTEXT "
+<a name="line835"></a>	);
+<a name="line836"></a>	public $sqltype_typeno = array(
+<a name="line837"></a>			  "set('1')"=>RedBean_QueryWriter_MySQL::C_DATATYPE_BOOL,
+<a name="line838"></a>			  "tinyint(3) unsigned"=>RedBean_QueryWriter_MySQL::C_DATATYPE_UINT8,
+<a name="line839"></a>			  "int(11) unsigned"=>RedBean_QueryWriter_MySQL::C_DATATYPE_UINT32,
+<a name="line840"></a>			  "double" => RedBean_QueryWriter_MySQL::C_DATATYPE_DOUBLE,
+<a name="line841"></a>			  "varchar(255)"=>RedBean_QueryWriter_MySQL::C_DATATYPE_TEXT8,
+<a name="line842"></a>			  "text"=>RedBean_QueryWriter_MySQL::C_DATATYPE_TEXT16,
+<a name="line843"></a>			  "longtext"=>RedBean_QueryWriter_MySQL::C_DATATYPE_TEXT32
+<a name="line844"></a>	);
+<a name="line845"></a>	protected $adapter;
+<a name="line846"></a>  	protected $quoteCharacter = '`';
+<a name="line847"></a>	public function __construct( RedBean_Adapter $adapter ) {
+<a name="line848"></a>		$this->adapter = $adapter;
+<a name="line849"></a>		parent::__construct();
+<a name="line850"></a>	}
+<a name="line851"></a>	public function getTypeForID() {
+<a name="line852"></a>		return self::C_DATATYPE_UINT32;
+<a name="line853"></a>	}
+<a name="line854"></a>	public function getTables() {
+<a name="line855"></a>		return $this->adapter->getCol( "show tables" );
+<a name="line856"></a>	}
+<a name="line857"></a>	public function createTable( $table ) {
+<a name="line858"></a>		$idfield = $this->safeColumn($this->getIDfield($table));
+<a name="line859"></a>		$table = $this->safeTable($table);
+<a name="line860"></a>		$sql = "
+<a name="line861"></a>                     CREATE TABLE $table (
+<a name="line862"></a>                    $idfield INT( 11 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+<a name="line863"></a>                     PRIMARY KEY ( $idfield )
+<a name="line864"></a>                     ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+<a name="line865"></a>				  ";
+<a name="line866"></a>		$this->adapter->exec( $sql );
+<a name="line867"></a>	}
+<a name="line868"></a>	public function getColumns( $table ) {
+<a name="line869"></a>		$table = $this->safeTable($table);
+<a name="line870"></a>		$columnsRaw = $this->adapter->get("DESCRIBE $table");
+<a name="line871"></a>		foreach($columnsRaw as $r) {
+<a name="line872"></a>			$columns[$r["Field"]]=$r["Type"];
+<a name="line873"></a>		}
+<a name="line874"></a>		return $columns;
+<a name="line875"></a>	}
+<a name="line876"></a>	public function scanType( $value ) {
+<a name="line877"></a>		if (is_null($value)) {
+<a name="line878"></a>			return RedBean_QueryWriter_MySQL::C_DATATYPE_BOOL;
+<a name="line879"></a>		}
+<a name="line880"></a>		$value = strval($value);
+<a name="line881"></a>		if ($value=="1" || $value=="") {
+<a name="line882"></a>			return RedBean_QueryWriter_MySQL::C_DATATYPE_BOOL;
+<a name="line883"></a>		}
+<a name="line884"></a>		if (is_numeric($value) && (floor($value)==$value) && $value >= 0 && $value <= 255 ) {
+<a name="line885"></a>			return RedBean_QueryWriter_MySQL::C_DATATYPE_UINT8;
+<a name="line886"></a>		}
+<a name="line887"></a>		if (is_numeric($value) && (floor($value)==$value) && $value >= 0  && $value <= 4294967295 ) {
+<a name="line888"></a>			return RedBean_QueryWriter_MySQL::C_DATATYPE_UINT32;
+<a name="line889"></a>		}
+<a name="line890"></a>		if (is_numeric($value)) {
+<a name="line891"></a>			return RedBean_QueryWriter_MySQL::C_DATATYPE_DOUBLE;
+<a name="line892"></a>		}
+<a name="line893"></a>		if (strlen($value) <= 255) {
+<a name="line894"></a>			return RedBean_QueryWriter_MySQL::C_DATATYPE_TEXT8;
+<a name="line895"></a>		}
+<a name="line896"></a>		return RedBean_QueryWriter_MySQL::C_DATATYPE_TEXT16;
+<a name="line897"></a>	}
+<a name="line898"></a>	public function code( $typedescription ) {
+<a name="line899"></a>		return ((isset($this->sqltype_typeno[$typedescription])) ? $this->sqltype_typeno[$typedescription] : self::C_DATATYPE_SPECIFIED);
+<a name="line900"></a>	}
+<a name="line901"></a>	public function widenColumn( $type, $column, $datatype ) {
+<a name="line902"></a>		$table = $type;
+<a name="line903"></a>		$type = $datatype;
+<a name="line904"></a>		$table = $this->safeTable($table);
+<a name="line905"></a>		$column = $this->safeColumn($column);
+<a name="line906"></a>		$newtype = $this->getFieldType($type);
+<a name="line907"></a>		$changecolumnSQL = "ALTER TABLE $table CHANGE $column $column $newtype ";
+<a name="line908"></a>		$this->adapter->exec( $changecolumnSQL );
+<a name="line909"></a>	}
+<a name="line910"></a>	public function addUniqueIndex( $table,$columns ) {
+<a name="line911"></a>		$table = $this->safeTable($table);
+<a name="line912"></a>		sort($columns); 
+<a name="line913"></a>		foreach($columns as $k=>$v) {
+<a name="line914"></a>			$columns[$k]= $this->safeColumn($v);
+<a name="line915"></a>		}
+<a name="line916"></a>		$r = $this->adapter->get("SHOW INDEX FROM $table");
+<a name="line917"></a>		$name = "UQ_".sha1(implode(',',$columns));
+<a name="line918"></a>		if ($r) {
+<a name="line919"></a>			foreach($r as $i) {
+<a name="line920"></a>				if ($i["Key_name"]== $name) {
+<a name="line921"></a>					return;
+<a name="line922"></a>				}
+<a name="line923"></a>			}
+<a name="line924"></a>		}
+<a name="line925"></a>		$sql = "ALTER IGNORE TABLE $table
+<a name="line926"></a>                ADD UNIQUE INDEX $name (".implode(",",$columns).")";
+<a name="line927"></a>		$this->adapter->exec($sql);
+<a name="line928"></a>	}
+<a name="line929"></a>	public function sqlStateIn($state, $list) {
+<a name="line930"></a>		$sqlState = "0";
+<a name="line931"></a>		if ($state == "42S02") $sqlState = RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE;
+<a name="line932"></a>		if ($state == "42S22") $sqlState = RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN;
+<a name="line933"></a>		if ($state == "23000") $sqlState = RedBean_QueryWriter::C_SQLSTATE_INTEGRITY_CONSTRAINT_VIOLATION;
+<a name="line934"></a>		return in_array($sqlState, $list);
+<a name="line935"></a>	}
+<a name="line936"></a>	protected function constrain($table, $table1, $table2, $property1, $property2, $dontCache) {
+<a name="line937"></a>		try{
+<a name="line938"></a>			$writer = $this;
+<a name="line939"></a>			$adapter = $this->adapter;
+<a name="line940"></a>			$db = $adapter->getCell("select database()");
+<a name="line941"></a>			$fkCode = "fk".md5($table.$property1.$property2);
+<a name="line942"></a>			$fks =  $adapter->getCell("
+<a name="line943"></a>				SELECT count(*)
+<a name="line944"></a>				FROM information_schema.KEY_COLUMN_USAGE
+<a name="line945"></a>				WHERE TABLE_SCHEMA ='$db' AND TABLE_NAME ='".$writer->getFormattedTableName($table)."' AND
+<a name="line946"></a>				CONSTRAINT_NAME <>'PRIMARY' AND REFERENCED_TABLE_NAME is not null
+<a name="line947"></a>					  ");
+<a name="line948"></a>			if ($fks>0) return false;
+<a name="line949"></a>			if (!$dontCache) $this->fkcache[ $fkCode ] = true;
+<a name="line950"></a>			$columns = $writer->getColumns($table);
+<a name="line951"></a>			if ($writer->code($columns[$property1])!==RedBean_QueryWriter_MySQL::C_DATATYPE_UINT32) {
+<a name="line952"></a>				$writer->widenColumn($table, $property1, RedBean_QueryWriter_MySQL::C_DATATYPE_UINT32);
+<a name="line953"></a>			}
+<a name="line954"></a>			if ($writer->code($columns[$property2])!==RedBean_QueryWriter_MySQL::C_DATATYPE_UINT32) {
+<a name="line955"></a>				$writer->widenColumn($table, $property2, RedBean_QueryWriter_MySQL::C_DATATYPE_UINT32);
+<a name="line956"></a>			}
+<a name="line957"></a>			$idfield1 = $writer->getIDField($table1);
+<a name="line958"></a>			$idfield2 = $writer->getIDField($table2);
+<a name="line959"></a>			$table = $writer->getFormattedTableName($table);
+<a name="line960"></a>			$table1 = $writer->getFormattedTableName($table1);
+<a name="line961"></a>			$table2 = $writer->getFormattedTableName($table2);
+<a name="line962"></a>			$sql = "
+<a name="line963"></a>				ALTER TABLE ".$writer->noKW($table)."
+<a name="line964"></a>				ADD FOREIGN KEY($property1) references `$table1`($idfield1) ON DELETE CASCADE;
+<a name="line965"></a>					  ";
+<a name="line966"></a>			$adapter->exec( $sql );
+<a name="line967"></a>			$sql ="
+<a name="line968"></a>				ALTER TABLE ".$writer->noKW($table)."
+<a name="line969"></a>				ADD FOREIGN KEY($property2) references `$table2`($idfield2) ON DELETE CASCADE
+<a name="line970"></a>					  ";
+<a name="line971"></a>			$adapter->exec( $sql );
+<a name="line972"></a>			return true;
+<a name="line973"></a>		}
+<a name="line974"></a>		catch(Exception $e){
+<a name="line975"></a>			return false;
+<a name="line976"></a>		}
+<a name="line977"></a>	}
+<a name="line978"></a>}
+<a name="line979"></a>class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter implements RedBean_QueryWriter {
+<a name="line980"></a>	protected $adapter;
+<a name="line981"></a>  	protected $quoteCharacter = '`';
+<a name="line982"></a>	const C_DATATYPE_INTEGER = 0;
+<a name="line983"></a>	const C_DATATYPE_NUMERIC = 1;
+<a name="line984"></a>	const C_DATATYPE_TEXT = 2;
+<a name="line985"></a>	const C_DATATYPE_SPECIFIED = 99;
+<a name="line986"></a>	public $typeno_sqltype = array(
+<a name="line987"></a>			  RedBean_QueryWriter_SQLiteT::C_DATATYPE_INTEGER=>"INTEGER",
+<a name="line988"></a>			  RedBean_QueryWriter_SQLiteT::C_DATATYPE_NUMERIC=>"NUMERIC",
+<a name="line989"></a>			  RedBean_QueryWriter_SQLiteT::C_DATATYPE_TEXT=>"TEXT",
+<a name="line990"></a>	);
+<a name="line991"></a>	public $sqltype_typeno = array(
+<a name="line992"></a>			  "INTEGER"=>RedBean_QueryWriter_SQLiteT::C_DATATYPE_INTEGER,
+<a name="line993"></a>			  "NUMERIC"=>RedBean_QueryWriter_SQLiteT::C_DATATYPE_NUMERIC,
+<a name="line994"></a>			  "TEXT"=>RedBean_QueryWriter_SQLiteT::C_DATATYPE_TEXT,
+<a name="line995"></a>	);
+<a name="line996"></a>	public function __construct( RedBean_Adapter $adapter ) {
+<a name="line997"></a>		$this->adapter = $adapter;
+<a name="line998"></a>		parent::__construct($adapter);
+<a name="line999"></a>	}
+<a name="line1000"></a>	public function getTypeForID() {
+<a name="line1001"></a>		return self::C_DATATYPE_INTEGER;
+<a name="line1002"></a>	}
+<a name="line1003"></a>	public function scanType( $value ) {
+<a name="line1004"></a>		if ($value===null) return self::C_DATATYPE_INTEGER; 
+<a name="line1005"></a>		if (is_numeric($value) && (intval($value)==$value) && $value<2147483648) return self::C_DATATYPE_INTEGER;
+<a name="line1006"></a>		if ((is_numeric($value) && $value < 2147483648)
+<a name="line1007"></a>				  || preg_match("/\d\d\d\d\-\d\d\-\d\d/",$value)
+<a name="line1008"></a>				  || preg_match("/\d\d\d\d\-\d\d\-\d\d\s\d\d:\d\d:\d\d/",$value)
+<a name="line1009"></a>		) {
+<a name="line1010"></a>			return self::C_DATATYPE_NUMERIC;
+<a name="line1011"></a>		}
+<a name="line1012"></a>		return self::C_DATATYPE_TEXT;
+<a name="line1013"></a>	}
+<a name="line1014"></a>	public function addColumn( $table, $column, $type) {
+<a name="line1015"></a>		$table = $this->getFormattedTableName($table);
+<a name="line1016"></a>		$column = $this->check($column);
+<a name="line1017"></a>		$table = $this->check($table);
+<a name="line1018"></a>		$type=$this->typeno_sqltype[$type];
+<a name="line1019"></a>		$sql = "ALTER TABLE `$table` ADD `$column` $type ";
+<a name="line1020"></a>		$this->adapter->exec( $sql );
+<a name="line1021"></a>	}
+<a name="line1022"></a>	public function code( $typedescription ) {
+<a name="line1023"></a>		return ((isset($this->sqltype_typeno[$typedescription])) ? $this->sqltype_typeno[$typedescription] : 99);
+<a name="line1024"></a>	}
+<a name="line1025"></a>	private function quote( $items ) {
+<a name="line1026"></a>		foreach($items as $k=>$item) {
+<a name="line1027"></a>			$items[$k]=$this->noKW($item);
+<a name="line1028"></a>		}
+<a name="line1029"></a>		return $items;
+<a name="line1030"></a>	}
+<a name="line1031"></a>	public function widenColumn( $type, $column, $datatype ) {
+<a name="line1032"></a>		$table = $this->safeTable($type,true);
+<a name="line1033"></a>		$column = $this->safeColumn($column,true);
+<a name="line1034"></a>		$idfield = $this->safeColumn($this->getIDfield($type),true);
+<a name="line1035"></a>		$newtype = $this->typeno_sqltype[$datatype];
+<a name="line1036"></a>		$oldColumns = $this->getColumns($type);
+<a name="line1037"></a>		$oldColumnNames = $this->quote(array_keys($oldColumns));
+<a name="line1038"></a>		$newTableDefStr="";
+<a name="line1039"></a>		foreach($oldColumns as $oldName=>$oldType) {
+<a name="line1040"></a>			if ($oldName != $idfield) {
+<a name="line1041"></a>				if ($oldName!=$column) {
+<a name="line1042"></a>					$newTableDefStr .= ",`$oldName` $oldType";
+<a name="line1043"></a>				}
+<a name="line1044"></a>				else {
+<a name="line1045"></a>					$newTableDefStr .= ",`$oldName` $newtype";
+<a name="line1046"></a>				}
+<a name="line1047"></a>			}
+<a name="line1048"></a>		}
+<a name="line1049"></a>		$q = array();
+<a name="line1050"></a>		$q[] = "DROP TABLE IF EXISTS tmp_backup;";
+<a name="line1051"></a>		$q[] = "CREATE TEMPORARY TABLE tmp_backup(".implode(",",$oldColumnNames).");";
+<a name="line1052"></a>		$q[] = "INSERT INTO tmp_backup SELECT * FROM `$table`;";
+<a name="line1053"></a>		$q[] = "DROP TABLE `$table`;";
+<a name="line1054"></a>		$q[] = "CREATE TABLE `$table` ( `$idfield` INTEGER PRIMARY KEY AUTOINCREMENT  $newTableDefStr  );";
+<a name="line1055"></a>		$q[] = "INSERT INTO `$table` SELECT * FROM tmp_backup;";
+<a name="line1056"></a>		$q[] = "DROP TABLE tmp_backup;";
+<a name="line1057"></a>		foreach($q as $sq) {
+<a name="line1058"></a>			$this->adapter->exec($sq);
+<a name="line1059"></a>		}
+<a name="line1060"></a>	}
+<a name="line1061"></a>	public function getTables() {
+<a name="line1062"></a>		return $this->adapter->getCol( "SELECT name FROM sqlite_master
+<a name="line1063"></a>			WHERE type='table' AND name!='sqlite_sequence';" );
+<a name="line1064"></a>	}
+<a name="line1065"></a>	public function createTable( $table ) {
+<a name="line1066"></a>		$idfield = $this->safeColumn($this->getIDfield($table));
+<a name="line1067"></a>		$table = $this->safeTable($table);
+<a name="line1068"></a>		$sql = "
+<a name="line1069"></a>                     CREATE TABLE $table ( $idfield INTEGER PRIMARY KEY AUTOINCREMENT )
+<a name="line1070"></a>				  ";
+<a name="line1071"></a>		$this->adapter->exec( $sql );
+<a name="line1072"></a>	}
+<a name="line1073"></a>	public function getColumns( $table ) {
+<a name="line1074"></a>		$table = $this->safeTable($table, true);
+<a name="line1075"></a>		$columnsRaw = $this->adapter->get("PRAGMA table_info('$table')");
+<a name="line1076"></a>		$columns = array();
+<a name="line1077"></a>		foreach($columnsRaw as $r) {
+<a name="line1078"></a>			$columns[$r["name"]]=$r["type"];
+<a name="line1079"></a>		}
+<a name="line1080"></a>		return $columns;
+<a name="line1081"></a>	}
+<a name="line1082"></a>	public function addUniqueIndex( $table,$columns ) {
+<a name="line1083"></a>		$table = $this->safeTable($table);
+<a name="line1084"></a>		$name = "UQ_".sha1(implode(',',$columns));
+<a name="line1085"></a>		$sql = "CREATE UNIQUE INDEX IF NOT EXISTS $name ON $table (".implode(",",$columns).")";
+<a name="line1086"></a>		$this->adapter->exec($sql);
+<a name="line1087"></a>	}
+<a name="line1088"></a>	public function sqlStateIn($state, $list) {
+<a name="line1089"></a>		$sqlState = "0";
+<a name="line1090"></a>		if ($state == "HY000") $sqlState = RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE;
+<a name="line1091"></a>		if ($state == "23000") $sqlState = RedBean_QueryWriter::C_SQLSTATE_INTEGRITY_CONSTRAINT_VIOLATION;
+<a name="line1092"></a>		return in_array($sqlState, $list);
+<a name="line1093"></a>	}
+<a name="line1094"></a>	public function wipe($type) {
+<a name="line1095"></a>		$table = $this->safeTable($type);
+<a name="line1096"></a>		$this->adapter->exec("DELETE FROM $table");
+<a name="line1097"></a>	}
+<a name="line1098"></a>	public function addFK( $type, $targetType, $field, $targetField) {
+<a name="line1099"></a>		return $this->buildFK($type, $targetType, $field, $targetField);
+<a name="line1100"></a>	}
+<a name="line1101"></a>	protected function buildFK($type, $targetType, $field, $targetField,$constraint=false) {
+<a name="line1102"></a>			try{
+<a name="line1103"></a>				$table = $this->safeTable($type,true);
+<a name="line1104"></a>				$targetTable = $this->safeTable($targetType,true);
+<a name="line1105"></a>				$field = $this->safeColumn($field,true);
+<a name="line1106"></a>				$targetField = $this->safeColumn($targetField,true);
+<a name="line1107"></a>				$idfield = $this->safeColumn($this->getIDfield($type),true);
+<a name="line1108"></a>				$oldColumns = $this->getColumns($type);
+<a name="line1109"></a>				$oldColumnNames = $this->quote(array_keys($oldColumns));
+<a name="line1110"></a>				$newTableDefStr="";
+<a name="line1111"></a>				foreach($oldColumns as $oldName=>$oldType) {
+<a name="line1112"></a>					if ($oldName != $idfield) {
+<a name="line1113"></a>						$newTableDefStr .= ",`$oldName` $oldType";
+<a name="line1114"></a>					}
+<a name="line1115"></a>				}
+<a name="line1116"></a>				$sqlGetOldFKS = "PRAGMA foreign_key_list('$table'); ";
+<a name="line1117"></a>				$oldFKs = $this->adapter->get($sqlGetOldFKS);
+<a name="line1118"></a>				$restoreFKSQLSnippets = "";
+<a name="line1119"></a>				foreach($oldFKs as $oldFKInfo) {
+<a name="line1120"></a>					if ($oldFKInfo['from']==$field) { 
+<a name="line1121"></a>						return false;
+<a name="line1122"></a>					}
+<a name="line1123"></a>					$oldTable = $table; 
+<a name="line1124"></a>					$oldField = $oldFKInfo['from'];
+<a name="line1125"></a>					$oldTargetTable = $oldFKInfo['table'];
+<a name="line1126"></a>					$oldTargetField = $oldFKInfo['to'];
+<a name="line1127"></a>					$restoreFKSQLSnippets .= ", FOREIGN KEY(`$oldField`) REFERENCES `$oldTargetTable`(`$oldTargetField`) ON DELETE ".$oldFKInfo['on_delete'];
+<a name="line1128"></a>				}
+<a name="line1129"></a>				$fkDef = $restoreFKSQLSnippets; 
+<a name="line1130"></a>				if ($constraint) { 
+<a name="line1131"></a>					$fkDef .= ', FOREIGN KEY(`'.$field.'`) REFERENCES `'.$targetTable.'`(`'.$targetField.'`) ON DELETE CASCADE ';
+<a name="line1132"></a>				}
+<a name="line1133"></a>				else {
+<a name="line1134"></a>					$fkDef .= ', FOREIGN KEY(`'.$field.'`) REFERENCES `'.$targetTable.'`(`'.$targetField.'`) ON DELETE SET NULL ON UPDATE SET NULL';
+<a name="line1135"></a>				}
+<a name="line1136"></a>				$q = array();
+<a name="line1137"></a>				$q[] = "DROP TABLE IF EXISTS tmp_backup;";
+<a name="line1138"></a>				$q[] = "CREATE TEMPORARY TABLE tmp_backup(".implode(",",$oldColumnNames).");";
+<a name="line1139"></a>				$q[] = "INSERT INTO tmp_backup SELECT * FROM `$table`;";
+<a name="line1140"></a>				$q[] = "PRAGMA foreign_keys = 0 ";
+<a name="line1141"></a>				$q[] = "DROP TABLE `$table`;";
+<a name="line1142"></a>				$q[] = "CREATE TABLE `$table` ( `$idfield` INTEGER PRIMARY KEY AUTOINCREMENT  $newTableDefStr $fkDef );";
+<a name="line1143"></a>				$q[] = "INSERT INTO `$table` SELECT * FROM tmp_backup;";
+<a name="line1144"></a>				$q[] = "DROP TABLE tmp_backup;";
+<a name="line1145"></a>				$q[] = "PRAGMA foreign_keys = 1 ";
+<a name="line1146"></a>				foreach($q as $sq) {
+<a name="line1147"></a>					$this->adapter->exec($sq);
+<a name="line1148"></a>				}
+<a name="line1149"></a>			}
+<a name="line1150"></a>			catch(Exception $e){
+<a name="line1151"></a>			}
+<a name="line1152"></a>	}
+<a name="line1153"></a>	protected  function constrain($table, $table1, $table2, $property1, $property2, $dontCache) {
+<a name="line1154"></a>		try{
+<a name="line1155"></a>			$writer = $this;
+<a name="line1156"></a>			$adapter = $this->adapter;
+<a name="line1157"></a>			$idfield1 = $writer->getIDField($table1);
+<a name="line1158"></a>			$idfield2 = $writer->getIDField($table2);
+<a name="line1159"></a>			$this->buildFK($table,$table1,$property1,$idfield1,true);
+<a name="line1160"></a>			$this->buildFK($table,$table2,$property2,$idfield2,true);
+<a name="line1161"></a>			return true;
+<a name="line1162"></a>		}
+<a name="line1163"></a>		catch(Exception $e){
+<a name="line1164"></a>			return false;
+<a name="line1165"></a>		}
+<a name="line1166"></a>	}
+<a name="line1167"></a>}
+<a name="line1168"></a>class RedBean_QueryWriter_PostgreSQL extends RedBean_QueryWriter_AQueryWriter implements RedBean_QueryWriter {
+<a name="line1169"></a>	const C_DATATYPE_INTEGER = 0;
+<a name="line1170"></a>	const C_DATATYPE_DOUBLE = 1;
+<a name="line1171"></a>	const C_DATATYPE_TEXT = 3;
+<a name="line1172"></a>	public $typeno_sqltype = array(
+<a name="line1173"></a>			  self::C_DATATYPE_INTEGER=>" integer ",
+<a name="line1174"></a>			  self::C_DATATYPE_DOUBLE=>" double precision ",
+<a name="line1175"></a>			  self::C_DATATYPE_TEXT=>" text "
+<a name="line1176"></a>	);
+<a name="line1177"></a>	public $sqltype_typeno = array(
+<a name="line1178"></a>			  "integer"=>self::C_DATATYPE_INTEGER,
+<a name="line1179"></a>			  "double precision" => self::C_DATATYPE_DOUBLE,
+<a name="line1180"></a>			  "text"=>self::C_DATATYPE_TEXT
+<a name="line1181"></a>	);
+<a name="line1182"></a>	protected $adapter;
+<a name="line1183"></a>  protected $quoteCharacter = '"';
+<a name="line1184"></a> 	protected $defaultValue = 'DEFAULT';
+<a name="line1185"></a>	public function getTypeForID() {
+<a name="line1186"></a>		return self::C_DATATYPE_INTEGER;
+<a name="line1187"></a>	}
+<a name="line1188"></a>  protected function getInsertSuffix($table) {
+<a name="line1189"></a>    return "RETURNING ".$this->getIDField($table);
+<a name="line1190"></a>  }
+<a name="line1191"></a>	public function __construct( RedBean_Adapter_DBAdapter $adapter ) {
+<a name="line1192"></a>		$this->adapter = $adapter;
+<a name="line1193"></a>		parent::__construct();
+<a name="line1194"></a>	}
+<a name="line1195"></a>	public function getTables() {
+<a name="line1196"></a>		return $this->adapter->getCol( "select table_name from information_schema.tables
+<a name="line1197"></a>where table_schema = 'public'" );
+<a name="line1198"></a>	}
+<a name="line1199"></a>	public function createTable( $table ) {
+<a name="line1200"></a>		$idfield = $this->getIDfield($table);
+<a name="line1201"></a>		$table = $this->safeTable($table);
+<a name="line1202"></a>		$sql = " CREATE TABLE $table ($idfield SERIAL PRIMARY KEY); ";
+<a name="line1203"></a>		$this->adapter->exec( $sql );
+<a name="line1204"></a>	}
+<a name="line1205"></a>	public function getColumns( $table ) {
+<a name="line1206"></a>		$table = $this->safeTable($table, true);
+<a name="line1207"></a>		$columnsRaw = $this->adapter->get("select column_name, data_type from information_schema.columns where table_name='$table'");
+<a name="line1208"></a>		foreach($columnsRaw as $r) {
+<a name="line1209"></a>			$columns[$r["column_name"]]=$r["data_type"];
+<a name="line1210"></a>		}
+<a name="line1211"></a>		return $columns;
+<a name="line1212"></a>	}
+<a name="line1213"></a>	public function scanType( $value ) {
+<a name="line1214"></a>		if ($value===null || ($value instanceof RedBean_Driver_PDO_NULL) ||(is_numeric($value)
+<a name="line1215"></a>				  && floor($value)==$value
+<a name="line1216"></a>				  && $value < 2147483648
+<a name="line1217"></a>				  && $value > -2147483648)) {
+<a name="line1218"></a>			return self::C_DATATYPE_INTEGER;
+<a name="line1219"></a>		}
+<a name="line1220"></a>		elseif(is_numeric($value)) {
+<a name="line1221"></a>			return self::C_DATATYPE_DOUBLE;
+<a name="line1222"></a>		}
+<a name="line1223"></a>		else {
+<a name="line1224"></a>			return self::C_DATATYPE_TEXT;
+<a name="line1225"></a>		}
+<a name="line1226"></a>	}
+<a name="line1227"></a>	public function code( $typedescription ) {
+<a name="line1228"></a>		return ((isset($this->sqltype_typeno[$typedescription])) ? $this->sqltype_typeno[$typedescription] : 99);
+<a name="line1229"></a>	}
+<a name="line1230"></a>	public function widenColumn( $type, $column, $datatype ) {
+<a name="line1231"></a>		$table = $type;
+<a name="line1232"></a>		$type = $datatype;
+<a name="line1233"></a>		$table = $this->safeTable($table);
+<a name="line1234"></a>		$column = $this->safeColumn($column);
+<a name="line1235"></a>		$newtype = $this->typeno_sqltype[$type];
+<a name="line1236"></a>		$changecolumnSQL = "ALTER TABLE $table \n\t ALTER COLUMN $column TYPE $newtype ";
+<a name="line1237"></a>		try {
+<a name="line1238"></a>			$this->adapter->exec( $changecolumnSQL );
+<a name="line1239"></a>		}catch(Exception $e) {
+<a name="line1240"></a>			die($e->getMessage());
+<a name="line1241"></a>		}
+<a name="line1242"></a>	}
+<a name="line1243"></a>	public function checkChanges($type, $id, $logid) {
+<a name="line1244"></a>		$table = $this->safeTable($type);
+<a name="line1245"></a>		$idfield = $this->getIDfield($type);
+<a name="line1246"></a>		$id = (int) $id;
+<a name="line1247"></a>		$logid = (int) $logid;
+<a name="line1248"></a>		$num = $this->adapter->getCell("
+<a name="line1249"></a>        SELECT count(*) FROM __log WHERE tbl=$table AND itemid=$id AND action=2 AND $idfield > $logid");
+<a name="line1250"></a>		if ($num) {
+<a name="line1251"></a>			throw new RedBean_Exception_FailedAccessBean("Locked, failed to access (type:$type, id:$id)");
+<a name="line1252"></a>		}
+<a name="line1253"></a>		$newid = $this->insertRecord("__log",array("action","tbl","itemid"),
+<a name="line1254"></a>				  array(array(2,  $type, $id)));
+<a name="line1255"></a>		if ($this->adapter->getCell("select id from __log where tbl=:tbl AND id < $newid and id > $logid and action=2 and itemid=$id ",
+<a name="line1256"></a>		array(":tbl"=>$type))) {
+<a name="line1257"></a>			throw new RedBean_Exception_FailedAccessBean("Locked, failed to access II (type:$type, id:$id)");
+<a name="line1258"></a>		}
+<a name="line1259"></a>		return $newid;
+<a name="line1260"></a>	}
+<a name="line1261"></a>	public function addUniqueIndex( $table,$columns ) {
+<a name="line1262"></a>		$table = $this->safeTable($table, true);
+<a name="line1263"></a>		sort($columns); 
+<a name="line1264"></a>		foreach($columns as $k=>$v) {
+<a name="line1265"></a>			$columns[$k]=$this->safeColumn($v);
+<a name="line1266"></a>		}
+<a name="line1267"></a>		$r = $this->adapter->get("SELECT
+<a name="line1268"></a>									i.relname as index_name
+<a name="line1269"></a>								FROM
+<a name="line1270"></a>									pg_class t,
+<a name="line1271"></a>									pg_class i,
+<a name="line1272"></a>									pg_index ix,
+<a name="line1273"></a>									pg_attribute a
+<a name="line1274"></a>								WHERE
+<a name="line1275"></a>									t.oid = ix.indrelid
+<a name="line1276"></a>									AND i.oid = ix.indexrelid
+<a name="line1277"></a>									AND a.attrelid = t.oid
+<a name="line1278"></a>									AND a.attnum = ANY(ix.indkey)
+<a name="line1279"></a>									AND t.relkind = 'r'
+<a name="line1280"></a>									AND t.relname = '$table'
+<a name="line1281"></a>								ORDER BY  t.relname,  i.relname;");
+<a name="line1282"></a>		$name = "UQ_".sha1($table.implode(',',$columns));
+<a name="line1283"></a>		if ($r) {
+<a name="line1284"></a>			foreach($r as $i) {
+<a name="line1285"></a>				if (strtolower( $i["index_name"] )== strtolower( $name )) {
+<a name="line1286"></a>					return;
+<a name="line1287"></a>				}
+<a name="line1288"></a>			}
+<a name="line1289"></a>		}
+<a name="line1290"></a>		$sql = "ALTER TABLE \"$table\"
+<a name="line1291"></a>                ADD CONSTRAINT $name UNIQUE (".implode(",",$columns).")";
+<a name="line1292"></a>		$this->adapter->exec($sql);
+<a name="line1293"></a>	}
+<a name="line1294"></a>	public function sqlStateIn($state, $list) {
+<a name="line1295"></a>		$sqlState = "0";
+<a name="line1296"></a>		if ($state == "42P01") $sqlState = RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE;
+<a name="line1297"></a>		if ($state == "42703") $sqlState = RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN;
+<a name="line1298"></a>		if ($state == "23505") $sqlState = RedBean_QueryWriter::C_SQLSTATE_INTEGRITY_CONSTRAINT_VIOLATION;
+<a name="line1299"></a>		return in_array($sqlState, $list);
+<a name="line1300"></a>	}
+<a name="line1301"></a>	public function getSQLSnippetFilter( $idfield, $keys, $sql=null, $inverse=false ) {
+<a name="line1302"></a>		if (!$sql) $sql=" TRUE ";
+<a name="line1303"></a>		if (!$inverse && count($keys)===0) return " TRUE ";
+<a name="line1304"></a>		$idfield = $this->noKW($idfield);
+<a name="line1305"></a>		$sqlInverse = ($inverse) ? "NOT" : "";
+<a name="line1306"></a>		$sqlKeyFilter = ($keys) ? " $idfield $sqlInverse IN (".implode(",",$keys).") AND " : " ";
+<a name="line1307"></a>		$sqlSnippet = $sqlKeyFilter . $sql;
+<a name="line1308"></a>		return $sqlSnippet;
+<a name="line1309"></a>	}
+<a name="line1310"></a>	public function addFK( $type, $targetType, $field, $targetField) {
+<a name="line1311"></a>		try{
+<a name="line1312"></a>			$table = $this->safeTable($type);
+<a name="line1313"></a>			$column = $this->safeColumn($field);
+<a name="line1314"></a>			$tableNoQ = $this->safeTable($type,true);
+<a name="line1315"></a>			$columnNoQ = $this->safeColumn($field,true);
+<a name="line1316"></a>			$targetTable = $this->safeTable($targetType);
+<a name="line1317"></a>			$targetColumn  = $this->safeColumn($targetField);
+<a name="line1318"></a>			$fkCode = $tableNoQ.'_'.$columnNoQ.'_fkey';
+<a name="line1319"></a>			$sql = "
+<a name="line1320"></a>						SELECT
+<a name="line1321"></a>								c.oid,
+<a name="line1322"></a>								n.nspname,
+<a name="line1323"></a>								c.relname,
+<a name="line1324"></a>								n2.nspname,
+<a name="line1325"></a>								c2.relname,
+<a name="line1326"></a>								cons.conname
+<a name="line1327"></a>						FROM pg_class c
+<a name="line1328"></a>						JOIN pg_namespace n ON n.oid = c.relnamespace
+<a name="line1329"></a>						LEFT OUTER JOIN pg_constraint cons ON cons.conrelid = c.oid
+<a name="line1330"></a>						LEFT OUTER JOIN pg_class c2 ON cons.confrelid = c2.oid
+<a name="line1331"></a>						LEFT OUTER JOIN pg_namespace n2 ON n2.oid = c2.relnamespace
+<a name="line1332"></a>						WHERE c.relkind = 'r'
+<a name="line1333"></a>						AND n.nspname IN ('public')
+<a name="line1334"></a>						AND (cons.contype = 'f' OR cons.contype IS NULL)
+<a name="line1335"></a>						AND
+<a name="line1336"></a>						(  cons.conname = '{$fkCode}' )
+<a name="line1337"></a>					  ";
+<a name="line1338"></a>			$rows = $this->adapter->get( $sql );
+<a name="line1339"></a>			if (!count($rows)) {
+<a name="line1340"></a>				try{
+<a name="line1341"></a>					$this->adapter->exec("ALTER TABLE  $table
+<a name="line1342"></a>					ADD FOREIGN KEY (  $column ) REFERENCES  $targetTable (
+<a name="line1343"></a>					$targetColumn) ON DELETE SET NULL ON UPDATE SET NULL ;");
+<a name="line1344"></a>					return true;
+<a name="line1345"></a>				}
+<a name="line1346"></a>				catch(Exception $e) {
+<a name="line1347"></a>				}
+<a name="line1348"></a>			}
+<a name="line1349"></a>		}
+<a name="line1350"></a>		catch(Exception $e){
+<a name="line1351"></a>			return false;
+<a name="line1352"></a>		}
+<a name="line1353"></a>	}
+<a name="line1354"></a>	protected function constrain($table, $table1, $table2, $property1, $property2, $dontCache) {
+<a name="line1355"></a>		try{
+<a name="line1356"></a>			$writer = $this;
+<a name="line1357"></a>			$adapter = $this->adapter;
+<a name="line1358"></a>			$fkCode = "fk".md5($table.$property1.$property2);
+<a name="line1359"></a>			$sql = "
+<a name="line1360"></a>						SELECT
+<a name="line1361"></a>								c.oid,
+<a name="line1362"></a>								n.nspname,
+<a name="line1363"></a>								c.relname,
+<a name="line1364"></a>								n2.nspname,
+<a name="line1365"></a>								c2.relname,
+<a name="line1366"></a>								cons.conname
+<a name="line1367"></a>						FROM pg_class c
+<a name="line1368"></a>						JOIN pg_namespace n ON n.oid = c.relnamespace
+<a name="line1369"></a>						LEFT OUTER JOIN pg_constraint cons ON cons.conrelid = c.oid
+<a name="line1370"></a>						LEFT OUTER JOIN pg_class c2 ON cons.confrelid = c2.oid
+<a name="line1371"></a>						LEFT OUTER JOIN pg_namespace n2 ON n2.oid = c2.relnamespace
+<a name="line1372"></a>						WHERE c.relkind = 'r'
+<a name="line1373"></a>						AND n.nspname IN ('public')
+<a name="line1374"></a>						AND (cons.contype = 'f' OR cons.contype IS NULL)
+<a name="line1375"></a>						AND
+<a name="line1376"></a>						(  cons.conname = '{$fkCode}a'	OR  cons.conname = '{$fkCode}b' )
+<a name="line1377"></a>					  ";
+<a name="line1378"></a>			$rows = $adapter->get( $sql );
+<a name="line1379"></a>			if (!count($rows)) {
+<a name="line1380"></a>				$table = $writer->getFormattedTableName($table);
+<a name="line1381"></a>				$table1 = $writer->getFormattedTableName($table1);
+<a name="line1382"></a>				$table2 = $writer->getFormattedTableName($table2);
+<a name="line1383"></a>				if (!$dontCache) $this->fkcache[ $fkCode ] = true;
+<a name="line1384"></a>				$sql1 = "ALTER TABLE \"$table\" ADD CONSTRAINT
+<a name="line1385"></a>						  {$fkCode}a FOREIGN KEY ($property1)
+<a name="line1386"></a>							REFERENCES \"$table1\" (id) ON DELETE CASCADE ";
+<a name="line1387"></a>				$sql2 = "ALTER TABLE \"$table\" ADD CONSTRAINT
+<a name="line1388"></a>						  {$fkCode}b FOREIGN KEY ($property2)
+<a name="line1389"></a>							REFERENCES \"$table2\" (id) ON DELETE CASCADE ";
+<a name="line1390"></a>				$adapter->exec($sql1);
+<a name="line1391"></a>				$adapter->exec($sql2);
+<a name="line1392"></a>			}
+<a name="line1393"></a>			return true;
+<a name="line1394"></a>		}
+<a name="line1395"></a>		catch(Exception $e){
+<a name="line1396"></a>			return false;
+<a name="line1397"></a>		}
+<a name="line1398"></a>	}
+<a name="line1399"></a>}
+<a name="line1400"></a>class RedBean_Exception extends Exception {
+<a name="line1401"></a>}
+<a name="line1402"></a>class RedBean_Exception_SQL extends Exception {
+<a name="line1403"></a>	private $sqlState;
+<a name="line1404"></a>	public function getSQLState() {
+<a name="line1405"></a>		return $this->sqlState;
+<a name="line1406"></a>	}
+<a name="line1407"></a>	public function setSQLState( $sqlState ) {
+<a name="line1408"></a>		$this->sqlState = $sqlState;
+<a name="line1409"></a>	}
+<a name="line1410"></a>	public function __toString() {
+<a name="line1411"></a>		return "[".$this->getSQLState()."] - ".$this->getMessage();
+<a name="line1412"></a>	}
+<a name="line1413"></a>} 
+<a name="line1414"></a>class RedBean_Exception_Security extends RedBean_Exception {}
+<a name="line1415"></a>class RedBean_OODB extends RedBean_Observable {
+<a name="line1416"></a>	private $stash = NULL;
+<a name="line1417"></a>	private $writer;
+<a name="line1418"></a>	private $isFrozen = false;
+<a name="line1419"></a>	private $beanhelper = null;
+<a name="line1420"></a>	public function __construct( $writer ) {
+<a name="line1421"></a>		if ($writer instanceof RedBean_IceWriter) {
+<a name="line1422"></a>			$this->isFrozen = true;
+<a name="line1423"></a>			$this->writer = $writer;
+<a name="line1424"></a>		}
+<a name="line1425"></a>		elseif ($writer instanceof RedBean_QueryWriter) {
+<a name="line1426"></a>			$this->writer = $writer;
+<a name="line1427"></a>		}
+<a name="line1428"></a>		else {
+<a name="line1429"></a>			throw new RedBean_Exception_Security("Passing an invalid Query Writer");
+<a name="line1430"></a>		}
+<a name="line1431"></a>		$this->beanhelper = new RedBean_BeanHelperFacade();
+<a name="line1432"></a>	}
+<a name="line1433"></a>	public function freeze( $tf ) {
+<a name="line1434"></a>		$this->isFrozen = (bool) $tf;
+<a name="line1435"></a>	}
+<a name="line1436"></a>	public function isFrozen() {
+<a name="line1437"></a>		return (bool) $this->isFrozen;
+<a name="line1438"></a>	}
+<a name="line1439"></a>	public function dispense($type ) {
+<a name="line1440"></a>		$this->signal( "before_dispense", $type );
+<a name="line1441"></a>		$bean = new RedBean_OODBBean();
+<a name="line1442"></a>		$bean->setBeanHelper($this->beanhelper);
+<a name="line1443"></a>		$bean->setMeta("type", $type );
+<a name="line1444"></a>		$idfield = $this->writer->getIDField($bean->getMeta("type"));
+<a name="line1445"></a>		$bean->setMeta("sys.idfield",$idfield);
+<a name="line1446"></a>		$bean->$idfield = 0;
+<a name="line1447"></a>		if (!$this->isFrozen) $this->check( $bean );
+<a name="line1448"></a>		$bean->setMeta("tainted",true);
+<a name="line1449"></a>		$this->signal( "dispense", $bean );
+<a name="line1450"></a>		return $bean;
+<a name="line1451"></a>	}
+<a name="line1452"></a>	public function setBeanHelper( RedBean_IBeanHelper $beanhelper) {
+<a name="line1453"></a>		$this->beanhelper = $beanhelper;
+<a name="line1454"></a>	}
+<a name="line1455"></a>	public function check( RedBean_OODBBean $bean ) {
+<a name="line1456"></a>		$idfield = $this->writer->getIDField($bean->getMeta("type"));
+<a name="line1457"></a>		if (!isset($bean->$idfield) ) {
+<a name="line1458"></a>			throw new RedBean_Exception_Security("Bean has incomplete Meta Information $idfield ");
+<a name="line1459"></a>		}
+<a name="line1460"></a>		if (!($bean->getMeta("type"))) {
+<a name="line1461"></a>			throw new RedBean_Exception_Security("Bean has incomplete Meta Information II");
+<a name="line1462"></a>		}
+<a name="line1463"></a>		$pattern = '/[^abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]/';
+<a name="line1464"></a>		if (preg_match($pattern,$bean->getMeta("type"))) {
+<a name="line1465"></a>			throw new RedBean_Exception_Security("Bean Type is invalid");
+<a name="line1466"></a>		}
+<a name="line1467"></a>		foreach($bean as $prop=>$value) {
+<a name="line1468"></a>			if (
+<a name="line1469"></a>					  is_array($value) ||
+<a name="line1470"></a>					  (is_object($value)) ||
+<a name="line1471"></a>					  strlen($prop)<1 ||
+<a name="line1472"></a>					  preg_match($pattern,$prop)
+<a name="line1473"></a>			) {
+<a name="line1474"></a>				throw new RedBean_Exception_Security("Invalid Bean: property $prop  ");
+<a name="line1475"></a>			}
+<a name="line1476"></a>		}
+<a name="line1477"></a>	}
+<a name="line1478"></a>	public function find($type,$conditions=array(),$addSQL=null) {
+<a name="line1479"></a>		try {
+<a name="line1480"></a>			$beans = $this->convertToBeans($type,$this->writer->selectRecord($type,$conditions,$addSQL));
+<a name="line1481"></a>			return $beans;
+<a name="line1482"></a>		}catch(RedBean_Exception_SQL $e) {
+<a name="line1483"></a>			if (!$this->writer->sqlStateIn($e->getSQLState(),
+<a name="line1484"></a>			array(
+<a name="line1485"></a>				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE,
+<a name="line1486"></a>				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN)
+<a name="line1487"></a>			)) throw $e;
+<a name="line1488"></a>		}
+<a name="line1489"></a>		return array();
+<a name="line1490"></a>	}
+<a name="line1491"></a>	public function tableExists($table) {
+<a name="line1492"></a>		$tables = $this->writer->getTables();
+<a name="line1493"></a>		return in_array($this->writer->getFormattedTableName($table), $tables);
+<a name="line1494"></a>	}
+<a name="line1495"></a>	protected function processBuildCommands($table, $property, RedBean_OODBBean $bean) {
+<a name="line1496"></a>		if ($inx = ($bean->getMeta("buildcommand.indexes"))) {
+<a name="line1497"></a>			if (isset($inx[$property])) $this->writer->addIndex($table,$inx[$property],$property);
+<a name="line1498"></a>		}
+<a name="line1499"></a>	}
+<a name="line1500"></a>	protected function processGroups( $originals, $current, $additions, $trashcan, $residue ) {
+<a name="line1501"></a>		return array(
+<a name="line1502"></a>			array_merge($additions,array_diff($current,$originals)),
+<a name="line1503"></a>			array_merge($trashcan,array_diff($originals,$current)),
+<a name="line1504"></a>			array_merge($residue,array_intersect($current,$originals))
+<a name="line1505"></a>		);
+<a name="line1506"></a>	}
+<a name="line1507"></a>	public function store( RedBean_OODBBean $bean ) {
+<a name="line1508"></a>		$processLists = false;
+<a name="line1509"></a>		foreach($bean as $k=>$v) {
+<a name="line1510"></a>			if (is_array($v) || is_object($v)) { $processLists = true; break; }
+<a name="line1511"></a>		}
+<a name="line1512"></a>		if (!$processLists && !$bean->getMeta('tainted')) return $bean->getID();
+<a name="line1513"></a>		$this->signal( "update", $bean );
+<a name="line1514"></a>		if ($processLists) {
+<a name="line1515"></a>		$sharedAdditions = $sharedTrashcan = $sharedresidue = $sharedItems = array();
+<a name="line1516"></a>		$ownAdditions = $ownTrashcan = $ownresidue = array();
+<a name="line1517"></a>		$tmpCollectionStore = array();
+<a name="line1518"></a>		$embeddedBeans = array();
+<a name="line1519"></a>		foreach($bean as $p=>$v) {
+<a name="line1520"></a>			if ($v instanceof RedBean_OODBBean) {
+<a name="line1521"></a>				$embtype = $v->getMeta('type');
+<a name="line1522"></a>				$idfield = $this->writer->getIDField($embtype);
+<a name="line1523"></a>				if (!$v->$idfield || $v->getMeta('tainted')) {
+<a name="line1524"></a>					$this->store($v);
+<a name="line1525"></a>				}
+<a name="line1526"></a>				$beanID = $v->$idfield;
+<a name="line1527"></a>				$linkField = $p.'_id';
+<a name="line1528"></a>				$bean->$linkField = $beanID;
+<a name="line1529"></a>				$bean->setMeta('cast.'.$linkField,'id');
+<a name="line1530"></a>				$embeddedBeans[$linkField] = $v;
+<a name="line1531"></a>				$tmpCollectionStore[$p]=$bean->$p;
+<a name="line1532"></a>				$bean->removeProperty($p);
+<a name="line1533"></a>			}
+<a name="line1534"></a>			if (is_array($v)) {
+<a name="line1535"></a>				$originals = $bean->getMeta('sys.shadow.'.$p);
+<a name="line1536"></a>				if (!$originals) $originals = array();
+<a name="line1537"></a>				if (strpos($p,'own')===0) {
+<a name="line1538"></a>					list($ownAdditions,$ownTrashcan,$ownresidue)=$this->processGroups($originals,$v,$ownAdditions,$ownTrashcan,$ownresidue);
+<a name="line1539"></a>					$bean->removeProperty($p);
+<a name="line1540"></a>				}
+<a name="line1541"></a>				elseif (strpos($p,'shared')===0) {
+<a name="line1542"></a>					list($sharedAdditions,$sharedTrashcan,$sharedresidue)=$this->processGroups($originals,$v,$sharedAdditions,$sharedTrashcan,$sharedresidue);
+<a name="line1543"></a>					$bean->removeProperty($p);
+<a name="line1544"></a>				}
+<a name="line1545"></a>				else {
+<a name="line1546"></a>				}
+<a name="line1547"></a>			}
+<a name="line1548"></a>		}
+<a name="line1549"></a>		}
+<a name="line1550"></a>		if (!$this->isFrozen) $this->check($bean);
+<a name="line1551"></a>		$table = $bean->getMeta("type");
+<a name="line1552"></a>		$idfield = $this->writer->getIDField($table);
+<a name="line1553"></a>		if ($bean->getMeta('tainted')) {
+<a name="line1554"></a>		if (!$this->isFrozen && !$this->tableExists($table)) {
+<a name="line1555"></a>			$this->writer->createTable( $table );
+<a name="line1556"></a>			$bean->setMeta("buildreport.flags.created",true);
+<a name="line1557"></a>		}
+<a name="line1558"></a>		if (!$this->isFrozen) {
+<a name="line1559"></a>			$columns = $this->writer->getColumns($table) ;
+<a name="line1560"></a>		}
+<a name="line1561"></a>		$insertvalues = array();
+<a name="line1562"></a>		$insertcolumns = array();
+<a name="line1563"></a>		$updatevalues = array();
+<a name="line1564"></a>		foreach( $bean as $p=>$v ) {
+<a name="line1565"></a>			if ($p!=$idfield) {
+<a name="line1566"></a>				if (!$this->isFrozen) {
+<a name="line1567"></a>					if ($bean->getMeta("cast.$p",-1)!==-1) {
+<a name="line1568"></a>						$cast = $bean->getMeta("cast.$p");
+<a name="line1569"></a>						if ($cast=="string") {
+<a name="line1570"></a>							$typeno = $this->writer->scanType("STRING");
+<a name="line1571"></a>						}
+<a name="line1572"></a>						elseif ($cast=="id") {
+<a name="line1573"></a>							$typeno = $this->writer->getTypeForID();
+<a name="line1574"></a>						}
+<a name="line1575"></a>						else {
+<a name="line1576"></a>							throw new RedBean_Exception("Invalid Cast");
+<a name="line1577"></a>						}
+<a name="line1578"></a>					}
+<a name="line1579"></a>					else {
+<a name="line1580"></a>						$typeno = $this->writer->scanType($v);
+<a name="line1581"></a>					}
+<a name="line1582"></a>					if (isset($columns[$p])) {
+<a name="line1583"></a>						$sqlt = $this->writer->code($columns[$p]);
+<a name="line1584"></a>						if ($typeno > $sqlt) {
+<a name="line1585"></a>							$this->writer->widenColumn( $table, $p, $typeno );
+<a name="line1586"></a>							$bean->setMeta("buildreport.flags.widen",true);
+<a name="line1587"></a>						}
+<a name="line1588"></a>					}
+<a name="line1589"></a>					else {
+<a name="line1590"></a>						$this->writer->addColumn($table, $p, $typeno);
+<a name="line1591"></a>						$bean->setMeta("buildreport.flags.addcolumn",true);
+<a name="line1592"></a>						$this->processBuildCommands($table,$p,$bean);
+<a name="line1593"></a>					}
+<a name="line1594"></a>				}
+<a name="line1595"></a>				$insertvalues[] = $v;
+<a name="line1596"></a>				$insertcolumns[] = $p;
+<a name="line1597"></a>				$updatevalues[] = array( "property"=>$p, "value"=>$v );
+<a name="line1598"></a>			}
+<a name="line1599"></a>		}
+<a name="line1600"></a>		if (!$this->isFrozen && ($uniques = $bean->getMeta("buildcommand.unique"))) {
+<a name="line1601"></a>			foreach($uniques as $unique) {
+<a name="line1602"></a>				$this->writer->addUniqueIndex( $table, $unique );
+<a name="line1603"></a>			}
+<a name="line1604"></a>		}
+<a name="line1605"></a>		$rs = $this->writer->updateRecord( $table, $updatevalues, $bean->$idfield );
+<a name="line1606"></a>		$bean->$idfield = $rs;
+<a name="line1607"></a>		$bean->setMeta("tainted",false);
+<a name="line1608"></a>		}
+<a name="line1609"></a>		if ($processLists) {
+<a name="line1610"></a>		foreach($embeddedBeans as $linkField=>$embeddedBean) {
+<a name="line1611"></a>			if (!$this->isFrozen) {
+<a name="line1612"></a>				$this->writer->addIndex($bean->getMeta('type'),
+<a name="line1613"></a>							'index_foreignkey_'.$embeddedBean->getMeta('type'),
+<a name="line1614"></a>							 $linkField);
+<a name="line1615"></a>				$this->writer->addFK($bean->getMeta('type'),$embeddedBean->getMeta('type'),$linkField,$this->writer->getIDField($embeddedBean->getMeta('type')));
+<a name="line1616"></a>			}
+<a name="line1617"></a>		}
+<a name="line1618"></a>		$myFieldLink = $bean->getMeta('type').'_id';
+<a name="line1619"></a>		foreach($ownTrashcan as $trash) {
+<a name="line1620"></a>			if ($trash instanceof RedBean_OODBBean) {
+<a name="line1621"></a>				$trash->$myFieldLink = null; 
+<a name="line1622"></a>				$this->store($trash);
+<a name="line1623"></a>			}
+<a name="line1624"></a>			else {
+<a name="line1625"></a>				throw new RedBean_Exception_Security('Array may only contain RedBean_OODBBeans');
+<a name="line1626"></a>			}
+<a name="line1627"></a>		}
+<a name="line1628"></a>		foreach($ownAdditions as $addition) {
+<a name="line1629"></a>			if ($addition instanceof RedBean_OODBBean) {
+<a name="line1630"></a>				$addition->$myFieldLink = $bean->$idfield;
+<a name="line1631"></a>				$addition->setMeta('cast.'.$myFieldLink,'id');
+<a name="line1632"></a>				$this->store($addition);
+<a name="line1633"></a>				if (!$this->isFrozen) {
+<a name="line1634"></a>					$this->writer->addIndex($addition->getMeta('type'),
+<a name="line1635"></a>						'index_foreignkey_'.$bean->getMeta('type'),
+<a name="line1636"></a>						 $myFieldLink);
+<a name="line1637"></a>					$this->writer->addFK($addition->getMeta('type'),$bean->getMeta('type'),$myFieldLink,$idfield);
+<a name="line1638"></a>				}
+<a name="line1639"></a>			}
+<a name="line1640"></a>			else {
+<a name="line1641"></a>				throw new RedBean_Exception_Security('Array may only contain RedBean_OODBBeans');
+<a name="line1642"></a>			}
+<a name="line1643"></a>		}
+<a name="line1644"></a>		foreach($ownresidue as $residue) {
+<a name="line1645"></a>			if ($residue instanceof RedBean_OODBBean) {
+<a name="line1646"></a>				if ($residue->getMeta('tainted')) {
+<a name="line1647"></a>					$this->store($residue);
+<a name="line1648"></a>				}
+<a name="line1649"></a>			}
+<a name="line1650"></a>			else {
+<a name="line1651"></a>				throw new RedBean_Exception_Security('Array may only contain RedBean_OODBBeans');
+<a name="line1652"></a>			}
+<a name="line1653"></a>		}
+<a name="line1654"></a>		foreach($sharedTrashcan as $trash) {
+<a name="line1655"></a>			if ($trash instanceof RedBean_OODBBean) {
+<a name="line1656"></a>				$this->assocManager->unassociate($trash,$bean);
+<a name="line1657"></a>			}
+<a name="line1658"></a>			else {
+<a name="line1659"></a>				throw new RedBean_Exception_Security('Array may only contain RedBean_OODBBeans');
+<a name="line1660"></a>			}
+<a name="line1661"></a>		}
+<a name="line1662"></a>		foreach($sharedAdditions as $addition) {
+<a name="line1663"></a>			if ($addition instanceof RedBean_OODBBean) {
+<a name="line1664"></a>				$this->assocManager->associate($addition,$bean);
+<a name="line1665"></a>			}
+<a name="line1666"></a>			else {
+<a name="line1667"></a>				throw new RedBean_Exception_Security('Array may only contain RedBean_OODBBeans');
+<a name="line1668"></a>			}
+<a name="line1669"></a>		}
+<a name="line1670"></a>		foreach($sharedresidue as $residue) {
+<a name="line1671"></a>			if ($residue instanceof RedBean_OODBBean) {
+<a name="line1672"></a>				$this->store($residue);
+<a name="line1673"></a>			}
+<a name="line1674"></a>			else {
+<a name="line1675"></a>				throw new RedBean_Exception_Security('Array may only contain RedBean_OODBBeans');
+<a name="line1676"></a>			}
+<a name="line1677"></a>		}
+<a name="line1678"></a>		}
+<a name="line1679"></a>		$this->signal( "after_update", $bean );
+<a name="line1680"></a>		return (int) $bean->$idfield;
+<a name="line1681"></a>	}
+<a name="line1682"></a>	public function load($type, $id) {
+<a name="line1683"></a>		$this->signal("before_open",array("type"=>$type,"id"=>$id));
+<a name="line1684"></a>		$bean = $this->dispense( $type );
+<a name="line1685"></a>		if ($this->stash && isset($this->stash[$id])) {
+<a name="line1686"></a>			$row = $this->stash[$id];
+<a name="line1687"></a>		}
+<a name="line1688"></a>		else {
+<a name="line1689"></a>			try {
+<a name="line1690"></a>				$idfield = $this->writer->getIDField($type);
+<a name="line1691"></a>				$rows = $this->writer->selectRecord($type,array($idfield=>array($id)));
+<a name="line1692"></a>			}catch(RedBean_Exception_SQL $e ) {
+<a name="line1693"></a>				if (
+<a name="line1694"></a>				$this->writer->sqlStateIn($e->getSQLState(),
+<a name="line1695"></a>				array(
+<a name="line1696"></a>				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+<a name="line1697"></a>				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line1698"></a>				)
+<a name="line1699"></a>				) {
+<a name="line1700"></a>					$rows = 0;
+<a name="line1701"></a>					if ($this->isFrozen) throw $e; 
+<a name="line1702"></a>				}
+<a name="line1703"></a>				else throw $e;
+<a name="line1704"></a>			}
+<a name="line1705"></a>			if (!$rows) return $bean; 
+<a name="line1706"></a>			$row = array_pop($rows);
+<a name="line1707"></a>		}
+<a name="line1708"></a>		foreach($row as $p=>$v) {
+<a name="line1709"></a>			$bean->$p = $v;
+<a name="line1710"></a>		}
+<a name="line1711"></a>		$this->signal( "open", $bean );
+<a name="line1712"></a>		$bean->setMeta("tainted",false);
+<a name="line1713"></a>		return $bean;
+<a name="line1714"></a>	}
+<a name="line1715"></a>	public function trash( RedBean_OODBBean $bean ) {
+<a name="line1716"></a>		$idfield = $this->writer->getIDField($bean->getMeta("type"));
+<a name="line1717"></a>		$this->signal( "delete", $bean );
+<a name="line1718"></a>		foreach($bean as $p=>$v) {
+<a name="line1719"></a>			if ($v instanceof RedBean_OODBBean) {
+<a name="line1720"></a>				$bean->removeProperty($p);
+<a name="line1721"></a>			}
+<a name="line1722"></a>			if (is_array($v)) {
+<a name="line1723"></a>				if (strpos($p,'own')===0) {
+<a name="line1724"></a>					$bean->removeProperty($p);
+<a name="line1725"></a>				}
+<a name="line1726"></a>				elseif (strpos($p,'shared')===0) {
+<a name="line1727"></a>					$bean->removeProperty($p);
+<a name="line1728"></a>				}
+<a name="line1729"></a>			}
+<a name="line1730"></a>		}
+<a name="line1731"></a>		if (!$this->isFrozen) $this->check( $bean );
+<a name="line1732"></a>		try {
+<a name="line1733"></a>			$this->writer->selectRecord($bean->getMeta("type"),
+<a name="line1734"></a>				array($idfield => array( $bean->$idfield) ),null,true );
+<a name="line1735"></a>		}catch(RedBean_Exception_SQL $e) {
+<a name="line1736"></a>			if (!$this->writer->sqlStateIn($e->getSQLState(),
+<a name="line1737"></a>			array(
+<a name="line1738"></a>			RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+<a name="line1739"></a>			RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line1740"></a>			)) throw $e;
+<a name="line1741"></a>		}
+<a name="line1742"></a>		$bean->$idfield = 0;
+<a name="line1743"></a>		$this->signal( "after_delete", $bean );
+<a name="line1744"></a>	}
+<a name="line1745"></a>	public function batch( $type, $ids ) {
+<a name="line1746"></a>		if (!$ids) return array();
+<a name="line1747"></a>		$collection = array();
+<a name="line1748"></a>		try {
+<a name="line1749"></a>			$idfield = $this->writer->getIDField($type);
+<a name="line1750"></a>			$rows = $this->writer->selectRecord($type,array($idfield=>$ids));
+<a name="line1751"></a>		}catch(RedBean_Exception_SQL $e) {
+<a name="line1752"></a>			if (!$this->writer->sqlStateIn($e->getSQLState(),
+<a name="line1753"></a>			array(
+<a name="line1754"></a>			RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+<a name="line1755"></a>			RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line1756"></a>			)) throw $e;
+<a name="line1757"></a>			$rows = false;
+<a name="line1758"></a>		}
+<a name="line1759"></a>		$this->stash = array();
+<a name="line1760"></a>		if (!$rows) return array();
+<a name="line1761"></a>		foreach($rows as $row) {
+<a name="line1762"></a>			$this->stash[$row[$this->writer->getIDField($type)]] = $row;
+<a name="line1763"></a>		}
+<a name="line1764"></a>		foreach($ids as $id) {
+<a name="line1765"></a>			$collection[ $id ] = $this->load( $type, $id );
+<a name="line1766"></a>		}
+<a name="line1767"></a>		$this->stash = NULL;
+<a name="line1768"></a>		return $collection;
+<a name="line1769"></a>	}
+<a name="line1770"></a>	public function convertToBeans($type, $rows) {
+<a name="line1771"></a>		$collection = array();
+<a name="line1772"></a>		$this->stash = array();
+<a name="line1773"></a>		foreach($rows as $row) { 
+<a name="line1774"></a>			$id = $row[$this->writer->getIDField($type)];
+<a name="line1775"></a>			$this->stash[$id] = $row;
+<a name="line1776"></a>			$collection[ $id ] = $this->load( $type, $id );
+<a name="line1777"></a>		}
+<a name="line1778"></a>		$this->stash = NULL;
+<a name="line1779"></a>		return $collection;
+<a name="line1780"></a>	}
+<a name="line1781"></a>	public function count($type) {
+<a name="line1782"></a>		try {
+<a name="line1783"></a>			return (int) $this->writer->count($type);
+<a name="line1784"></a>		}catch(RedBean_Exception_SQL $e) {
+<a name="line1785"></a>			if (!$this->writer->sqlStateIn($e->getSQLState(),
+<a name="line1786"></a>			array(RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line1787"></a>			)) throw $e;
+<a name="line1788"></a>		}
+<a name="line1789"></a>		return 0;
+<a name="line1790"></a>	}
+<a name="line1791"></a>	public function wipe($type) {
+<a name="line1792"></a>		try {
+<a name="line1793"></a>			$this->writer->wipe($type);
+<a name="line1794"></a>			return true;
+<a name="line1795"></a>		}catch(RedBean_Exception_SQL $e) {
+<a name="line1796"></a>			if (!$this->writer->sqlStateIn($e->getSQLState(),
+<a name="line1797"></a>			array(RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line1798"></a>			)) throw $e;
+<a name="line1799"></a>		}
+<a name="line1800"></a>		return false;
+<a name="line1801"></a>	}
+<a name="line1802"></a>	public function getAssociationManager() {
+<a name="line1803"></a>		if (!isset($this->assocManager)) throw new Exception("No association manager available.");
+<a name="line1804"></a>		return $this->assocManager;
+<a name="line1805"></a>	}
+<a name="line1806"></a>	public function setAssociationManager(RedBean_AssociationManager $assoc) {
+<a name="line1807"></a>		$this->assocManager = $assoc;
+<a name="line1808"></a>	}
+<a name="line1809"></a>}
+<a name="line1810"></a>class RedBean_ToolBox {
+<a name="line1811"></a>	protected $oodb;
+<a name="line1812"></a>	protected $writer;
+<a name="line1813"></a>	protected $adapter;
+<a name="line1814"></a>	public function __construct( RedBean_OODB $oodb, RedBean_Adapter $adapter, RedBean_QueryWriter $writer ) {
+<a name="line1815"></a>		$this->oodb = $oodb;
+<a name="line1816"></a>		$this->adapter = $adapter;
+<a name="line1817"></a>		$this->writer = $writer;
+<a name="line1818"></a>		return $this;
+<a name="line1819"></a>	}
+<a name="line1820"></a>	public function getWriter() {
+<a name="line1821"></a>		return $this->writer;
+<a name="line1822"></a>	}
+<a name="line1823"></a>	public function getRedBean() {
+<a name="line1824"></a>		return $this->oodb;
+<a name="line1825"></a>	}
+<a name="line1826"></a>	public function getDatabaseAdapter() {
+<a name="line1827"></a>		return $this->adapter;
+<a name="line1828"></a>	}
+<a name="line1829"></a>}
+<a name="line1830"></a>class RedBean_AssociationManager extends RedBean_Observable {
+<a name="line1831"></a>	protected $oodb;
+<a name="line1832"></a>	protected $adapter;
+<a name="line1833"></a>	protected $writer;
+<a name="line1834"></a>	protected $flagUseConstraints = true;
+<a name="line1835"></a>	public function __construct( RedBean_ToolBox $tools ) {
+<a name="line1836"></a>		$this->oodb = $tools->getRedBean();
+<a name="line1837"></a>		$this->adapter = $tools->getDatabaseAdapter();
+<a name="line1838"></a>		$this->writer = $tools->getWriter();
+<a name="line1839"></a>		$this->toolbox = $tools;
+<a name="line1840"></a>	}
+<a name="line1841"></a>	public function getTable( $types ) {
+<a name="line1842"></a>		return $this->writer->getAssocTableFormat($types);
+<a name="line1843"></a>	}
+<a name="line1844"></a>	public function associate(RedBean_OODBBean $bean1, RedBean_OODBBean $bean2) {
+<a name="line1845"></a>		$table = $this->getTable( array($bean1->getMeta("type") , $bean2->getMeta("type")) );
+<a name="line1846"></a>		$bean = $this->oodb->dispense($table);
+<a name="line1847"></a>		return $this->associateBeans( $bean1, $bean2, $bean );
+<a name="line1848"></a>	}
+<a name="line1849"></a>	public function setUseConstraints( $trueFalse ) {
+<a name="line1850"></a>		$this->flagUseConstraints = $trueFalse;
+<a name="line1851"></a>	}
+<a name="line1852"></a>	protected function associateBeans(RedBean_OODBBean $bean1, RedBean_OODBBean $bean2, RedBean_OODBBean $bean) {
+<a name="line1853"></a>		$idfield1 = $this->writer->getIDField($bean1->getMeta("type"));
+<a name="line1854"></a>		$idfield2 = $this->writer->getIDField($bean2->getMeta("type"));
+<a name="line1855"></a>		$property1 = $bean1->getMeta("type") . "_id";
+<a name="line1856"></a>		$property2 = $bean2->getMeta("type") . "_id";
+<a name="line1857"></a>		if ($property1==$property2) $property2 = $bean2->getMeta("type")."2_id";
+<a name="line1858"></a>		$bean->setMeta("buildcommand.unique" , array(array($property1, $property2)));
+<a name="line1859"></a>		$indexName1 = "index_for_".$bean->getMeta("type")."_".$property1;
+<a name="line1860"></a>		$indexName2 = "index_for_".$bean->getMeta("type")."_".$property2;
+<a name="line1861"></a>		$bean->setMeta("buildcommand.indexes", array($property1=>$indexName1,$property2=>$indexName2));
+<a name="line1862"></a>		$this->oodb->store($bean1);
+<a name="line1863"></a>		$this->oodb->store($bean2);
+<a name="line1864"></a>		$bean->setMeta("assoc.".$bean1->getMeta("type"),$bean1);
+<a name="line1865"></a>		$bean->setMeta("assoc.".$bean2->getMeta("type"),$bean2);
+<a name="line1866"></a>		$bean->setMeta("cast.$property1","id");
+<a name="line1867"></a>		$bean->setMeta("cast.$property2","id");
+<a name="line1868"></a>		$bean->$property1 = $bean1->$idfield1;
+<a name="line1869"></a>		$bean->$property2 = $bean2->$idfield2;
+<a name="line1870"></a>		try {
+<a name="line1871"></a>			$id = $this->oodb->store( $bean );
+<a name="line1872"></a>			if ($this->flagUseConstraints &&
+<a name="line1873"></a>				!$this->oodb->isFrozen() &&
+<a name="line1874"></a>				$bean->getMeta("buildreport.flags.created")){
+<a name="line1875"></a>				$bean->setMeta("buildreport.flags.created",0);
+<a name="line1876"></a>				if (!$this->oodb->isFrozen())
+<a name="line1877"></a>				$this->writer->addConstraint( $bean1, $bean2 );
+<a name="line1878"></a>			}
+<a name="line1879"></a>			return $id;
+<a name="line1880"></a>		}
+<a name="line1881"></a>		catch(RedBean_Exception_SQL $e) {
+<a name="line1882"></a>			if (!$this->writer->sqlStateIn($e->getSQLState(),
+<a name="line1883"></a>			array(
+<a name="line1884"></a>			RedBean_QueryWriter::C_SQLSTATE_INTEGRITY_CONSTRAINT_VIOLATION
+<a name="line1885"></a>			))) throw $e;
+<a name="line1886"></a>		}
+<a name="line1887"></a>	}
+<a name="line1888"></a>	public function related( RedBean_OODBBean $bean, $type, $getLinks=false, $sql=false) {
+<a name="line1889"></a>	$table = $this->getTable( array($bean->getMeta("type") , $type) );
+<a name="line1890"></a>		$idfield = $this->writer->getIDField($bean->getMeta("type"));
+<a name="line1891"></a>		if ($type==$bean->getMeta("type")) {
+<a name="line1892"></a>			$type .= "2";
+<a name="line1893"></a>			$cross = 1;
+<a name="line1894"></a>		}
+<a name="line1895"></a>		else $cross=0;
+<a name="line1896"></a>		if (!$getLinks) $targetproperty = $type."_id"; else $targetproperty="id";
+<a name="line1897"></a>		$property = $bean->getMeta("type")."_id";
+<a name="line1898"></a>		try {
+<a name="line1899"></a>				$sqlFetchKeys = $this->writer->selectRecord(
+<a name="line1900"></a>					  $table,
+<a name="line1901"></a>					  array( $property => array( $bean->$idfield ) ),
+<a name="line1902"></a>					  $sql,
+<a name="line1903"></a>					  false
+<a name="line1904"></a>				);
+<a name="line1905"></a>				$sqlResult = array();
+<a name="line1906"></a>				foreach( $sqlFetchKeys as $row ) {
+<a name="line1907"></a>					$sqlResult[] = $row[$targetproperty];
+<a name="line1908"></a>				}
+<a name="line1909"></a>				if ($cross) {
+<a name="line1910"></a>					$sqlFetchKeys2 = $this->writer->selectRecord(
+<a name="line1911"></a>							  $table,
+<a name="line1912"></a>							  array( $targetproperty => array( $bean->$idfield ) ),
+<a name="line1913"></a>							  $sql,
+<a name="line1914"></a>							  false
+<a name="line1915"></a>					);
+<a name="line1916"></a>					foreach( $sqlFetchKeys2 as $row ) {
+<a name="line1917"></a>						$sqlResult[] = $row[$property];
+<a name="line1918"></a>					}
+<a name="line1919"></a>				}
+<a name="line1920"></a>			return $sqlResult; 
+<a name="line1921"></a>		}catch(RedBean_Exception_SQL $e) {
+<a name="line1922"></a>			if (!$this->writer->sqlStateIn($e->getSQLState(),
+<a name="line1923"></a>			array(
+<a name="line1924"></a>			RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+<a name="line1925"></a>			RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line1926"></a>			)) throw $e;
+<a name="line1927"></a>			return array();
+<a name="line1928"></a>		}
+<a name="line1929"></a>	}
+<a name="line1930"></a>	public function unassociate(RedBean_OODBBean $bean1, RedBean_OODBBean $bean2, $fast=null) {
+<a name="line1931"></a>		$this->oodb->store($bean1);
+<a name="line1932"></a>		$this->oodb->store($bean2);
+<a name="line1933"></a>		$table = $this->getTable( array($bean1->getMeta("type") , $bean2->getMeta("type")) );
+<a name="line1934"></a>		$idfield1 = $this->writer->getIDField($bean1->getMeta("type"));
+<a name="line1935"></a>		$idfield2 = $this->writer->getIDField($bean2->getMeta("type"));
+<a name="line1936"></a>		$type = $bean1->getMeta("type");
+<a name="line1937"></a>		if ($type==$bean2->getMeta("type")) {
+<a name="line1938"></a>			$type .= "2";
+<a name="line1939"></a>			$cross = 1;
+<a name="line1940"></a>		}
+<a name="line1941"></a>		else $cross = 0;
+<a name="line1942"></a>		$property1 = $type."_id";
+<a name="line1943"></a>		$property2 = $bean2->getMeta("type")."_id";
+<a name="line1944"></a>		$value1 = (int) $bean1->$idfield1;
+<a name="line1945"></a>		$value2 = (int) $bean2->$idfield2;
+<a name="line1946"></a>		try {
+<a name="line1947"></a>			$rows = $this->writer->selectRecord($table,array(
+<a name="line1948"></a>				$property1 => array($value1), $property2=>array($value2)),null,$fast
+<a name="line1949"></a>			);
+<a name="line1950"></a>			if ($cross) {
+<a name="line1951"></a>				$rows2 = $this->writer->selectRecord($table,array(
+<a name="line1952"></a>				$property2 => array($value1), $property1=>array($value2)),null,$fast
+<a name="line1953"></a>				);
+<a name="line1954"></a>				if ($fast) return;
+<a name="line1955"></a>				$rows = array_merge($rows,$rows2);
+<a name="line1956"></a>			}
+<a name="line1957"></a>			if ($fast) return;
+<a name="line1958"></a>			$beans = $this->oodb->convertToBeans($table,$rows);
+<a name="line1959"></a>			foreach($beans as $link) {
+<a name="line1960"></a>				$link->setMeta("assoc.".$bean1->getMeta("type"),$bean1);
+<a name="line1961"></a>				$link->setMeta("assoc.".$bean2->getMeta("type"),$bean2);
+<a name="line1962"></a>				$this->oodb->trash($link);
+<a name="line1963"></a>			}
+<a name="line1964"></a>		}catch(RedBean_Exception_SQL $e) {
+<a name="line1965"></a>			if (!$this->writer->sqlStateIn($e->getSQLState(),
+<a name="line1966"></a>			array(
+<a name="line1967"></a>			RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+<a name="line1968"></a>			RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line1969"></a>			)) throw $e;
+<a name="line1970"></a>		}
+<a name="line1971"></a>		return;
+<a name="line1972"></a>	}
+<a name="line1973"></a>	public function clearRelations(RedBean_OODBBean $bean, $type) {
+<a name="line1974"></a>		$this->oodb->store($bean);
+<a name="line1975"></a>		$table = $this->getTable( array($bean->getMeta("type") , $type) );
+<a name="line1976"></a>		$idfield = $this->writer->getIDField($bean->getMeta("type"));
+<a name="line1977"></a>		if ($type==$bean->getMeta("type")) {
+<a name="line1978"></a>			$property2 = $type."2_id";
+<a name="line1979"></a>			$cross = 1;
+<a name="line1980"></a>		}
+<a name="line1981"></a>		else $cross = 0;
+<a name="line1982"></a>		$property = $bean->getMeta("type")."_id";
+<a name="line1983"></a>		try {
+<a name="line1984"></a>			$this->writer->selectRecord( $table, array($property=>array($bean->$idfield)),null,true);
+<a name="line1985"></a>			if ($cross) {
+<a name="line1986"></a>				$this->writer->selectRecord( $table, array($property2=>array($bean->$idfield)),null,true);
+<a name="line1987"></a>			}
+<a name="line1988"></a>		}catch(RedBean_Exception_SQL $e) {
+<a name="line1989"></a>			if (!$this->writer->sqlStateIn($e->getSQLState(),
+<a name="line1990"></a>			array(
+<a name="line1991"></a>			RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+<a name="line1992"></a>			RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line1993"></a>			)) throw $e;
+<a name="line1994"></a>		}
+<a name="line1995"></a>	}
+<a name="line1996"></a>	public function areRelated(RedBean_OODBBean $bean1, RedBean_OODBBean $bean2) {
+<a name="line1997"></a>		if (!$bean1->getID() || !$bean2->getID()) return false;
+<a name="line1998"></a>		$table = $this->getTable( array($bean1->getMeta("type") , $bean2->getMeta("type")) );
+<a name="line1999"></a>		$idfield1 = $this->writer->getIDField($bean1->getMeta("type"));
+<a name="line2000"></a>		$idfield2 = $this->writer->getIDField($bean2->getMeta("type"));
+<a name="line2001"></a>		$type = $bean1->getMeta("type");
+<a name="line2002"></a>		if ($type==$bean2->getMeta("type")) {
+<a name="line2003"></a>			$type .= "2";
+<a name="line2004"></a>			$cross = 1;
+<a name="line2005"></a>		}
+<a name="line2006"></a>		else $cross = 0;
+<a name="line2007"></a>		$property1 = $type."_id";
+<a name="line2008"></a>		$property2 = $bean2->getMeta("type")."_id";
+<a name="line2009"></a>		$value1 = (int) $bean1->$idfield1;
+<a name="line2010"></a>		$value2 = (int) $bean2->$idfield2;
+<a name="line2011"></a>		try {
+<a name="line2012"></a>			$rows = $this->writer->selectRecord($table,array(
+<a name="line2013"></a>				$property1 => array($value1), $property2=>array($value2)),null
+<a name="line2014"></a>			);
+<a name="line2015"></a>			if ($cross) {
+<a name="line2016"></a>				$rows2 = $this->writer->selectRecord($table,array(
+<a name="line2017"></a>				$property2 => array($value1), $property1=>array($value2)),null
+<a name="line2018"></a>				);
+<a name="line2019"></a>				$rows = array_merge($rows,$rows2);
+<a name="line2020"></a>			}
+<a name="line2021"></a>		}catch(RedBean_Exception_SQL $e) {
+<a name="line2022"></a>			if (!$this->writer->sqlStateIn($e->getSQLState(),
+<a name="line2023"></a>			array(
+<a name="line2024"></a>			RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+<a name="line2025"></a>			RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line2026"></a>			)) throw $e;
+<a name="line2027"></a>			return false;
+<a name="line2028"></a>		}
+<a name="line2029"></a>		return (count($rows)>0);
+<a name="line2030"></a>	}
+<a name="line2031"></a>}
+<a name="line2032"></a>class RedBean_ExtAssociationManager extends RedBean_AssociationManager {
+<a name="line2033"></a>	public function extAssociate(RedBean_OODBBean $bean1, RedBean_OODBBean $bean2, RedBean_OODBBean $baseBean ) {
+<a name="line2034"></a>		$table = $this->getTable( array($bean1->getMeta("type") , $bean2->getMeta("type")) );
+<a name="line2035"></a>		$baseBean->setMeta("type", $table );
+<a name="line2036"></a>		return $this->associateBeans( $bean1, $bean2, $baseBean );
+<a name="line2037"></a>	}
+<a name="line2038"></a>}
+<a name="line2039"></a>class RedBean_ViewManager {
+<a name="line2040"></a>	protected $oodb;
+<a name="line2041"></a>	protected $adapter;
+<a name="line2042"></a>	protected $writer;
+<a name="line2043"></a>	public function __construct( RedBean_ToolBox $tools ) {
+<a name="line2044"></a>		$this->oodb = $tools->getRedBean();
+<a name="line2045"></a>		$this->adapter = $tools->getDatabaseAdapter();
+<a name="line2046"></a>		$this->writer = $tools->getWriter();
+<a name="line2047"></a>	}
+<a name="line2048"></a>	public function createView( $viewID, $refType, $types ) {
+<a name="line2049"></a>		if ($this->oodb->isFrozen()) return false;
+<a name="line2050"></a>		$history = array();
+<a name="line2051"></a>		$tables = array_flip( $this->writer->getTables() );
+<a name="line2052"></a>		$refTable = $refType; 
+<a name="line2053"></a>		$currentTable = $refTable;
+<a name="line2054"></a>		$history[$refType] = $refType;
+<a name="line2055"></a>		foreach($types as $t) {
+<a name="line2056"></a>			if (!isset($history[$t])){ 
+<a name="line2057"></a>				$history[$t] = $t;
+<a name="line2058"></a>				$connection = array($t,$currentTable);
+<a name="line2059"></a>				sort($connection);
+<a name="line2060"></a>				$connection = implode("_", $connection);
+<a name="line2061"></a>				$connectionTable = $this->writer->safeTable($connection,true);
+<a name="line2062"></a>				if (isset($tables[$connectionTable])) {
+<a name="line2063"></a>					$srcPoint = $this->writer->safeTable($connection).".".$currentTable."_id"; 
+<a name="line2064"></a>					$dstPoint = $this->writer->safeTable($currentTable).".".$this->writer->safeColumn($this->writer->getIDField($currentTable)); 
+<a name="line2065"></a>					$joins[$connection] = array($srcPoint,$dstPoint);
+<a name="line2066"></a>					$srcPoint = $this->writer->safeTable($connection).".".$t."_id";
+<a name="line2067"></a>					$dstPoint = $this->writer->safeTable($t).".".$this->writer->safeColumn($this->writer->getIDField($t));
+<a name="line2068"></a>					$joins[$t] = array($srcPoint,$dstPoint);
+<a name="line2069"></a>				}
+<a name="line2070"></a>				else {
+<a name="line2071"></a>					$srcPoint = $this->writer->safeTable($t).".".$currentTable."_id";
+<a name="line2072"></a>					$dstPoint = $this->writer->safeTable($currentTable).".".$this->writer->safeColumn($this->writer->getIDField($currentTable));
+<a name="line2073"></a>					$joins[$t] = array($srcPoint,$dstPoint);
+<a name="line2074"></a>				}
+<a name="line2075"></a>			}
+<a name="line2076"></a>			$currentTable=$t;
+<a name="line2077"></a>		}
+<a name="line2078"></a>		try{
+<a name="line2079"></a>			$rs = (boolean) $this->writer->createView($refType,$joins,$viewID); 
+<a name="line2080"></a>		}
+<a name="line2081"></a>		catch(Exception $e) {
+<a name="line2082"></a>			throw new RedBean_Exception_SQL('Could not create view, types does not seem related (yet)..');
+<a name="line2083"></a>		}
+<a name="line2084"></a>		return $rs;
+<a name="line2085"></a>	}
+<a name="line2086"></a>}
+<a name="line2087"></a>class RedBean_Setup {
+<a name="line2088"></a>	private static $observers = array();
+<a name="line2089"></a>	private static $toolbox = NULL;
+<a name="line2090"></a>	private static function checkDSN($dsn) {
+<a name="line2091"></a>		$dsn = trim($dsn);
+<a name="line2092"></a>		$dsn = strtolower($dsn);
+<a name="line2093"></a>		if (
+<a name="line2094"></a>		strpos($dsn, "mysql:")!==0
+<a name="line2095"></a>				  && strpos($dsn,"sqlite:")!==0
+<a name="line2096"></a>				  && strpos($dsn,"pgsql:")!==0
+<a name="line2097"></a>		) {
+<a name="line2098"></a>			trigger_error("
+<a name="line2099"></a>					Support for this DSN has not been implemented yet. \n
+<a name="line2100"></a>					Begin your DSN with: 'mysql:' or 'sqlite:'
+<a name="line2101"></a>				");
+<a name="line2102"></a>		}
+<a name="line2103"></a>		else {
+<a name="line2104"></a>			return true;
+<a name="line2105"></a>		}
+<a name="line2106"></a>	}
+<a name="line2107"></a>	public static function kickstart( $dsn, $username=NULL, $password=NULL, $frozen=false ) {
+<a name="line2108"></a>		if ($dsn instanceof PDO) {
+<a name="line2109"></a>			$pdo = new RedBean_Driver_PDO($dsn);
+<a name="line2110"></a>			$dsn = $pdo->getDatabaseType() ;
+<a name="line2111"></a>		}
+<a name="line2112"></a>		else {
+<a name="line2113"></a>			self::checkDSN($dsn);
+<a name="line2114"></a>			$pdo = new RedBean_Driver_PDO( $dsn,$username,$password );
+<a name="line2115"></a>		}
+<a name="line2116"></a>		$adapter = new RedBean_Adapter_DBAdapter( $pdo );
+<a name="line2117"></a>		if (strpos($dsn,"pgsql")===0) {
+<a name="line2118"></a>			$writer = new RedBean_QueryWriter_PostgreSQL( $adapter );
+<a name="line2119"></a>		}
+<a name="line2120"></a>		else if (strpos($dsn,"sqlite")===0) {
+<a name="line2121"></a>			$writer = new RedBean_QueryWriter_SQLiteT( $adapter );
+<a name="line2122"></a>		}
+<a name="line2123"></a>		else {
+<a name="line2124"></a>			$writer = new RedBean_QueryWriter_MySQL( $adapter );
+<a name="line2125"></a>		}
+<a name="line2126"></a>		$redbean = new RedBean_OODB( $writer );
+<a name="line2127"></a>		if ($frozen) $redbean->freeze(true);
+<a name="line2128"></a>		$toolbox = new RedBean_ToolBox( $redbean, $adapter, $writer );
+<a name="line2129"></a>		self::$toolbox = $toolbox;
+<a name="line2130"></a>		return self::$toolbox;
+<a name="line2131"></a>	}
+<a name="line2132"></a>	public static function getAttachedObservers() {
+<a name="line2133"></a>		return self::$observers;
+<a name="line2134"></a>	}
+<a name="line2135"></a>}
+<a name="line2136"></a>interface RedBean_IBeanFormatter {
+<a name="line2137"></a>	public function formatBeanTable( $type );
+<a name="line2138"></a>	public function formatBeanID( $type );
+<a name="line2139"></a>	public function getAlias( $type );
+<a name="line2140"></a>}
+<a name="line2141"></a>class RedBean_DefaultBeanFormatter implements RedBean_IBeanFormatter {
+<a name="line2142"></a>	public function formatBeanTable( $type ){
+<a name="line2143"></a>		return $type;
+<a name="line2144"></a>	}
+<a name="line2145"></a>	public function formatBeanID( $type ){
+<a name="line2146"></a>		return 'id';
+<a name="line2147"></a>	}
+<a name="line2148"></a>	public function getAlias( $type ) {
+<a name="line2149"></a>		if ($t = RedBean_OODBBean::$fetchType) {
+<a name="line2150"></a>			$type = $t;
+<a name="line2151"></a>			RedBean_OODBBean::$fetchType = null;
+<a name="line2152"></a>		}
+<a name="line2153"></a>		return $type;
+<a name="line2154"></a>	}
+<a name="line2155"></a>}
+<a name="line2156"></a>interface RedBean_IModelFormatter {
+<a name="line2157"></a>	public function formatModel( $model );
+<a name="line2158"></a>}
+<a name="line2159"></a>interface RedBean_IBeanHelper {
+<a name="line2160"></a>	public function getToolbox();
+<a name="line2161"></a>}
+<a name="line2162"></a>class RedBean_BeanHelperFacade implements RedBean_IBeanHelper {
+<a name="line2163"></a>	public function getToolbox() {
+<a name="line2164"></a>		return R::$toolbox;
+<a name="line2165"></a>	}
+<a name="line2166"></a>}
+<a name="line2167"></a>class RedBean_Plugin_Optimizer implements RedBean_Observer {
+<a name="line2168"></a>	private $adapter;
+<a name="line2169"></a>	private $oodb;
+<a name="line2170"></a>	private $writer;
+<a name="line2171"></a>	protected $optimizers = array();
+<a name="line2172"></a>	public function __construct( RedBean_ToolBox $toolbox ) {
+<a name="line2173"></a>		$this->oodb = $toolbox->getRedBean();
+<a name="line2174"></a>		$this->adapter = $toolbox->getDatabaseAdapter();
+<a name="line2175"></a>		$this->writer = $toolbox->getWriter();
+<a name="line2176"></a>	}
+<a name="line2177"></a>	protected function optimize($table,$column,$value) {
+<a name="line2178"></a>		foreach($this->optimizers as $optimizer) {
+<a name="line2179"></a>			$optimizer->setTable($table);
+<a name="line2180"></a>			$optimizer->setColumn($column);
+<a name="line2181"></a>			$optimizer->setValue($value);
+<a name="line2182"></a>			if (!$optimizer->optimize()) break;
+<a name="line2183"></a>		}
+<a name="line2184"></a>	}
+<a name="line2185"></a>	public function onEvent( $event , $bean ) {
+<a name="line2186"></a>		try {
+<a name="line2187"></a>			if ($event=="update") {
+<a name="line2188"></a>				$arr = $bean->export(); 
+<a name="line2189"></a>				unset($arr["id"]); 
+<a name="line2190"></a>				if (count($arr)==0) return;
+<a name="line2191"></a>				$table = $bean->getMeta("type");
+<a name="line2192"></a>				$columns = array_keys($arr);
+<a name="line2193"></a>				$column = $columns[ array_rand($columns) ];
+<a name="line2194"></a>				$value = $arr[$column];
+<a name="line2195"></a>				$this->optimize($table,$column,$value);
+<a name="line2196"></a>			}
+<a name="line2197"></a>		}catch(RedBean_Exception_SQL $e) { }
+<a name="line2198"></a>	}
+<a name="line2199"></a>	public function addOptimizer(RedBean_Plugin_IOptimizer $optimizer) {
+<a name="line2200"></a>		$this->optimizers[] = $optimizer;
+<a name="line2201"></a>	}
+<a name="line2202"></a>}
+<a name="line2203"></a>interface RedBean_Plugin_IOptimizer {
+<a name="line2204"></a>	public function setTable($table);
+<a name="line2205"></a>	public function setColumn($column);
+<a name="line2206"></a>	public function setValue($value);
+<a name="line2207"></a>	public function optimize();
+<a name="line2208"></a>}
+<a name="line2209"></a>class RedBean_Plugin_Optimizer_Shrink implements RedBean_Plugin_IOptimizer {
+<a name="line2210"></a>	protected $table;
+<a name="line2211"></a>	protected $column;
+<a name="line2212"></a>	protected $value;
+<a name="line2213"></a>	protected $toolbox;
+<a name="line2214"></a>	protected $writer;
+<a name="line2215"></a>	protected $adapter;
+<a name="line2216"></a>	public function __construct( RedBean_ToolBox $toolbox ) {
+<a name="line2217"></a>		$this->writer = $toolbox->getWriter();
+<a name="line2218"></a>		$this->adapter = $toolbox->getDatabaseAdapter();
+<a name="line2219"></a>	}
+<a name="line2220"></a>	public function setTable( $table ) {
+<a name="line2221"></a>		$this->table = $table;
+<a name="line2222"></a>	}
+<a name="line2223"></a>	public function setColumn( $column ) {
+<a name="line2224"></a>		$this->column = $column;
+<a name="line2225"></a>	}
+<a name="line2226"></a>	public function setValue( $value ) {
+<a name="line2227"></a>		$this->value = $value;
+<a name="line2228"></a>	}
+<a name="line2229"></a>	public function optimize() {
+<a name="line2230"></a>		$type = $this->writer->scanType($this->value);
+<a name="line2231"></a>		$fields = $this->writer->getColumns($this->table);
+<a name="line2232"></a>		if (!in_array($this->column,array_keys($fields))) return false;
+<a name="line2233"></a>		$typeInField = $this->writer->code($fields[$this->column]);
+<a name="line2234"></a>		if ($type < $typeInField) {
+<a name="line2235"></a>			try {
+<a name="line2236"></a>				@$this->adapter->exec("alter table ".$this->writer->safeTable($this->table)." drop __test");
+<a name="line2237"></a>			}catch(Exception $e) {}
+<a name="line2238"></a>			$type = $this->writer->typeno_sqltype[$type];
+<a name="line2239"></a>			@$this->adapter->exec("alter table ".$this->writer->safeTable($this->table)." add __test ".$type);
+<a name="line2240"></a>			@$this->adapter->exec("update ".$this->writer->safeTable($this->table)." set __test=".$this->writer->safeColumn($this->column)."");
+<a name="line2241"></a>			$rows = $this->adapter->get("select ".$this->writer->safeColumn($this->column)." as a, __test as b from ".$this->writer->safeTable($this->table));
+<a name="line2242"></a>			$diff = 0;
+<a name="line2243"></a>			foreach($rows as $row) {
+<a name="line2244"></a>				$diff += ($row["a"]!=$row["b"]);
+<a name="line2245"></a>			}
+<a name="line2246"></a>			if (!$diff) {
+<a name="line2247"></a>				@$this->adapter->exec("alter table ".$this->writer->safeTable($this->table)." change ".$this->writer->safeColumn($this->column)." ".$this->writer->safeColumn($this->column)." ".$type);
+<a name="line2248"></a>			}
+<a name="line2249"></a>			@$this->adapter->exec("alter table ".$this->writer->safeTable($this->table)." drop __test");
+<a name="line2250"></a>		}
+<a name="line2251"></a>		return false;
+<a name="line2252"></a>	}
+<a name="line2253"></a>}
+<a name="line2254"></a>class RedBean_Plugin_Optimizer_Datetime  implements RedBean_Plugin_IOptimizer {
+<a name="line2255"></a>	protected $table;
+<a name="line2256"></a>	protected $column;
+<a name="line2257"></a>	protected $value;
+<a name="line2258"></a>	protected $toolbox;
+<a name="line2259"></a>	protected $writer;
+<a name="line2260"></a>	protected $adapter;
+<a name="line2261"></a>	public function __construct( RedBean_ToolBox $toolbox ) {
+<a name="line2262"></a>		$this->writer = $toolbox->getWriter();
+<a name="line2263"></a>		$this->adapter = $toolbox->getDatabaseAdapter();
+<a name="line2264"></a>	}
+<a name="line2265"></a>	public function setTable( $table ) {
+<a name="line2266"></a>		$this->table = $table;
+<a name="line2267"></a>	}
+<a name="line2268"></a>	public function setColumn( $column ) {
+<a name="line2269"></a>		$this->column = $column;
+<a name="line2270"></a>	}
+<a name="line2271"></a>	public function setValue( $value ) {
+<a name="line2272"></a>		$this->value = $value;
+<a name="line2273"></a>	}
+<a name="line2274"></a>	public function optimize() {
+<a name="line2275"></a>		if (!$this->matchesDateTime($this->value)) return true;
+<a name="line2276"></a>		$type = $this->writer->scanType($this->value);
+<a name="line2277"></a>		$fields = $this->writer->getColumns($this->table);
+<a name="line2278"></a>		if (!in_array($this->column,array_keys($fields))) return false;
+<a name="line2279"></a>		$typeInField = $this->writer->code($fields[$this->column]);
+<a name="line2280"></a>		if ($typeInField!="datetime") {
+<a name="line2281"></a>			if ($this->matchesDateTime($this->value)) {
+<a name="line2282"></a>				$cnt = (int) $this->adapter->getCell("select count(*) as n from ".$this->writer->safeTable($this->table)." where
+<a name="line2283"></a>						  {$this->column} regexp '[0-9]{4}-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]'
+<a name="line2284"></a>						  OR {$this->column} IS NULL");
+<a name="line2285"></a>				$total = (int) $this->adapter->getCell("SELECT count(*) FROM ".$this->writer->safeTable($this->table));
+<a name="line2286"></a>				if ($total===$cnt) { 
+<a name="line2287"></a>					$this->adapter->exec("ALTER TABLE ".$this->writer->safeTable($this->table)." change ".$this->writer->safeColumn($this->column)." ".$this->writer->safeColumn($this->column)." datetime ");
+<a name="line2288"></a>				}
+<a name="line2289"></a>				return false;
+<a name="line2290"></a>			}
+<a name="line2291"></a>			return true;
+<a name="line2292"></a>		}
+<a name="line2293"></a>		else {
+<a name="line2294"></a>			return false; 
+<a name="line2295"></a>		}
+<a name="line2296"></a>	}
+<a name="line2297"></a>	public function matchesDateTime($value) {
+<a name="line2298"></a>		$pattern = "/^([0-9]{2,4})-([0-1][0-9])-([0-3][0-9]) (?:([0-2][0-9]):([0-5][0-9]):([0-5][0-9]))?$/";
+<a name="line2299"></a>		return (boolean) (preg_match($pattern, $value));
+<a name="line2300"></a>	}
+<a name="line2301"></a>}
+<a name="line2302"></a>class RedBean_Plugin_QueryLogger implements RedBean_Observer {
+<a name="line2303"></a>	protected $logs = array();
+<a name="line2304"></a>	public static function getInstanceAndAttach( RedBean_Observable $adapter ) {
+<a name="line2305"></a>		$queryLog = new RedBean_Plugin_QueryLogger;
+<a name="line2306"></a>		$adapter->addEventListener( "sql_exec", $queryLog );
+<a name="line2307"></a>		return $queryLog;
+<a name="line2308"></a>	}
+<a name="line2309"></a>	private function __construct(){}
+<a name="line2310"></a>	public function onEvent( $eventName, $adapter ) {
+<a name="line2311"></a>		if ($eventName=="sql_exec") {
+<a name="line2312"></a>			$sql = $adapter->getSQL();
+<a name="line2313"></a>			$this->logs[] = $sql;
+<a name="line2314"></a>		}
+<a name="line2315"></a>	}
+<a name="line2316"></a>	public function grep( $word ) {
+<a name="line2317"></a>		$found = array();
+<a name="line2318"></a>		foreach($this->logs as $log) {
+<a name="line2319"></a>			if (strpos($log,$word)!==false) {
+<a name="line2320"></a>				$found[] = $log;
+<a name="line2321"></a>			}
+<a name="line2322"></a>		}
+<a name="line2323"></a>		return $found;
+<a name="line2324"></a>	}
+<a name="line2325"></a>	public function getLogs() {
+<a name="line2326"></a>		return $this->logs;
+<a name="line2327"></a>	}
+<a name="line2328"></a>	public function clear() {
+<a name="line2329"></a>		$this->logs = array();
+<a name="line2330"></a>	}
+<a name="line2331"></a>}
+<a name="line2332"></a>class RedBean_Plugin_BeanExport {
+<a name="line2333"></a>	protected $toolbox = null;
+<a name="line2334"></a>	protected $recurCheck = array();
+<a name="line2335"></a>	public function __construct( RedBean_Toolbox $toolbox ) {
+<a name="line2336"></a>		$this->toolbox = $toolbox;
+<a name="line2337"></a>	}
+<a name="line2338"></a>	public function loadSchema() {
+<a name="line2339"></a>		$tables = array_flip($this->toolbox->getWriter()->getTables());
+<a name="line2340"></a>		foreach($tables as $table=>$columns) {
+<a name="line2341"></a>			try{
+<a name="line2342"></a>				$tables[$table] = $this->toolbox->getWriter()->getColumns($table);
+<a name="line2343"></a>			}
+<a name="line2344"></a>			catch(RedBean_Exception_SQL $e) {
+<a name="line2345"></a>				$tables[$table] = array();
+<a name="line2346"></a>			}
+<a name="line2347"></a>		}
+<a name="line2348"></a>		$this->tables = $tables;
+<a name="line2349"></a>	}
+<a name="line2350"></a>	public function getSchema() {
+<a name="line2351"></a>		return serialize($this->tables);
+<a name="line2352"></a>	}
+<a name="line2353"></a>	public function loadSchemaFromString($schema) {
+<a name="line2354"></a>		$this->tables = unserialize($schema);
+<a name="line2355"></a>	}
+<a name="line2356"></a>	public function export( $beans, $resetRecur=true ) {
+<a name="line2357"></a>		if ($resetRecur) {
+<a name="line2358"></a>			$this->recurCheck = array();
+<a name="line2359"></a>		}
+<a name="line2360"></a>		if (!is_array($beans)) {
+<a name="line2361"></a>			$beans = array($beans);
+<a name="line2362"></a>		}
+<a name="line2363"></a>		$export = array();
+<a name="line2364"></a>		foreach($beans as $bean) {
+<a name="line2365"></a>			$export[$bean->getID()] = $this->exportBean( $bean );
+<a name="line2366"></a>		}
+<a name="line2367"></a>		return $export;
+<a name="line2368"></a>	}
+<a name="line2369"></a>	public function exportBean(RedBean_OODBBean $bean) {
+<a name="line2370"></a>		$bid = $bean->getMeta('type').'-'.$bean->getID();
+<a name="line2371"></a>		if (isset($this->recurCheck[$bid])) return null;
+<a name="line2372"></a>		$this->recurCheck[$bid]=$bid;
+<a name="line2373"></a>		$export = $bean->export();
+<a name="line2374"></a>		foreach($export as $key=>$value) {
+<a name="line2375"></a>			if (strpos($key,'_id')!==false) {
+<a name="line2376"></a>				$sub = str_replace('_id','',$key);
+<a name="line2377"></a>				$subBean = $bean->$sub;
+<a name="line2378"></a>				if ($subBean) {
+<a name="line2379"></a>					$export[$sub] = $this->export($subBean, false);
+<a name="line2380"></a>				}
+<a name="line2381"></a>			}
+<a name="line2382"></a>		}
+<a name="line2383"></a>		$type = $bean->getMeta('type');
+<a name="line2384"></a>		$linkField = $type . '_id';
+<a name="line2385"></a>		foreach($this->tables as $table=>$cols) {
+<a name="line2386"></a>			if (strpos($table,'_')===false) {
+<a name="line2387"></a>				if (in_array($linkField,array_keys($cols))) {
+<a name="line2388"></a>					$field = 'own'.ucfirst($table);
+<a name="line2389"></a>					$export[$field] = self::export($bean->$field, false);
+<a name="line2390"></a>				}
+<a name="line2391"></a>			}
+<a name="line2392"></a>		}
+<a name="line2393"></a>		foreach($this->tables as $table=>$cols) {
+<a name="line2394"></a>			if (strpos($table,'_')!==false) {
+<a name="line2395"></a>				$parts = explode('_', $table);
+<a name="line2396"></a>				if (is_array($parts) && in_array($type,$parts)) {
+<a name="line2397"></a>					$other = $parts[0];
+<a name="line2398"></a>					if ($other==$type) $other=$parts[1];
+<a name="line2399"></a>					$field = 'shared'.ucfirst($other);
+<a name="line2400"></a>					$export[$field] = self::export($bean->$field, false);
+<a name="line2401"></a>				}
+<a name="line2402"></a>			}
+<a name="line2403"></a>		}
+<a name="line2404"></a>		return $export;
+<a name="line2405"></a>	}
+<a name="line2406"></a>}
+<a name="line2407"></a>class RedBean_SimpleModel {
+<a name="line2408"></a>	protected $bean;
+<a name="line2409"></a>	public function loadBean( RedBean_OODBBean $bean ) {
+<a name="line2410"></a>		$this->bean = $bean;
+<a name="line2411"></a>	}
+<a name="line2412"></a>	public function __get( $prop ) {
+<a name="line2413"></a>		return $this->bean->$prop;
+<a name="line2414"></a>	}
+<a name="line2415"></a>	public function __set( $prop, $value ) {
+<a name="line2416"></a>		$this->bean->$prop = $value;
+<a name="line2417"></a>	}
+<a name="line2418"></a>	public function __isset($key) {
+<a name="line2419"></a>		return (isset($this->bean->$key));
+<a name="line2420"></a>	}
+<a name="line2421"></a>	protected function getConnected($type) {
+<a name="line2422"></a>		return $this->bean->getMeta("assoc.$type");
+<a name="line2423"></a>	}
+<a name="line2424"></a>}
+<a name="line2425"></a>class RedBean_ModelHelper implements RedBean_Observer {
+<a name="line2426"></a>	private static $modelFormatter;
+<a name="line2427"></a>	public function onEvent( $eventName, $bean ) {
+<a name="line2428"></a>		$bean->$eventName();
+<a name="line2429"></a>	}
+<a name="line2430"></a>	public static function getModelName( $model ) {
+<a name="line2431"></a>		if (self::$modelFormatter){
+<a name="line2432"></a>			return self::$modelFormatter->formatModel($model);
+<a name="line2433"></a>		}
+<a name="line2434"></a>		else {
+<a name="line2435"></a>			return "Model_".ucfirst($model);
+<a name="line2436"></a>		}
+<a name="line2437"></a>	}
+<a name="line2438"></a>	public static function setModelFormatter( RedBean_IModelFormatter $modelFormatter ) {
+<a name="line2439"></a>		self::$modelFormatter = $modelFormatter;
+<a name="line2440"></a>	}
+<a name="line2441"></a>}
+<a name="line2442"></a>class R {
+<a name="line2443"></a>	public static $toolboxes = array();
+<a name="line2444"></a>	public static $toolbox;
+<a name="line2445"></a>	public static $redbean;
+<a name="line2446"></a>	public static $writer;
+<a name="line2447"></a>	public static $adapter;
+<a name="line2448"></a>	public static $associationManager;
+<a name="line2449"></a>	public static $extAssocManager;
+<a name="line2450"></a>	public static $exporter;
+<a name="line2451"></a>	public static $currentDB = "";
+<a name="line2452"></a>	public static function getVersion() {
+<a name="line2453"></a>		return "2.1";
+<a name="line2454"></a>	}
+<a name="line2455"></a>	public static $flagFearless = true;
+<a name="line2456"></a>	public static function setup( $dsn="sqlite:/tmp/red.db", $username=NULL, $password=NULL ) {
+<a name="line2457"></a>		$facadeInstances = self::setupMultiple( array("default"=>array("dsn"=>$dsn,"username"=>$username,"password"=>$password,"frozen"=>false)));
+<a name="line2458"></a>		$facadeInstance = $facadeInstances["default"];
+<a name="line2459"></a>		self::configureFacadeWithToolbox(self::$toolboxes["default"]);
+<a name="line2460"></a>		return $facadeInstance;
+<a name="line2461"></a>	}
+<a name="line2462"></a>	public static function setupMultiple( $databases ) {
+<a name="line2463"></a>		$objects = array();
+<a name="line2464"></a>		foreach($databases as $key=>$database) {
+<a name="line2465"></a>			self::$toolboxes[$key] = RedBean_Setup::kickstart($database["dsn"],$database["username"],$database["password"],$database["frozen"]);
+<a name="line2466"></a>			$objects[$key] = new RedBean_FacadeHelper($key);
+<a name="line2467"></a>		}
+<a name="line2468"></a>		return $objects;
+<a name="line2469"></a>	}
+<a name="line2470"></a>	public static function addDatabase( $key, $dsn, $user, $pass=null, $frozen=false ) {
+<a name="line2471"></a>		self::$toolboxes[$key] = RedBean_Setup::kickstart($dsn,$user,$pass,$frozen);
+<a name="line2472"></a>	}
+<a name="line2473"></a>	public static function selectDatabase($key) {
+<a name="line2474"></a>		if (self::$currentDB===$key) return false;
+<a name="line2475"></a>		self::configureFacadeWithToolbox(self::$toolboxes[$key]);
+<a name="line2476"></a>		self::$currentDB = $key;
+<a name="line2477"></a>		return true;
+<a name="line2478"></a>	}
+<a name="line2479"></a>	public static function debug( $tf = true ) {
+<a name="line2480"></a>		self::$adapter->getDatabase()->setDebugMode( $tf );
+<a name="line2481"></a>	}
+<a name="line2482"></a>	public static function store( RedBean_OODBBean $bean ) {
+<a name="line2483"></a>		return self::$redbean->store( $bean );
+<a name="line2484"></a>	}
+<a name="line2485"></a>	public static function freeze( $tf = true ) {
+<a name="line2486"></a>		self::$redbean->freeze( $tf );
+<a name="line2487"></a>	}
+<a name="line2488"></a>	public static function load( $type, $id ) {
+<a name="line2489"></a>		return self::$redbean->load( $type, $id );
+<a name="line2490"></a>	}
+<a name="line2491"></a>	public static function trash( RedBean_OODBBean $bean ) {
+<a name="line2492"></a>		return self::$redbean->trash( $bean );
+<a name="line2493"></a>	}
+<a name="line2494"></a>	public static function dispense( $type, $num = 1 ) {
+<a name="line2495"></a>		if ($num==1) {
+<a name="line2496"></a>			return self::$redbean->dispense( $type );
+<a name="line2497"></a>		}
+<a name="line2498"></a>		else {
+<a name="line2499"></a>			$beans = array();
+<a name="line2500"></a>			for($v=0; $v<$num; $v++) $beans[] = self::$redbean->dispense( $type );
+<a name="line2501"></a>			return $beans;
+<a name="line2502"></a>		}
+<a name="line2503"></a>	}
+<a name="line2504"></a>	public static function loadOrDispense( $type, $id = 0 ) {
+<a name="line2505"></a>		return ($id ? R::load($type,(int)$id) : R::dispense($type));
+<a name="line2506"></a>	}
+<a name="line2507"></a>	public static function findOrDispense( $type, $sql, $values ) {
+<a name="line2508"></a>		$foundBeans = self::find($type,$sql,$values);
+<a name="line2509"></a>		if (count($foundBeans)==0) return array(self::dispense($type)); else return $foundBeans;
+<a name="line2510"></a>	}
+<a name="line2511"></a>	public static function associate( RedBean_OODBBean $bean1, RedBean_OODBBean $bean2, $extra = null ) {
+<a name="line2512"></a>		if (!$extra) {
+<a name="line2513"></a>			return self::$associationManager->associate( $bean1, $bean2 );
+<a name="line2514"></a>		}
+<a name="line2515"></a>		else{
+<a name="line2516"></a>			if (!is_array($extra)) {
+<a name="line2517"></a>				$info = json_decode($extra,true);
+<a name="line2518"></a>				if (!$info) $info = array("extra"=>$extra);
+<a name="line2519"></a>			}
+<a name="line2520"></a>			else {
+<a name="line2521"></a>				$info = $extra;
+<a name="line2522"></a>			}
+<a name="line2523"></a>			$bean = R::dispense("typeLess");
+<a name="line2524"></a>			$bean->import($info);
+<a name="line2525"></a>			return self::$extAssocManager->extAssociate($bean1, $bean2, $bean);
+<a name="line2526"></a>		}
+<a name="line2527"></a>	}
+<a name="line2528"></a>	public static function unassociate( RedBean_OODBBean $bean1, RedBean_OODBBean $bean2 , $fast=false) {
+<a name="line2529"></a>		return self::$associationManager->unassociate( $bean1, $bean2, $fast );
+<a name="line2530"></a>	}
+<a name="line2531"></a>	public static function related( RedBean_OODBBean $bean, $type, $sql=null, $values=array()) {
+<a name="line2532"></a>		$keys = self::$associationManager->related( $bean, $type );
+<a name="line2533"></a>		if (count($keys)==0) return array();
+<a name="line2534"></a>		if (!$sql) return self::batch($type, $keys);
+<a name="line2535"></a>		$idfield = self::$writer->getIDField( $type );
+<a name="line2536"></a>		$rows = self::$writer->selectRecord( $type, array($idfield=>$keys),array($sql,$values),false );
+<a name="line2537"></a>		return self::$redbean->convertToBeans($type,$rows);
+<a name="line2538"></a>	}
+<a name="line2539"></a>	public static function areRelated( RedBean_OODBBean $bean1, RedBean_OODBBean $bean2) {
+<a name="line2540"></a>		return self::$associationManager->areRelated($bean1,$bean2);
+<a name="line2541"></a>	}
+<a name="line2542"></a>	public static function unrelated(RedBean_OODBBean $bean, $type, $sql=null, $values=array()) {
+<a name="line2543"></a>		$idfield = self::$writer->getIDField( $type );
+<a name="line2544"></a>		$keys = self::$associationManager->related( $bean, $type );
+<a name="line2545"></a>		$rows = self::$writer->selectRecord( $type, array($idfield=>$keys), array($sql,$values), false, true );
+<a name="line2546"></a>		return self::$redbean->convertToBeans($type,$rows);
+<a name="line2547"></a>	}
+<a name="line2548"></a>	public static function relatedOne( RedBean_OODBBean $bean, $type, $sql='1', $values=array() ) {
+<a name="line2549"></a>		$beans = self::related($bean, $type, $sql, $values);
+<a name="line2550"></a>		if (count($beans)==0) return null;
+<a name="line2551"></a>		return reset( $beans );
+<a name="line2552"></a>	}
+<a name="line2553"></a>	public static function clearRelations( RedBean_OODBBean $bean, $type, RedBean_OODBBean $bean2 = null, $extra = null ) {
+<a name="line2554"></a>		$r = self::$associationManager->clearRelations( $bean, $type );
+<a name="line2555"></a>		if ($bean2) {
+<a name="line2556"></a>			self::associate($bean, $bean2, $extra);
+<a name="line2557"></a>		}
+<a name="line2558"></a>		return $r;
+<a name="line2559"></a>	}
+<a name="line2560"></a>	public static function find( $type, $sql="1", $values=array() ) {
+<a name="line2561"></a>		return self::$redbean->find($type,array(),array($sql,$values));
+<a name="line2562"></a>	}
+<a name="line2563"></a>	public static function findAndExport($type, $sql="1", $values=array()) {
+<a name="line2564"></a>		$items = self::find( $type, $sql, $values );
+<a name="line2565"></a>		$arr = array();
+<a name="line2566"></a>		foreach($items as $key=>$item) {
+<a name="line2567"></a>			$arr[$key]=$item->export();
+<a name="line2568"></a>		}
+<a name="line2569"></a>		return $arr;
+<a name="line2570"></a>	}
+<a name="line2571"></a>	public static function findOne( $type, $sql="1", $values=array()) {
+<a name="line2572"></a>		$items = self::find($type,$sql,$values);
+<a name="line2573"></a>		return reset($items);
+<a name="line2574"></a>	}
+<a name="line2575"></a>	public static function findLast( $type, $sql="1", $values=array() ) {
+<a name="line2576"></a>		$items = self::find( $type, $sql, $values );
+<a name="line2577"></a>		return end( $items );
+<a name="line2578"></a>	}
+<a name="line2579"></a>	public static function batch( $type, $ids ) {
+<a name="line2580"></a>		return self::$redbean->batch($type, $ids);
+<a name="line2581"></a>	}
+<a name="line2582"></a>	public static function exec( $sql, $values=array() ) {
+<a name="line2583"></a>		if (!self::$redbean->isFrozen()) {
+<a name="line2584"></a>			try {
+<a name="line2585"></a>				$rs = R::$adapter->exec( $sql, $values );
+<a name="line2586"></a>			}catch(RedBean_Exception_SQL $e) {
+<a name="line2587"></a>				if(self::$writer->sqlStateIn($e->getSQLState(),
+<a name="line2588"></a>				array(
+<a name="line2589"></a>				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+<a name="line2590"></a>				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line2591"></a>				)) {
+<a name="line2592"></a>					return NULL;
+<a name="line2593"></a>				}
+<a name="line2594"></a>				else {
+<a name="line2595"></a>					throw $e;
+<a name="line2596"></a>				}
+<a name="line2597"></a>			}
+<a name="line2598"></a>			return $rs;
+<a name="line2599"></a>		}
+<a name="line2600"></a>		else {
+<a name="line2601"></a>			return R::$adapter->exec( $sql, $values );
+<a name="line2602"></a>		}
+<a name="line2603"></a>	}
+<a name="line2604"></a>	public static function getAll( $sql, $values=array() ) {
+<a name="line2605"></a>		if (!self::$redbean->isFrozen()) {
+<a name="line2606"></a>			try {
+<a name="line2607"></a>				$rs = R::$adapter->get( $sql, $values );
+<a name="line2608"></a>			}catch(RedBean_Exception_SQL $e) {
+<a name="line2609"></a>				if(self::$writer->sqlStateIn($e->getSQLState(),
+<a name="line2610"></a>				array(
+<a name="line2611"></a>				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+<a name="line2612"></a>				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line2613"></a>				)) {
+<a name="line2614"></a>					return array();
+<a name="line2615"></a>				}
+<a name="line2616"></a>				else {
+<a name="line2617"></a>					throw $e;
+<a name="line2618"></a>				}
+<a name="line2619"></a>			}
+<a name="line2620"></a>			return $rs;
+<a name="line2621"></a>		}
+<a name="line2622"></a>		else {
+<a name="line2623"></a>			return R::$adapter->get( $sql, $values );
+<a name="line2624"></a>		}
+<a name="line2625"></a>	}
+<a name="line2626"></a>	public static function getCell( $sql, $values=array() ) {
+<a name="line2627"></a>		if (!self::$redbean->isFrozen()) {
+<a name="line2628"></a>			try {
+<a name="line2629"></a>				$rs = R::$adapter->getCell( $sql, $values );
+<a name="line2630"></a>			}catch(RedBean_Exception_SQL $e) {
+<a name="line2631"></a>				if(self::$writer->sqlStateIn($e->getSQLState(),
+<a name="line2632"></a>				array(
+<a name="line2633"></a>				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+<a name="line2634"></a>				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line2635"></a>				)) {
+<a name="line2636"></a>					return NULL;
+<a name="line2637"></a>				}
+<a name="line2638"></a>				else {
+<a name="line2639"></a>					throw $e;
+<a name="line2640"></a>				}
+<a name="line2641"></a>			}
+<a name="line2642"></a>			return $rs;
+<a name="line2643"></a>		}
+<a name="line2644"></a>		else {
+<a name="line2645"></a>			return R::$adapter->getCell( $sql, $values );
+<a name="line2646"></a>		}
+<a name="line2647"></a>	}
+<a name="line2648"></a>	public static function getRow( $sql, $values=array() ) {
+<a name="line2649"></a>		if (!self::$redbean->isFrozen()) {
+<a name="line2650"></a>			try {
+<a name="line2651"></a>				$rs = R::$adapter->getRow( $sql, $values );
+<a name="line2652"></a>			}catch(RedBean_Exception_SQL $e) {
+<a name="line2653"></a>				if(self::$writer->sqlStateIn($e->getSQLState(),
+<a name="line2654"></a>				array(
+<a name="line2655"></a>				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+<a name="line2656"></a>				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line2657"></a>				)) {
+<a name="line2658"></a>					return array();
+<a name="line2659"></a>				}
+<a name="line2660"></a>				else {
+<a name="line2661"></a>					throw $e;
+<a name="line2662"></a>				}
+<a name="line2663"></a>			}
+<a name="line2664"></a>			return $rs;
+<a name="line2665"></a>		}
+<a name="line2666"></a>		else {
+<a name="line2667"></a>			return R::$adapter->getRow( $sql, $values );
+<a name="line2668"></a>		}
+<a name="line2669"></a>	}
+<a name="line2670"></a>	public static function getCol( $sql, $values=array() ) {
+<a name="line2671"></a>		if (!self::$redbean->isFrozen()) {
+<a name="line2672"></a>			try {
+<a name="line2673"></a>				$rs = R::$adapter->getCol( $sql, $values );
+<a name="line2674"></a>			}catch(RedBean_Exception_SQL $e) {
+<a name="line2675"></a>				if(self::$writer->sqlStateIn($e->getSQLState(),
+<a name="line2676"></a>				array(
+<a name="line2677"></a>				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
+<a name="line2678"></a>				RedBean_QueryWriter::C_SQLSTATE_NO_SUCH_TABLE)
+<a name="line2679"></a>				)) {
+<a name="line2680"></a>					return array();
+<a name="line2681"></a>				}
+<a name="line2682"></a>				else {
+<a name="line2683"></a>					throw $e;
+<a name="line2684"></a>				}
+<a name="line2685"></a>			}
+<a name="line2686"></a>			return $rs;
+<a name="line2687"></a>		}
+<a name="line2688"></a>		else {
+<a name="line2689"></a>			return R::$adapter->getCol( $sql, $values );
+<a name="line2690"></a>		}
+<a name="line2691"></a>	}
+<a name="line2692"></a>	public static function copy($bean, $associatedBeanTypesStr="") {
+<a name="line2693"></a>		$type = $bean->getMeta("type");
+<a name="line2694"></a>		$copy = R::dispense($type);
+<a name="line2695"></a>		$copy->import( $bean->export() );
+<a name="line2696"></a>		$copy->copyMetaFrom( $bean );
+<a name="line2697"></a>		$copy->id = 0;
+<a name="line2698"></a>		R::store($copy);
+<a name="line2699"></a>		$associatedBeanTypes = explode(",",$associatedBeanTypesStr);
+<a name="line2700"></a>		foreach($associatedBeanTypes as $associatedBeanType) {
+<a name="line2701"></a>			$assocBeans = R::related($bean, $associatedBeanType);
+<a name="line2702"></a>			foreach($assocBeans as $assocBean) {
+<a name="line2703"></a>				R::associate($copy,$assocBean);
+<a name="line2704"></a>			}
+<a name="line2705"></a>		}
+<a name="line2706"></a>		$copy->setMeta("original",$bean);
+<a name="line2707"></a>		return $copy;
+<a name="line2708"></a>	}
+<a name="line2709"></a>	public static function swap( $beans, $property ) {
+<a name="line2710"></a>		$bean1 = array_shift($beans);
+<a name="line2711"></a>		$bean2 = array_shift($beans);
+<a name="line2712"></a>		$tmp = $bean1->$property;
+<a name="line2713"></a>		$bean1->$property = $bean2->$property;
+<a name="line2714"></a>		$bean2->$property = $tmp;
+<a name="line2715"></a>		R::store($bean1);
+<a name="line2716"></a>		R::store($bean2);
+<a name="line2717"></a>	}
+<a name="line2718"></a>	public static function convertToBeans($type,$rows) {
+<a name="line2719"></a>		return self::$redbean->convertToBeans($type,$rows);
+<a name="line2720"></a>	}
+<a name="line2721"></a>	public static $flagUseLegacyTaggingAPI = false;
+<a name="line2722"></a>	public static function hasTag($bean, $tags, $all=false) {
+<a name="line2723"></a>		$foundtags = R::tag($bean);
+<a name="line2724"></a>		if (is_string($foundtags)) $foundtags = explode(",",$tags);
+<a name="line2725"></a>		$same = array_intersect($tags,$foundtags);
+<a name="line2726"></a>		if ($all) {
+<a name="line2727"></a>			return (implode(",",$same)===implode(",",$tags));
+<a name="line2728"></a>		}
+<a name="line2729"></a>		return (bool) (count($same)>0);
+<a name="line2730"></a>	}
+<a name="line2731"></a>	public static function untag($bean,$tagList) {
+<a name="line2732"></a>		if ($tagList!==false && !is_array($tagList)) $tags = explode( ",", (string)$tagList); else $tags=$tagList;
+<a name="line2733"></a>		foreach($tags as $tag) {
+<a name="line2734"></a>			$t = R::findOne("tag"," title = ? ",array($tag));
+<a name="line2735"></a>			if ($t) {
+<a name="line2736"></a>				R::unassociate( $bean, $t );
+<a name="line2737"></a>			}
+<a name="line2738"></a>		}
+<a name="line2739"></a>	}
+<a name="line2740"></a>	public static function tag( RedBean_OODBBean $bean, $tagList = null ) {
+<a name="line2741"></a>		if (is_null($tagList)) {
+<a name="line2742"></a>			$tags = R::related( $bean, "tag");
+<a name="line2743"></a>			$foundTags = array();
+<a name="line2744"></a>			foreach($tags as $tag) {
+<a name="line2745"></a>				$foundTags[] = $tag->title;
+<a name="line2746"></a>			}
+<a name="line2747"></a>			if (self::$flagUseLegacyTaggingAPI) return implode(",",$foundTags);
+<a name="line2748"></a>			return $foundTags;
+<a name="line2749"></a>		}
+<a name="line2750"></a>		R::clearRelations( $bean, "tag" );
+<a name="line2751"></a>		R::addTags( $bean, $tagList );
+<a name="line2752"></a>	}
+<a name="line2753"></a>	public static function addTags( RedBean_OODBBean $bean, $tagList ) {
+<a name="line2754"></a>		if ($tagList!==false && !is_array($tagList)) $tags = explode( ",", (string)$tagList); else $tags=$tagList;
+<a name="line2755"></a>		if ($tagList===false) return;
+<a name="line2756"></a>		foreach($tags as $tag) {
+<a name="line2757"></a>			$t = R::findOne("tag"," title = ? ",array($tag));
+<a name="line2758"></a>			if (!$t) {
+<a name="line2759"></a>				$t = R::dispense("tag");
+<a name="line2760"></a>				$t->title = $tag;
+<a name="line2761"></a>				R::store($t);
+<a name="line2762"></a>			}
+<a name="line2763"></a>			R::associate( $bean, $t ); 
+<a name="line2764"></a>		}
+<a name="line2765"></a>	}
+<a name="line2766"></a>	public static function tagged( $beanType, $tagList ) {
+<a name="line2767"></a>		if ($tagList!==false && !is_array($tagList)) $tags = explode( ",", (string)$tagList); else $tags=$tagList;
+<a name="line2768"></a>		$collection = array();
+<a name="line2769"></a>		foreach($tags as $tag) {
+<a name="line2770"></a>			$retrieved = array();
+<a name="line2771"></a>			$tag = R::findOne("tag"," title = ? ", array($tag));
+<a name="line2772"></a>			if ($tag) $retrieved = R::related($tag, $beanType);
+<a name="line2773"></a>			foreach($retrieved as $key=>$bean) $collection[$key]=$bean;
+<a name="line2774"></a>		}
+<a name="line2775"></a>		return $collection;
+<a name="line2776"></a>	}
+<a name="line2777"></a>	public static function wipe( $beanType ) {
+<a name="line2778"></a>		R::$redbean->wipe($beanType);
+<a name="line2779"></a>	}
+<a name="line2780"></a>	public static function count( $beanType ) {
+<a name="line2781"></a>		return R::$redbean->count($beanType);
+<a name="line2782"></a>	}
+<a name="line2783"></a>	public static function configureFacadeWithToolbox( RedBean_ToolBox $tb ) {
+<a name="line2784"></a>		$oldTools = self::$toolbox;
+<a name="line2785"></a>		self::$toolbox = $tb;
+<a name="line2786"></a>		self::$writer = self::$toolbox->getWriter();
+<a name="line2787"></a>		self::$adapter = self::$toolbox->getDatabaseAdapter();
+<a name="line2788"></a>		self::$redbean = self::$toolbox->getRedBean();
+<a name="line2789"></a>		self::$associationManager = new RedBean_AssociationManager( self::$toolbox );
+<a name="line2790"></a>		self::$redbean->setAssociationManager(self::$associationManager);
+<a name="line2791"></a>		self::$extAssocManager = new RedBean_ExtAssociationManager( self::$toolbox );
+<a name="line2792"></a>		$helper = new RedBean_ModelHelper();
+<a name="line2793"></a>		self::$redbean->addEventListener("update", $helper );
+<a name="line2794"></a>		self::$redbean->addEventListener("open", $helper );
+<a name="line2795"></a>		self::$redbean->addEventListener("delete", $helper );
+<a name="line2796"></a>		self::$associationManager->addEventListener("delete", $helper );
+<a name="line2797"></a>		self::$redbean->addEventListener("after_delete", $helper );
+<a name="line2798"></a>		self::$redbean->addEventListener("after_update", $helper );
+<a name="line2799"></a>		self::$redbean->addEventListener("dispense", $helper );
+<a name="line2800"></a>		return $oldTools;
+<a name="line2801"></a>	}
+<a name="line2802"></a>	public static function cooker($arr) {
+<a name="line2803"></a>		return RedBean_Cooker::load($arr, R::$toolbox);
+<a name="line2804"></a>	}
+<a name="line2805"></a>	public static function view($viewID, $types) {
+<a name="line2806"></a>		if (self::$redbean->isFrozen()) return false;
+<a name="line2807"></a>		$types = explode(",",$types);
+<a name="line2808"></a>		if (count($types)<2) throw new RedBean_Exception_Security("Creating useless view for just one type? Provide at least two types!");
+<a name="line2809"></a>		$refType = array_shift($types);
+<a name="line2810"></a>		$viewManager = new RedBean_ViewManager( self::$toolbox );
+<a name="line2811"></a>		return $viewManager->createView($viewID,$refType,$types);
+<a name="line2812"></a>	}
+<a name="line2813"></a>	public static function exportAll($beans,$recursively=false) {
+<a name="line2814"></a>		if ($recursively) {
+<a name="line2815"></a>			if (!self::$exporter) {
+<a name="line2816"></a>				self::$exporter = new RedBean_Plugin_BeanExport(self::$toolbox);
+<a name="line2817"></a>				self::$exporter->loadSchema();
+<a name="line2818"></a>			}
+<a name="line2819"></a>			return self::$exporter->export($beans);
+<a name="line2820"></a>		}
+<a name="line2821"></a>		else {
+<a name="line2822"></a>			$array = array();
+<a name="line2823"></a>			foreach($beans as $bean) {
+<a name="line2824"></a>				if ($bean instanceof RedBean_OODBBean) {
+<a name="line2825"></a>					$array[] = $bean->export();
+<a name="line2826"></a>				}
+<a name="line2827"></a>			}
+<a name="line2828"></a>			return $array;
+<a name="line2829"></a>		}
+<a name="line2830"></a>	}
+<a name="line2831"></a>	public static function exportAllToObj($beans, $classname='stdClass') {
+<a name="line2832"></a>		$array = array();
+<a name="line2833"></a>		foreach($beans as $bean) {
+<a name="line2834"></a>			if ($bean instanceof RedBean_OODBBean) {
+<a name="line2835"></a>				$inst = new $classname;	
+<a name="line2836"></a>				$bean->exportToObj($inst);	
+<a name="line2837"></a>				$array[] = $inst;
+<a name="line2838"></a>			}
+<a name="line2839"></a>		}
+<a name="line2840"></a>		return $array;
+<a name="line2841"></a>	}
+<a name="line2842"></a>	public static function begin() {
+<a name="line2843"></a>		self::$adapter->startTransaction();
+<a name="line2844"></a>	}
+<a name="line2845"></a>	public static function commit() {
+<a name="line2846"></a>		self::$adapter->commit();
+<a name="line2847"></a>	}
+<a name="line2848"></a>	public static function rollback() {
+<a name="line2849"></a>		self::$adapter->rollback();
+<a name="line2850"></a>	}
+<a name="line2851"></a>	public static function getColumns($table) {
+<a name="line2852"></a>		return self::$writer->getColumns($table);
+<a name="line2853"></a>	}
+<a name="line2854"></a>	public static function now() {
+<a name="line2855"></a>		return date('Y-m-d H:i:s');
+<a name="line2856"></a>	}
+<a name="line2857"></a>	public static function genSlots($array) {
+<a name="line2858"></a>		if (count($array)>0) {  	
+<a name="line2859"></a>			$filler = array_fill(0,count($array),'?');
+<a name="line2860"></a>			return implode(',',$filler);	
+<a name="line2861"></a>		}
+<a name="line2862"></a>		else {
+<a name="line2863"></a>			return '';
+<a name="line2864"></a>		}	
+<a name="line2865"></a>	}
+<a name="line2866"></a>}
+<a name="line2867"></a>class RedBean_FacadeHelper {
+<a name="line2868"></a>	private $key;
+<a name="line2869"></a>	public function __construct($key) {
+<a name="line2870"></a>		$this->key = $key;
+<a name="line2871"></a>	}
+<a name="line2872"></a>	public function __call($func,$args) {
+<a name="line2873"></a>		R::selectDatabase($this->key);
+<a name="line2874"></a>		$func = "R::$func";
+<a name="line2875"></a>		return call_user_func_array($func,$args);
+<a name="line2876"></a>	}
+<a name="line2877"></a>}
+<a name="line2878"></a>class RedBean_BeanCan {
+<a name="line2879"></a>	private $modelHelper;
+<a name="line2880"></a>	public function __construct() {
+<a name="line2881"></a>		$this->modelHelper = new RedBean_ModelHelper;
+<a name="line2882"></a>	}
+<a name="line2883"></a>	private function resp($result=null, $id=null, $errorCode="-32603",$errorMessage="Internal Error") {
+<a name="line2884"></a>		$response = array(
+<a name="line2885"></a>			"jsonrpc"=>"2.0",
+<a name="line2886"></a>		);
+<a name="line2887"></a>		if ($id) {
+<a name="line2888"></a>			$response["id"] = $id;
+<a name="line2889"></a>		}
+<a name="line2890"></a>		if ($result) {
+<a name="line2891"></a>			$response["result"]=$result;
+<a name="line2892"></a>		}
+<a name="line2893"></a>		else {
+<a name="line2894"></a>			$response["error"] = array(
+<a name="line2895"></a>				"code"=>$errorCode,
+<a name="line2896"></a>				"message"=>$errorMessage
+<a name="line2897"></a>			);
+<a name="line2898"></a>		}
+<a name="line2899"></a>		return (json_encode($response));
+<a name="line2900"></a>	}
+<a name="line2901"></a>	public function handleJSONRequest( $jsonString ) {
+<a name="line2902"></a>		$jsonArray = json_decode($jsonString,true);
+<a name="line2903"></a>		if (!$jsonArray) return $this->resp(null,null,-32700,"Cannot Parse JSON");
+<a name="line2904"></a>		if (!isset($jsonArray["jsonrpc"])) return $this->resp(null,null,-32600,"No RPC version");
+<a name="line2905"></a>		if (($jsonArray["jsonrpc"]!="2.0")) return $this->resp(null,null,-32600,"Incompatible RPC Version");
+<a name="line2906"></a>		if (!isset($jsonArray["id"])) return $this->resp(null,null,-32600,"No ID");
+<a name="line2907"></a>		$id = $jsonArray["id"];
+<a name="line2908"></a>		if (!isset($jsonArray["method"])) return $this->resp(null,$id,-32600,"No method");
+<a name="line2909"></a>		if (!isset($jsonArray["params"])) {
+<a name="line2910"></a>			$data = array();
+<a name="line2911"></a>		}
+<a name="line2912"></a>		else {
+<a name="line2913"></a>			$data = $jsonArray["params"];
+<a name="line2914"></a>		}
+<a name="line2915"></a>		$method = explode(":",trim($jsonArray["method"]));
+<a name="line2916"></a>		if (count($method)!=2) {
+<a name="line2917"></a>			return $this->resp(null, $id, -32600,"Invalid method signature. Use: BEAN:ACTION");
+<a name="line2918"></a>		}
+<a name="line2919"></a>		$beanType = $method[0];
+<a name="line2920"></a>		$action = $method[1];
+<a name="line2921"></a>		if (preg_match("/\W/",$beanType)) return $this->resp(null, $id, -32600,"Invalid Bean Type String");
+<a name="line2922"></a>		if (preg_match("/\W/",$action)) return $this->resp(null, $id, -32600,"Invalid Action String");
+<a name="line2923"></a>		try {
+<a name="line2924"></a>			switch($action) {
+<a name="line2925"></a>				case "store":
+<a name="line2926"></a>					if (!isset($data[0])) return $this->resp(null, $id, -32602,"First param needs to be Bean Object");
+<a name="line2927"></a>					$data = $data[0];
+<a name="line2928"></a>					if (!isset($data["id"])) $bean = R::dispense($beanType); else
+<a name="line2929"></a>						$bean = R::load($beanType,$data["id"]);
+<a name="line2930"></a>					$bean->import( $data );
+<a name="line2931"></a>					$rid = R::store($bean);
+<a name="line2932"></a>					return $this->resp($rid, $id);
+<a name="line2933"></a>					break;
+<a name="line2934"></a>				case "load":
+<a name="line2935"></a>					if (!isset($data[0])) return $this->resp(null, $id, -32602,"First param needs to be Bean ID");
+<a name="line2936"></a>					$bean = R::load($beanType,$data[0]);
+<a name="line2937"></a>					return $this->resp($bean->export(),$id);
+<a name="line2938"></a>					break;
+<a name="line2939"></a>				case "trash":
+<a name="line2940"></a>					if (!isset($data[0])) return $this->resp(null, $id, -32602,"First param needs to be Bean ID");
+<a name="line2941"></a>					$bean = R::load($beanType,$data[0]);
+<a name="line2942"></a>					R::trash($bean);
+<a name="line2943"></a>					return $this->resp("OK",$id);
+<a name="line2944"></a>					break;
+<a name="line2945"></a>				default:
+<a name="line2946"></a>					$modelName = $this->modelHelper->getModelName( $beanType );
+<a name="line2947"></a>					if (!class_exists($modelName)) return $this->resp(null, $id, -32601,"No such bean in the can!");
+<a name="line2948"></a>					$beanModel = new $modelName;
+<a name="line2949"></a>					if (!method_exists($beanModel,$action)) return $this->resp(null, $id, -32601,"Method not found in Bean: $beanType ");
+<a name="line2950"></a>					return $this->resp( call_user_func_array(array($beanModel,$action), $data), $id);
+<a name="line2951"></a>			}
+<a name="line2952"></a>		}
+<a name="line2953"></a>		catch(Exception $exception) {
+<a name="line2954"></a>			return $this->resp(null, $id, -32099,$exception->getCode()."-".$exception->getMessage());
+<a name="line2955"></a>		}
+<a name="line2956"></a>	}
+<a name="line2957"></a>}
+<a name="line2958"></a>class RedBean_Cooker {
+<a name="line2959"></a>	public static function load($post, RedBean_ToolBox $toolbox) {
+<a name="line2960"></a>		$writer = $toolbox->getWriter();
+<a name="line2961"></a>		if (isset($post["associations"])) {
+<a name="line2962"></a>			$associations = $post["associations"];
+<a name="line2963"></a>			unset($post["associations"]);
+<a name="line2964"></a>		}
+<a name="line2965"></a>		$can = $pairs = $sorted = array();
+<a name="line2966"></a>		foreach($post as $key => $rawBean) {
+<a name="line2967"></a>			if (is_array($rawBean) && isset($rawBean["type"])) {
+<a name="line2968"></a>				$type = $rawBean["type"];
+<a name="line2969"></a>				unset($rawBean["type"]);
+<a name="line2970"></a>				$idfield = $writer->getIDField($type);
+<a name="line2971"></a>				if (isset($rawBean[$idfield])) {
+<a name="line2972"></a>					$id = $rawBean[$idfield];
+<a name="line2973"></a>					if ($id==0 && count($rawBean)===1) continue;
+<a name="line2974"></a>					unset($rawBean[$idfield]);
+<a name="line2975"></a>					$bean = R::load($type, $id);
+<a name="line2976"></a>				}
+<a name="line2977"></a>				else { 
+<a name="line2978"></a>					$bean = R::dispense($type);
+<a name="line2979"></a>				}
+<a name="line2980"></a>				foreach($rawBean as $field=>$value){
+<a name="line2981"></a>					if (!empty($value)) $bean->$field = $value;
+<a name="line2982"></a>				}
+<a name="line2983"></a>				$can[$key]=$bean;
+<a name="line2984"></a>				if (!isset($sorted[$type]))  $sorted[$type]=array();
+<a name="line2985"></a>				$sorted[$type][]=$bean;
+<a name="line2986"></a>			}
+<a name="line2987"></a>		}
+<a name="line2988"></a>		if (isset($associations) && is_array($associations)) {
+<a name="line2989"></a>			foreach($associations as $assoc) {
+<a name="line2990"></a>				foreach($assoc as $info) {
+<a name="line2991"></a>					if ($info=="0" || $info=="") continue;
+<a name="line2992"></a>					$keys = explode("-", $info);
+<a name="line2993"></a>					if (isset($can[$keys[0]])) $bean1 = $can[$keys[0]]; else {
+<a name="line2994"></a>						$loader = explode(":",$keys[0]);
+<a name="line2995"></a>						$bean1 = R::load( $loader[0], $loader[1] );
+<a name="line2996"></a>					} 
+<a name="line2997"></a>					$bean2 = $can[$keys[1]];
+<a name="line2998"></a>					$pairs[] = array( $bean1, $bean2 );
+<a name="line2999"></a>				}
+<a name="line3000"></a>			}
+<a name="line3001"></a>		}
+<a name="line3002"></a>		return array(
+<a name="line3003"></a>			"can"=>$can, 
+<a name="line3004"></a>			"pairs"=>$pairs, 
+<a name="line3005"></a>			"sorted"=>$sorted 
+<a name="line3006"></a>		);
+<a name="line3007"></a>	}
+<a name="line3008"></a>	public function setToolbox(RedBean_Toolbox $toolbox) {
+<a name="line3009"></a>		$this->toolbox = $toolbox;
+<a name="line3010"></a>		$this->redbean = $this->toolbox->getRedbean();
+<a name="line3011"></a>	}
+<a name="line3012"></a>	public function graph( $array ) {
+<a name="line3013"></a>		$beans = array();
+<a name="line3014"></a>		if (is_array($array) && isset($array["type"])) {
+<a name="line3015"></a>			$type = $array["type"];
+<a name="line3016"></a>			unset($array["type"]);
+<a name="line3017"></a>			if (isset($array["id"])) {
+<a name="line3018"></a>				$id = (int) $array["id"];
+<a name="line3019"></a>				$bean = $this->redbean->load($type,$id);
+<a name="line3020"></a>			}
+<a name="line3021"></a>			else {
+<a name="line3022"></a>				$bean = $this->redbean->dispense($type);
+<a name="line3023"></a>			}
+<a name="line3024"></a>			foreach($array as $property=>$value) {
+<a name="line3025"></a>				if (is_array($value)) {
+<a name="line3026"></a>					$bean->$property = $this->graph($value);
+<a name="line3027"></a>				}
+<a name="line3028"></a>				else {
+<a name="line3029"></a>					$bean->$property = $value;
+<a name="line3030"></a>				}
+<a name="line3031"></a>			}
+<a name="line3032"></a>			return $bean;
+<a name="line3033"></a>		}
+<a name="line3034"></a>		elseif (is_array($array)) {
+<a name="line3035"></a>			foreach($array as $key=>$value) {
+<a name="line3036"></a>				$beans[$key] = $this->graph($value);
+<a name="line3037"></a>			}
+<a name="line3038"></a>			return $beans;
+<a name="line3039"></a>		}
+<a name="line3040"></a>		else {
+<a name="line3041"></a>			return $array;
+<a name="line3042"></a>		}
+<a name="line3043"></a>		return $beans;
+<a name="line3044"></a>	}
+<a name="line3045"></a>}
+<a name="line3046"></a></pre>
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../overview-summary.html">Overview</a></li>
+<li>Package</li><li>Class</li><li>Tree</li><li><a href="../overview-files.html">Files</a></li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../todo-list.html">Todo</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../index.html" target="_top">Frames</a>
+<a href="../source\fabrico\modules\php\tools\redbean.php.html" target="_top">No frames</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>

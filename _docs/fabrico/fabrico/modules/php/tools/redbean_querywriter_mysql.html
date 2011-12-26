@@ -1,0 +1,296 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
+<meta name="when" content="Mon, 26 Dec 2011 13:40:55 +0000">
+
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css">
+<link rel="start" href="../../../../../overview-summary.html">
+
+<title>RedBean_QueryWriter_MySQL (Fabrico)</title>
+
+</head>
+<body id="definition" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../../../../../overview-summary.html">Overview</a></li>
+<li><a href="../../../../../fabrico/fabrico/modules/php/tools/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../../../../fabrico/fabrico/modules/php/tools/package-tree.html">Tree</a></li>
+<li><a href="../../../../../overview-files.html">Files</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../todo-list.html">Todo</a></li>
+<li><a href="../../../../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../../../../index.html" target="_top">Frames</a>
+<a href="../../../../../fabrico\fabrico\modules\php\tools\redbean_querywriter_mysql.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<div class="qualifiedName">Fabrico\Fabrico\Modules\Php\Tools\RedBean_QueryWriter_MySQL</div>
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line803" class="location">Fabrico\modules\php\tools\RedBean.php at line 803</a>
+
+<h1>Class RedBean_QueryWriter_MySQL</h1>
+
+<pre class="tree"><a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html">RedBean_QueryWriter_AQueryWriter</a><br>    └─<strong>RedBean_QueryWriter_MySQL</strong><br /></pre>
+
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter.html">RedBean_QueryWriter</a> </dd>
+</dl>
+
+<hr>
+
+<p class="signature">public  class <strong>RedBean_QueryWriter_MySQL</strong><br>extends <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html">RedBean_QueryWriter_AQueryWriter</a>
+
+</p>
+
+<hr>
+
+<table id="summary_field">
+<tr><th colspan="2">Field Summary</th></tr>
+<tr>
+<td class="type">protected  mixed</td>
+<td class="description"><p class="name"><a href="#adapter">$adapter</a></p></td>
+</tr>
+<tr>
+<td class="type">protected  mixed</td>
+<td class="description"><p class="name"><a href="#quoteCharacter">$quoteCharacter</a></p></td>
+</tr>
+<tr>
+<td class="type"> mixed</td>
+<td class="description"><p class="name"><a href="#sqltype_typeno">$sqltype_typeno</a></p></td>
+</tr>
+</table>
+
+<table class="inherit">
+<tr><th colspan="2">Fields inherited from Fabrico\Fabrico\Modules\Php\Tools\RedBean_QueryWriter_AQueryWriter</th></tr>
+<tr><td><a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#adapter">adapter</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#defaultValue">defaultValue</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#fcache">fcache</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#idfield">idfield</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#quoteCharacter">quoteCharacter</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#tableFormatter">tableFormatter</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#typeno_sqltype">typeno_sqltype</a></td></tr></table>
+
+<table id="summary_constructor">
+<tr><th colspan="2">Constructor Summary</th></tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#__construct()">__construct</a>(<a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_adapter.html">RedBean_Adapter</a> adapter)</p></td>
+</tr>
+</table>
+
+<table id="summary_method">
+<tr><th colspan="2">Method Summary</th></tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#getTypeForID()">getTypeForID</a>()</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#getTables()">getTables</a>()</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#createTable()">createTable</a>(mixed table)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#getColumns()">getColumns</a>(mixed table)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#scanType()">scanType</a>(mixed value)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#code()">code</a>(mixed typedescription)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#widenColumn()">widenColumn</a>(mixed type, mixed column, mixed datatype)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#addUniqueIndex()">addUniqueIndex</a>(mixed table, mixed columns)</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#sqlStateIn()">sqlStateIn</a>(mixed state, mixed list)</p></td>
+</tr>
+<tr>
+<td class="type">protected  void</td>
+<td class="description"><p class="name"><a href="#constrain()">constrain</a>(mixed table, mixed table1, mixed table2, mixed property1, mixed property2, mixed dontCache, mixed p1, mixed p2, mixed cache)</p></td>
+</tr>
+</table>
+
+<table class="inherit">
+<tr><th colspan="2">Methods inherited from Fabrico\Fabrico\Modules\Php\Tools\RedBean_QueryWriter_AQueryWriter</th></tr>
+<tr><td><a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#__construct()">__construct</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#addColumn()">addColumn</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#addConstraint()">addConstraint</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#addFK()">addFK</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#addIndex()">addIndex</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#canBeTreatedAsInt()">canBeTreatedAsInt</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#check()">check</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#constrain()">constrain</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#count()">count</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#createView()">createView</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#getAlias()">getAlias</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#getAssocTableFormat()">getAssocTableFormat</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#getFieldType()">getFieldType</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#getFormattedTableName()">getFormattedTableName</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#getIDField()">getIDField</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#getInsertSuffix()">getInsertSuffix</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#insertRecord()">insertRecord</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#noKW()">noKW</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#safeColumn()">safeColumn</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#safeTable()">safeTable</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#selectRecord()">selectRecord</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#setBeanFormatter()">setBeanFormatter</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#updateRecord()">updateRecord</a>, <a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_querywriter_aquerywriter.html#wipe()">wipe</a></td></tr></table>
+
+<h2 id="detail_field">Field Detail</h2>
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line806" class="location">Fabrico\modules\php\tools\RedBean.php at line 806</a>
+
+<h3 id="adapter">adapter</h3>
+<code class="signature">protected  mixed <strong>$adapter</strong></code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line807" class="location">Fabrico\modules\php\tools\RedBean.php at line 807</a>
+
+<h3 id="quoteCharacter">quoteCharacter</h3>
+<code class="signature">protected  mixed <strong>$quoteCharacter</strong> = '`'</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line805" class="location">Fabrico\modules\php\tools\RedBean.php at line 805</a>
+
+<h3 id="sqltype_typeno">sqltype_typeno</h3>
+<code class="signature">public  mixed <strong>$sqltype_typeno</strong> = array(...)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<h2 id="detail_method">Constructor Detail</h2>
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line808" class="location">Fabrico\modules\php\tools\RedBean.php at line 808</a>
+
+<h3 id="__construct()">__construct</h3>
+<code class="signature">public  void <strong>__construct</strong>(<a href="../../../../../fabrico/fabrico/modules/php/tools/redbean_adapter.html">RedBean_Adapter</a> adapter)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<h2 id="detail_method">Method Detail</h2>
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line812" class="location">Fabrico\modules\php\tools\RedBean.php at line 812</a>
+
+<h3 id="getTypeForID()">getTypeForID</h3>
+<code class="signature">public  void <strong>getTypeForID</strong>()</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line815" class="location">Fabrico\modules\php\tools\RedBean.php at line 815</a>
+
+<h3 id="getTables()">getTables</h3>
+<code class="signature">public  void <strong>getTables</strong>()</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line818" class="location">Fabrico\modules\php\tools\RedBean.php at line 818</a>
+
+<h3 id="createTable()">createTable</h3>
+<code class="signature">public  void <strong>createTable</strong>(mixed table)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line824" class="location">Fabrico\modules\php\tools\RedBean.php at line 824</a>
+
+<h3 id="getColumns()">getColumns</h3>
+<code class="signature">public  void <strong>getColumns</strong>(mixed table)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line832" class="location">Fabrico\modules\php\tools\RedBean.php at line 832</a>
+
+<h3 id="scanType()">scanType</h3>
+<code class="signature">public  void <strong>scanType</strong>(mixed value)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line854" class="location">Fabrico\modules\php\tools\RedBean.php at line 854</a>
+
+<h3 id="code()">code</h3>
+<code class="signature">public  void <strong>code</strong>(mixed typedescription)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line857" class="location">Fabrico\modules\php\tools\RedBean.php at line 857</a>
+
+<h3 id="widenColumn()">widenColumn</h3>
+<code class="signature">public  void <strong>widenColumn</strong>(mixed type, mixed column, mixed datatype)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line866" class="location">Fabrico\modules\php\tools\RedBean.php at line 866</a>
+
+<h3 id="addUniqueIndex()">addUniqueIndex</h3>
+<code class="signature">public  void <strong>addUniqueIndex</strong>(mixed table, mixed columns)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line884" class="location">Fabrico\modules\php\tools\RedBean.php at line 884</a>
+
+<h3 id="sqlStateIn()">sqlStateIn</h3>
+<code class="signature">public  void <strong>sqlStateIn</strong>(mixed state, mixed list)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<a href="../../../../../source/fabrico/modules/php/tools/redbean.php.html#line891" class="location">Fabrico\modules\php\tools\RedBean.php at line 891</a>
+
+<h3 id="constrain()">constrain</h3>
+<code class="signature">protected  void <strong>constrain</strong>(mixed table, mixed table1, mixed table2, mixed property1, mixed property2, mixed dontCache, mixed p1, mixed p2, mixed cache)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../../../../../overview-summary.html">Overview</a></li>
+<li><a href="../../../../../fabrico/fabrico/modules/php/tools/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../../../../fabrico/fabrico/modules/php/tools/package-tree.html">Tree</a></li>
+<li><a href="../../../../../overview-files.html">Files</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../todo-list.html">Todo</a></li>
+<li><a href="../../../../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../../../../index.html" target="_top">Frames</a>
+<a href="../../../../../fabrico\fabrico\modules\php\tools\redbean_querywriter_mysql.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>
