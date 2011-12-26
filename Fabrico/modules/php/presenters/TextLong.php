@@ -2,6 +2,9 @@
 
     inject("presenters/Text.php");
 
+    /**
+    * @package Fabrico\Modules\Presenters
+    */
     class TextLong extends Text {
     
         public function __toString() {

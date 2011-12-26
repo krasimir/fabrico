@@ -1,13 +1,22 @@
 <?php
 
+    /**
+    * The root path of Fabrico's files.
+    */
     define("FABRICO_ROOT", dirname(__FILE__));
-    define("FABRICO_ROOT_MODULES", dirname(__FILE__)."/modules/php");
-    define("FABRICO_ROOT_CONTROLLERS", dirname(__FILE__)."/controllers/php");
     
     require(FABRICO_ROOT."/modules/php/tools/Injector.php");
+    /**
+    * Instance of Injector class.
+    * @see Injector
+    */
     $fabricoInjector = new Injector();
     $fabricoInjector->setRoot(FABRICO_ROOT);
     
+    /**
+    * Global function for injecting files. Replacement of php's require.
+    * @package Fabrico
+    */
     function inject($args) {
         global $fabricoInjector;
         return $fabricoInjector->inject($args);
@@ -22,10 +31,16 @@
         "middleware/Router.php"
     ));
     
-     // setup error handler callback
+    /**
+    * Setup error handler callback.
+    * @package Fabrico
+    */
     $ERROR_HANDLER_CONTROLLER = "pages/Error.php";
     
-    // configure the views
+    /**
+    * Configure the views
+    * @package Fabrico
+    */
     ViewConfig::config(array(
         "root" => FABRICO_ROOT."/views/",
         "searchIn" => "Default"

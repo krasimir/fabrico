@@ -1,26 +1,22 @@
 <?php
 
-	/*
-	
-	example usage:
-	
-	class MyTest extends TestCase {
-		function testMyFeature() {
-			$module = ...
-			$result = $module->getResult();
-			$this->describe("Checking if the result is not NULL")->isNotNull($result);
-			$this->describe("Checking if the result is > 10")->isTrue($result > 10);
-		}
-	}
-	
-	die(Test::run(new OpenXTesting()));
-	
-	*/
-
-	// run multiple tests
+	/**
+    * Example usage:
+    * <code><pre>
+    *   class MyTest extends TestCase {
+	* 	    &nbsp;&nbsp;&nbsp;&nbsp;function testMyFeature() {
+    *           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$module = ...
+    *           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$result = $module->getResult();
+    *           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this->describe("Checking if the result is not NULL")->isNotNull($result);
+    *           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this->describe("Checking if the result is > 10")->isTrue($result > 10);
+    *       &nbsp;&nbsp;&nbsp;&nbsp;}
+    *   }
+	*
+	*   die(Test::run(new OpenXTesting()));
+    * </pre></code>
+    * @package Fabrico\Modules\Tools
+    */
 	class Test {
-
-					
 
 		public static function run($arg) {
             $result = "";
@@ -42,8 +38,11 @@
 
 		}
 	};
-	
-	// responsible for displaying the results
+	 
+    /**
+    * responsible for displaying the results
+    * @package Fabrico\Modules\Tools
+    */
 	class TestResult {
     
         private $result = "";
@@ -92,7 +91,10 @@
         }
 	};
 	
-	// custom exception which help us to investigate the result of the test
+    /**
+    * custom exception which help us to investigate the result of the test
+    * @package Fabrico\Modules\Tools
+    */
 	class TestException extends Exception {
 	
 		public $status;
@@ -102,7 +104,10 @@
 		}
 	};
 
-	// the actual test class
+    /**
+    * the actual test class
+    * @package Fabrico\Modules\Tools
+    */
 	class TestCase {
 	
 		protected $_result;

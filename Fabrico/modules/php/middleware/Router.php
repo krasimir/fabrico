@@ -112,39 +112,6 @@
             return $matched;
             
         }
-        /*public function match($pattern, $url, array &$params = array()) {
-            $ids = array();
-
-            if($pattern == $url)
-                return true;
-           
-            // Build the regex for matching
-            $regex = '/^'.implode('\/', array_map(
-                function($str) use (&$ids){
-                    if ($str == '*') {
-                        $str = '(.*)';
-                    }
-                    else if ($str != "" && $str{0} == '@') {
-                        if (preg_match('/@(\w+)(\:([^\/]*))?/', $str, $matches)) {
-                            $ids[$matches[1]] = true;
-                            return '(?P<'.$matches[1].'>'.(isset($matches[3]) ? $matches[3] : '[^(\/|\?)]+').')';
-                        }
-                    }
-                    return $str; 
-                },
-                explode('/', $pattern)
-            )).'\/?(?:\?.*)?$/i';
-
-            // Attempt to match route and named parameters
-            if (preg_match($regex, $url, $matches)) {
-                if (!empty($ids)) {
-                    $params = array_intersect_key($matches, $ids);
-                }
-                return true;
-            }
-
-            return false;
-        }*/
         public function removeAllRoutes() {
             $this->_rules = array();
         }
@@ -180,6 +147,9 @@
         }
     }
     
+    /**
+    * @package Fabrico\Modules\Middleware
+    */
     class RouterRule {
     
         public $pattern = null;

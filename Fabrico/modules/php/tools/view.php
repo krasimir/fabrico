@@ -1,16 +1,6 @@
 <?php
 /**
-*	Class for rendering given template with its {placeholders} populated with 'values'
-*
-* 	usage:
-*	$view = new View("/path/to/template", array("key" => "value"));
-*	$renderedView = (string)$view;
-*	echo $view;
-*	
-*	Note: this file also inserts global function 'view' if available
-*
-*	usage2:
-*	echo view("/path/to/template", array("key" => "value"))
+* @package Fabrico\Modules\Tools
 */
 class ViewCache {
     private static $cache;
@@ -28,6 +18,9 @@ class ViewCache {
         }
     }
 }
+/**
+* @package Fabrico\Modules\Tools
+*/
 class ViewConfig {
     public static $root = "";
     public static $searchIn = array();
@@ -43,6 +36,9 @@ class ViewConfig {
         }
     }
 }
+/**
+* @package Fabrico\Modules\Tools
+*/
 class View {
 
 	/**
@@ -116,7 +112,7 @@ class View {
 
 /**
 *	helper global function
-*	returns View
+*	@returns View
 */
 function view($path, $data = array(), $searchIn = null) {
 	return new View($path, $data, $searchIn);

@@ -6,11 +6,11 @@
     * Configuration:
     * <code><pre>
     * {
-    *    "name": "date",
-    *    "presenter": "presenters/Date.php",
-    *    "config": {
-    *        "showsTime": true
-    *    }
+    *    &nbsp;&nbsp;&nbsp;&nbsp;"name": "date",
+    *    &nbsp;&nbsp;&nbsp;&nbsp;"presenter": "presenters/Date.php",
+    *    &nbsp;&nbsp;&nbsp;&nbsp;"config": {
+    *        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"showsTime": true
+    *    &nbsp;&nbsp;&nbsp;&nbsp;}
     * }
     * </pre></code>
     * @package Fabrico\Modules\Presenters

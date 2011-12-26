@@ -1,27 +1,29 @@
 <?php
 
-    /*
-    
-    The following configuration could be added in /config/config.json:
-    "workers": {
-        [your custom key here]: {
-            "swfURL": "/assets/swf/wysiwyg/bin/swf/Project.swf",
-            "fontFamily": "no",
-            "bullets": "no",
-            "linkInput": "yes",
-            "fontSize": "no",
-            "colorPicker": "no",
-            "alignButtons": "no",
-            "bold": "yes",
-            "italic": "yes",
-            "underline": "yes"
-        }
-    }
-    
-    */
-
     inject("presenters/Text.php");
 
+    /**
+    * Configuration:
+    * <code><pre>
+    * {
+    *    &nbsp;&nbsp;&nbsp;&nbsp;"name": "description",
+    *    &nbsp;&nbsp;&nbsp;&nbsp;"presenter": "presenters/TextRich.php",
+    *    &nbsp;&nbsp;&nbsp;&nbsp;"config": {
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"swfURL": "/assets/swf/wysiwyg/bin/swf/Project.swf",
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"fontFamily": "no",
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"bullets": "no",
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"linkInput": "yes",
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"fontSize": "no",
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"colorPicker": "no",
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"alignButtons": "no",
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"bold": "yes",
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"italic": "yes",
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"underline": "yes"
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    * }
+    * </pre></code>
+    * @package Fabrico\Modules\Presenters
+    */
     class TextRich extends Text {
     
         protected $settings;

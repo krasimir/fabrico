@@ -3,35 +3,19 @@
     "freeze": false,
     "fields": [
         {
-            "name": "category",
-            "presenter": "presenters/SelectRadio.php",
+            "name": "description",
+            "presenter": "presenters/TextRich.php",
             "config": {
-                "options": [
-                    {"key": "yes", "label": "answer Yes"},
-                    {"key": "no", "label": "answer No"},
-                    {"key": "maybe", "label": "answer Maybe"}
-                ]
-            }
-        },
-        {
-            "name": "email",
-            "presenter": "presenters/Text.php",
-            "validators": [
-                {
-                    "class": "validators/NotEmpty.php",
-                    "message": "please type in your email"
-                },
-                {
-                    "class": "validators/ValidEmail.php",
-                    "message": "wrong email"
-                }
-            ]
-        },
-        {
-            "name": "image",
-            "presenter": "presenters/File.php",
-            "config": {
-                "destination": "/assets/uploads"
+                "swfURL": "/assets/swf/wysiwyg/bin/swf/Project.swf",
+                "fontFamily": "no",
+                "bullets": "no",
+                "linkInput": "yes",
+                "fontSize": "no",
+                "colorPicker": "no",
+                "alignButtons": "no",
+                "bold": "yes",
+                "italic": "yes",
+                "underline": "yes"
             }
         }
     ]

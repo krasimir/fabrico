@@ -2,6 +2,9 @@
 
     inject("validators/RegEx.php");
     
+    /**
+    * @package Fabrico\Modules\Tools\Validators
+    */
     class ValidEmail extends RegEx {
         public function run($value, $parameters = null) {
             $parameters = (object) array(

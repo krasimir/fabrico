@@ -1,5 +1,8 @@
 <?php
     
+    /**
+    * @package Fabrico\Modules\Tools\Validators
+    */
     class LengthExact {
         public function run($value, $parameters = null) {
             if(!isset($parameters) || !isset($parameters->length)) {

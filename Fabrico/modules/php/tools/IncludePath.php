@@ -1,5 +1,8 @@
 <?php
 
+    /**
+    * @package Fabrico\Modules\Tools
+    */
     class IncludePath {
         public static function add($path) {
             $args = func_get_args();

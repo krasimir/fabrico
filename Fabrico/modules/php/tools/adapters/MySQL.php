@@ -1,5 +1,8 @@
 <?php
 
+    /**
+    * @package Fabrico\Modules\Tools\Adapters
+    */
     class MySQL {
         
         public $debug = false;
@@ -271,6 +274,9 @@
     
     }
     
+    /**
+    * @package Fabrico\Modules\Tools\Adapters
+    */
     class MySQLConfig {
     
         public $name = null;

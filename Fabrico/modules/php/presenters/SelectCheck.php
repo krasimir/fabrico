@@ -1,23 +1,24 @@
 <?php
 
-    /*
-    
-    {
-        "name": "category",
-        "presenter": "presenters/SelectCheck.php",
-        "config": {
-            "options": [
-                {"key": "yes", "label": "answer Yes"},
-                {"key": "no", "label": "answer No"},
-                {"key": "maybe", "label": "answer Maybe"}
-            ]
-        }
-    }
-    
-    */
-
     inject("presenters/Select.php");
 
+    /**
+    * Configuration:
+    * <code><pre>
+    * {
+    *    &nbsp;&nbsp;&nbsp;&nbsp;"name": "category",
+    *    &nbsp;&nbsp;&nbsp;&nbsp;"presenter": "presenters/SelectCheck.php",
+    *    &nbsp;&nbsp;&nbsp;&nbsp;"config": {
+    *        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"options": [
+    *           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{"key": "yes", "label": "answer Yes"},
+    *           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{"key": "no", "label": "answer No"},
+    *           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{"key": "maybe", "label": "answer Maybe"}
+    *        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+    *    &nbsp;&nbsp;&nbsp;&nbsp;}
+    * }
+    * </pre></code>
+    * @package Fabrico\Modules\Presenters
+    */
     class SelectCheck extends Select {
         
         public function __construct($properties = array()) {

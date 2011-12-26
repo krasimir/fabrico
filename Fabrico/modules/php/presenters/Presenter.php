@@ -100,6 +100,9 @@
         }        
     }
     
+    /**
+    * @package Fabrico\Modules\Presenters
+    */
     class PresenterFactory {
     
         private static $enableDebug = false;

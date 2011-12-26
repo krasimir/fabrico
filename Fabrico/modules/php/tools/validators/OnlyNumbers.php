@@ -2,6 +2,9 @@
 
     inject("validators/RegEx.php");
     
+    /**
+    * @package Fabrico\Modules\Tools\Validators
+    */
     class OnlyNumbers extends RegEx {
         public function run($value, $parameters = null) {
             $parameters = (object) array(

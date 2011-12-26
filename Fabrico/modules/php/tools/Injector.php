@@ -1,5 +1,8 @@
 <?php
 
+    /**
+    * @package Fabrico\Modules\Tools
+    */
     class Injector {
     
         private $map;

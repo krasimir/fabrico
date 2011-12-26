@@ -1,20 +1,23 @@
 <?php
 
-    /*
+    inject(array(
+        "presenters/Presenter.php",
+        "tools/view.php"
+    ));
     
-    {
-        "name": "image",
-        "presenter": "presenters/File.php",
-        "config": {
-            "destination": "/assets/uploads"
-        }
-    }
-    
+    /**
+    * Configuration:
+    * <code><pre>
+    * {
+    *     &nbsp;&nbsp;&nbsp;&nbsp;"name": "image",
+    *     &nbsp;&nbsp;&nbsp;&nbsp;"presenter": "presenters/File.php",
+    *     &nbsp;&nbsp;&nbsp;&nbsp;"config": {
+    *         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"destination": "/assets/uploads"
+    *     &nbsp;&nbsp;&nbsp;&nbsp;}
+    * }
+    * </pre></code>
+    * @package Fabrico\Modules\Presenters
     */
-
-    inject("presenters/Presenter.php");
-    inject("tools/view.php");
-
     class File extends Presenter {
         
         public function __construct($properties = array()) {

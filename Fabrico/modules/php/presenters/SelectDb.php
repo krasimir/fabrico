@@ -1,20 +1,21 @@
 <?php
 
-    /*
-    
-    {
-        "name": "descriptionaa",
-        "presenter": "presenters/SelectDb.php",
-        "config": {
-            "model": "models/categories.json",
-            "field": "categoryLabel"
-        }
-    }
-    
-    */
-
     inject("presenters/Presenter.php");
 
+    /**
+    * Configuration:
+    * <code><pre>
+    * {
+    *    &nbsp;&nbsp;&nbsp;&nbsp;"name": "category",
+    *    &nbsp;&nbsp;&nbsp;&nbsp;"presenter": "presenters/SelectDb.php",
+    *    &nbsp;&nbsp;&nbsp;&nbsp;"config": {
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"model": "models/categories.json",
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"field": "categoryLabel"
+         &nbsp;&nbsp;&nbsp;&nbsp;}
+    * }
+    * </pre></code>
+    * @package Fabrico\Modules\Presenters
+    */
     class SelectDb extends Presenter {
         
         public function __toString() {
