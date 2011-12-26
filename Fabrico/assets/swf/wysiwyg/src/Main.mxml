@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<mx:Application 
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	frameRate="31" 
+	backgroundColor="#E5E5E5" 
+	width="100%" 
+	height="400"
+	preloader="lib.preloaders.AppPreloader"
+	layout="absolute"
+	applicationComplete="initApp()"
+>
+	
+	<mx:Style>
+		.richTextEditorTitle {
+			color: #000000;
+			fontFamily: Verdana;
+		}
+		.textArea {
+			color: #000000;
+			themeColor: #5BA80C;
+			fontWeight: normal;
+			fontFamily: Verdana;
+			backgroundColor: #E1FEBB;
+			borderColor: #366C00;
+			borderThickness: 2;
+		}
+		.button {
+			themeColor: #5BA80C;
+			fontFamily: Verdana;
+		}
+	</mx:Style>
+	
+	<mx:Script>
+		<![CDATA[
+			
+		import lib.document.App;
+		import lib.preloaders.AppPreloader;
+		import ws.outset.data.Storage;
+		import ws.outset.utils.Debug;
+		
+		private function initApp():void {
+			Debug.echo(this + " initApp");
+			Storage.addSetting("root", this);
+			new App();
+		}
+			
+		]]>
+	</mx:Script>	
+</mx:Application>

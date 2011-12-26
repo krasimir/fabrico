@@ -1,0 +1,22 @@
+{    
+    "adapter": "tools/adapters/MySQL.php",
+    "freeze": false,
+    "fields": [
+        {
+            "name": "description",
+            "presenter": "presenters/TextRich.php",
+            "config": {
+                "swfURL": "/assets/swf/wysiwyg/bin/swf/Project.swf",
+                "fontFamily": "no",
+                "bullets": "no",
+                "linkInput": "yes",
+                "fontSize": "no",
+                "colorPicker": "no",
+                "alignButtons": "no",
+                "bold": "yes",
+                "italic": "yes",
+                "underline": "yes"
+            }
+        }
+    ]
+}
