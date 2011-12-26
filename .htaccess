@@ -2,6 +2,7 @@ RewriteEngine On
 
 #RewriteBase /
 
+RewriteRule ^(_docs) - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^fabrico(.*)?$ index.php [QSA,L]
 RewriteCond %{REQUEST_FILENAME} !-f

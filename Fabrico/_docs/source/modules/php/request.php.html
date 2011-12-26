@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
+<meta name="when" content="Mon, 26 Dec 2011 23:09:19 +0000">
+
+<link rel="stylesheet" type="text/css" href="../stylesheet.css">
+<link rel="start" href="../overview-summary.html">
+
+<title>modules\php\Request.php (Fabrico)</title>
+
+</head>
+<body id="file" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../overview-summary.html">Overview</a></li>
+<li>Package</li><li>Class</li><li>Tree</li><li><a href="../overview-files.html">Files</a></li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../todo-list.html">Todo</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../index.html" target="_top">Frames</a>
+<a href="../source\modules\php\request.php.html" target="_top">No frames</a>
+</div>
+<hr>
+
+<h1>modules\php\Request.php</h1>
+<hr>
+
+<a name="line1"></a><pre><?php
+<a name="line2"></a>/**
+<a name="line3"></a> * Flight: An extensible micro-framework.
+<a name="line4"></a> *
+<a name="line5"></a> * @copyright   Copyright (c) 2011, Mike Cao <mike@mikecao.com>
+<a name="line6"></a> * @license     http://www.opensource.org/licenses/mit-license.php
+<a name="line7"></a> * @package Fabrico\Modules
+<a name="line8"></a> */
+<a name="line9"></a>class Request {
+<a name="line10"></a>    /**
+<a name="line11"></a>     * Constructor.
+<a name="line12"></a>     *
+<a name="line13"></a>     * @param array $config Request configuration
+<a name="line14"></a>     */
+<a name="line15"></a>    public function __construct($config = array()) {
+<a name="line16"></a>        // Default properties
+<a name="line17"></a>        if (empty($config)) {
+<a name="line18"></a>            $config = array(
+<a name="line19"></a>                'url' => $_SERVER['REQUEST_URI'],
+<a name="line20"></a>                'host' => $this->getHost(),
+<a name="line21"></a>                'base' => str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])),
+<a name="line22"></a>                'method' => $_SERVER['REQUEST_METHOD'],
+<a name="line23"></a>                'referrer' => isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:"",
+<a name="line24"></a>                'ip' => $_SERVER['REMOTE_ADDR'],
+<a name="line25"></a>                'ajax' => ((isset($_SERVER['HTTP_X_REQUESTED_WITH'])?$_SERVER['HTTP_X_REQUESTED_WITH']:"") == 'XMLHttpRequest'),
+<a name="line26"></a>                'scheme' => $_SERVER['SERVER_PROTOCOL'],
+<a name="line27"></a>                'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+<a name="line28"></a>                'body' => file_get_contents('php://input'),
+<a name="line29"></a>                'type' => isset($_SERVER['CONTENT_TYPE'])?$_SERVER['CONTENT_TYPE']:"",
+<a name="line30"></a>                'length' => isset($_SERVER['CONTENT_LENGTH'])?$_SERVER['CONTENT_LENGTH']:0,
+<a name="line31"></a>                'query' => array(),
+<a name="line32"></a>                'data' => $_POST,
+<a name="line33"></a>                'cookies' => $_COOKIE,
+<a name="line34"></a>                'files' => $_FILES
+<a name="line35"></a>            );
+<a name="line36"></a>        }
+<a name="line37"></a>        
+<a name="line38"></a>        self::init($config);
+<a name="line39"></a>    }
+<a name="line40"></a>
+<a name="line41"></a>    /**
+<a name="line42"></a>     * Initialize request properties.
+<a name="line43"></a>     *
+<a name="line44"></a>     * @param array $properties Array of request properties
+<a name="line45"></a>     */
+<a name="line46"></a>    public function init($properties) {
+<a name="line47"></a>        foreach ($properties as $name => $value) {
+<a name="line48"></a>            $this->$name = $value;
+<a name="line49"></a>        }
+<a name="line50"></a>        
+<a name="line51"></a>        $this->base = str_replace(" ", "%20", $this->base);
+<a name="line52"></a>        
+<a name="line53"></a>        if (empty($this->url)) {
+<a name="line54"></a>            $this->url = '/';
+<a name="line55"></a>        } else {
+<a name="line56"></a>            $this->params = self::parseQueryParams($this->url);
+<a name="line57"></a>        }
+<a name="line58"></a>        
+<a name="line59"></a>        if($this->base != "/") {
+<a name="line60"></a>            $pos = strpos($this->url, $this->base);
+<a name="line61"></a>            if($pos !== FALSE) {
+<a name="line62"></a>                $this->url = substr($this->url, $pos + strlen($this->base), strlen($this->url));
+<a name="line63"></a>            }            
+<a name="line64"></a>        }
+<a name="line65"></a>    }
+<a name="line66"></a>
+<a name="line67"></a>    /**
+<a name="line68"></a>     * Parse query parameters from a URL.
+<a name="line69"></a>     */
+<a name="line70"></a>    public function parseQueryParams($url) {
+<a name="line71"></a>        $params = array();
+<a name="line72"></a>
+<a name="line73"></a>        $args = parse_url($url);
+<a name="line74"></a>        if (isset($args['query'])) {
+<a name="line75"></a>            parse_str($args['query'], $params);
+<a name="line76"></a>        }
+<a name="line77"></a>
+<a name="line78"></a>        return $params;
+<a name="line79"></a>    }
+<a name="line80"></a>
+<a name="line81"></a>    public function param($key, $defaultValue = NULL) {
+<a name="line82"></a>        return isset($this->params[$key])?$this->params[$key]:$defaultValue;
+<a name="line83"></a>    }
+<a name="line84"></a>	
+<a name="line85"></a>	public function getHost() {
+<a name="line86"></a>		$host = 'http';
+<a name="line87"></a>		if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {
+<a name="line88"></a>			$host .= "s";
+<a name="line89"></a>		}
+<a name="line90"></a>		$host .= "://".$_SERVER['HTTP_HOST'];		
+<a name="line91"></a>		return $host;
+<a name="line92"></a>	}
+<a name="line93"></a>
+<a name="line94"></a>    public function header($name) {
+<a name="line95"></a>        if(strtolower($name) == "content-type")
+<a name="line96"></a>           return $_SERVER['CONTENT_TYPE'];
+<a name="line97"></a>        // TODO write all the others available... 
+<a name="line98"></a>        return $_SERVER["HTTP_".strtoupper($name)];
+<a name="line99"></a>    }
+<a name="line100"></a>}
+<a name="line101"></a>?></pre>
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../overview-summary.html">Overview</a></li>
+<li>Package</li><li>Class</li><li>Tree</li><li><a href="../overview-files.html">Files</a></li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../todo-list.html">Todo</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../index.html" target="_top">Frames</a>
+<a href="../source\modules\php\request.php.html" target="_top">No frames</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>

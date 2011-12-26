@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
+<meta name="when" content="Mon, 26 Dec 2011 23:09:19 +0000">
+
+<link rel="stylesheet" type="text/css" href="../stylesheet.css">
+<link rel="start" href="../overview-summary.html">
+
+<title>modules\php\Response.php (Fabrico)</title>
+
+</head>
+<body id="file" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../overview-summary.html">Overview</a></li>
+<li>Package</li><li>Class</li><li>Tree</li><li><a href="../overview-files.html">Files</a></li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../todo-list.html">Todo</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../index.html" target="_top">Frames</a>
+<a href="../source\modules\php\response.php.html" target="_top">No frames</a>
+</div>
+<hr>
+
+<h1>modules\php\Response.php</h1>
+<hr>
+
+<a name="line1"></a><pre><?php
+<a name="line2"></a>
+<a name="line3"></a>/**
+<a name="line4"></a>* @package Fabrico\Modules
+<a name="line5"></a>*/
+<a name="line6"></a>class ResponseStatusCodes {
+<a name="line7"></a>    public static $codes = array(
+<a name="line8"></a>        200 => 'OK',
+<a name="line9"></a>        201 => 'Created',
+<a name="line10"></a>        202 => 'Accepted',
+<a name="line11"></a>        203 => 'Non-Authoritative Information',
+<a name="line12"></a>        204 => 'No Content',
+<a name="line13"></a>        205 => 'Reset Content',
+<a name="line14"></a>        206 => 'Partial Content',
+<a name="line15"></a>
+<a name="line16"></a>        300 => 'Multiple Choices',
+<a name="line17"></a>        301 => 'Moved Permanently',
+<a name="line18"></a>        302 => 'Found',
+<a name="line19"></a>        303 => 'See Other',
+<a name="line20"></a>        304 => 'Not Modified',
+<a name="line21"></a>        305 => 'Use Proxy',
+<a name="line22"></a>        307 => 'Temporary Redirect',
+<a name="line23"></a>
+<a name="line24"></a>        400 => 'Bad Request',
+<a name="line25"></a>        401 => 'Unauthorized',
+<a name="line26"></a>        403 => 'Forbidden',
+<a name="line27"></a>        404 => 'Not Found',
+<a name="line28"></a>        405 => 'Method Not Allowed',
+<a name="line29"></a>        406 => 'Not Acceptable',
+<a name="line30"></a>        407 => 'Proxy Authentication Required',
+<a name="line31"></a>        408 => 'Request Timeout',
+<a name="line32"></a>        409 => 'Conflict',
+<a name="line33"></a>        410 => 'Gone',
+<a name="line34"></a>        411 => 'Length Required',
+<a name="line35"></a>        412 => 'Precondition Failed',
+<a name="line36"></a>        413 => 'Request Entity Too Large',
+<a name="line37"></a>        414 => 'Request-URI Too Long',
+<a name="line38"></a>        415 => 'Unsupported Media Type',
+<a name="line39"></a>        416 => 'Requested Range Not Satisfiable',
+<a name="line40"></a>        417 => 'Expectation Failed',
+<a name="line41"></a>
+<a name="line42"></a>        500 => 'Internal Server Error',
+<a name="line43"></a>        501 => 'Not Implemented',
+<a name="line44"></a>        502 => 'Bad Gateway',
+<a name="line45"></a>        503 => 'Service Unavailable',
+<a name="line46"></a>        504 => 'Gateway Timeout',
+<a name="line47"></a>        505 => 'HTTP Version Not Supported'
+<a name="line48"></a>    );
+<a name="line49"></a>}
+<a name="line50"></a> 
+<a name="line51"></a>/**
+<a name="line52"></a>* Modified by outbounder, based on:
+<a name="line53"></a>* 
+<a name="line54"></a>* Flight: An extensible micro-framework.
+<a name="line55"></a>*
+<a name="line56"></a>* @copyright   Copyright (c) 2011, Mike Cao <mike@mikecao.com>
+<a name="line57"></a>* @license     http://www.opensource.org/licenses/mit-license.php
+<a name="line58"></a>* @package Fabrico\Modules
+<a name="line59"></a>*/
+<a name="line60"></a>class Response {
+<a name="line61"></a>
+<a name="line62"></a>    public $beforeExitHandler;
+<a name="line63"></a>
+<a name="line64"></a>    protected $headers = array();
+<a name="line65"></a>    protected $status = 200;
+<a name="line66"></a>    protected $body = "";
+<a name="line67"></a>
+<a name="line68"></a>    /**
+<a name="line69"></a>     * Sets the HTTP status of the response.
+<a name="line70"></a>     *
+<a name="line71"></a>     * @param int $code HTTP status code.
+<a name="line72"></a>     */
+<a name="line73"></a>    public function status($code) {
+<a name="line74"></a>
+<a name="line75"></a>        if (array_key_exists($code, ResponseStatusCodes::$codes)) {
+<a name="line76"></a>            if (strpos(php_sapi_name(), 'cgi') !== false)
+<a name="line77"></a>                $this->header('Status',$code.' '.ResponseStatusCodes::$codes[$code]);
+<a name="line78"></a>            else
+<a name="line79"></a>                $this->header(($_SERVER['SERVER_PROTOCOL'] ? $_SERVER['SERVER_PROTOCOL']: 'HTTP/1.1'), ResponseStatusCodes::$codes[$code]);
+<a name="line80"></a>        }
+<a name="line81"></a>        else
+<a name="line82"></a>            throw new Exception('Invalid status code '.$code.' not found in '.ResponseStatusCodes::$codes);
+<a name="line83"></a>
+<a name="line84"></a>        return $this;
+<a name="line85"></a>    }
+<a name="line86"></a>
+<a name="line87"></a>    /**
+<a name="line88"></a>     * Adds a header to the response.
+<a name="line89"></a>     *
+<a name="line90"></a>     * @param string|array $key Header name or array of names and values
+<a name="line91"></a>     * @param string $value Header value
+<a name="line92"></a>     */
+<a name="line93"></a>    public function header($name, $value = null) {
+<a name="line94"></a>        if (is_array($name)) {
+<a name="line95"></a>            foreach ($name as $k => $v) {
+<a name="line96"></a>                $this->headers[$k] = $v;
+<a name="line97"></a>            }
+<a name="line98"></a>        }
+<a name="line99"></a>        else {
+<a name="line100"></a>            $this->headers[$name] = $value;
+<a name="line101"></a>        }
+<a name="line102"></a>
+<a name="line103"></a>        return $this;
+<a name="line104"></a>    }
+<a name="line105"></a>
+<a name="line106"></a>    /**
+<a name="line107"></a>     * Writes content to the response body.
+<a name="line108"></a>     *
+<a name="line109"></a>     * @param string $str Response content
+<a name="line110"></a>     */
+<a name="line111"></a>    public function write($str) {
+<a name="line112"></a>        $this->body .= $str;
+<a name="line113"></a>
+<a name="line114"></a>        return $this;
+<a name="line115"></a>    }
+<a name="line116"></a>
+<a name="line117"></a>    /**
+<a name="line118"></a>     * Clears the response.
+<a name="line119"></a>     */
+<a name="line120"></a>    public function clear() {
+<a name="line121"></a>        $this->headers = array();
+<a name="line122"></a>        $this->status = 200;
+<a name="line123"></a>        $this->body = '';
+<a name="line124"></a>
+<a name="line125"></a>        return $this;
+<a name="line126"></a>    }
+<a name="line127"></a>
+<a name="line128"></a>    /**
+<a name="line129"></a>     * Sets caching headers for the response.
+<a name="line130"></a>     *
+<a name="line131"></a>     * @param int|string $expires Expiration time
+<a name="line132"></a>     */
+<a name="line133"></a>    public function cache($expires) {
+<a name="line134"></a>        if ($expires === false) {
+<a name="line135"></a>            $this->header('Expires','Mon, 26 Jul 1997 05:00:00 GMT');
+<a name="line136"></a>            $this->header('Cache-Control', array(
+<a name="line137"></a>                'no-store, no-cache, must-revalidate',
+<a name="line138"></a>                'post-check=0, pre-check=0',
+<a name="line139"></a>                'max-age=0'
+<a name="line140"></a>            ));
+<a name="line141"></a>            $this->header('Pragma','no-cache');
+<a name="line142"></a>        }
+<a name="line143"></a>        else {
+<a name="line144"></a>            $expires = is_int($expires) ? $expires : strtotime($expires);
+<a name="line145"></a>            $this->header('Expires', gmdate('D, d M Y H:i:s', $expires) . ' GMT');
+<a name="line146"></a>            $this->header('Cache-Control','max-age='.($expires - time()));
+<a name="line147"></a>        }
+<a name="line148"></a>
+<a name="line149"></a>        return $this;
+<a name="line150"></a>    }
+<a name="line151"></a>
+<a name="line152"></a>    /**
+<a name="line153"></a>     * Sends the response and exits the program.
+<a name="line154"></a>     * if $body is NULL, then $response->body will be used instead. defaults to "".
+<a name="line155"></a>     * if $status is NULL, then $response->status will be used instead, defaults to 200.
+<a name="line156"></a>     * All headers are send using this method if they have not been send already.
+<a name="line157"></a>     */
+<a name="line158"></a>    public function send($body = NULL, $status = NULL) {
+<a name="line159"></a>
+<a name="line160"></a>        if (!headers_sent()) {
+<a name="line161"></a>            if($status != NULL)
+<a name="line162"></a>                $this->status($status);
+<a name="line163"></a>
+<a name="line164"></a>            foreach ($this->headers as $field => $value) {
+<a name="line165"></a>                if (is_array($value)) {
+<a name="line166"></a>                    foreach ($value as $v) {
+<a name="line167"></a>                        header($field.': '.$v);
+<a name="line168"></a>                    }
+<a name="line169"></a>                }
+<a name="line170"></a>                else {
+<a name="line171"></a>                    header($field.': '.$value);
+<a name="line172"></a>                }
+<a name="line173"></a>            }
+<a name="line174"></a>        }
+<a name="line175"></a>        
+<a name="line176"></a>        if(isset($this->beforeExitHandler) && is_array($this->beforeExitHandler)) {
+<a name="line177"></a>            foreach($this->beforeExitHandler as $handler) {
+<a name="line178"></a>                if($handler->obj && $handler->method) {
+<a name="line179"></a>                    $method = $handler->method;
+<a name="line180"></a>                    $handler->obj->$method();
+<a name="line181"></a>                }
+<a name="line182"></a>            }
+<a name="line183"></a>        }
+<a name="line184"></a>
+<a name="line185"></a>        if($body != NULL)
+<a name="line186"></a>            exit($body);
+<a name="line187"></a>        else
+<a name="line188"></a>            exit($this->body);
+<a name="line189"></a>    }
+<a name="line190"></a>}
+<a name="line191"></a>
+<a name="line192"></a>
+<a name="line193"></a>?></pre>
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../overview-summary.html">Overview</a></li>
+<li>Package</li><li>Class</li><li>Tree</li><li><a href="../overview-files.html">Files</a></li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../todo-list.html">Todo</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../index.html" target="_top">Frames</a>
+<a href="../source\modules\php\response.php.html" target="_top">No frames</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>
