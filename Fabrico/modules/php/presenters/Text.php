@@ -1,6 +1,6 @@
 <?php
 
-    require_once("presenters/Presenter.php");
+    inject("presenters/Presenter.php");
 
     class Text extends Presenter {
         
@@ -8,33 +8,38 @@
             return "Text";
         }
         public function listing($value) {
-            return $value;
+            $this->response = $value;
+            return $this;
         }
-        public function add() {
-            return $this->view("view.html", array(
+        public function add($default = null) {
+            $this->response = $this->view("view.html", array(
                 "field" => $this->name,
-                "value" => ""
+                "value" => $default === null ? "" : $default
             ));
+            return $this;
         }
         public function addAction() {
             if(isset($this->req->body->{strtolower($this->name)})) {
-                return $this->req->body->{strtolower($this->name)};
+                $this->response = $this->req->body->{strtolower($this->name)};
             } else {
-                return null;
+                $this->response = null;
             }
+            return $this;
         }
         public function edit($value) {
-            return $this->view("view.html", array(
+            $this->response = $this->view("view.html", array(
                 "field" => $this->name,
                 "value" => $value
             ));
+            return $this;
         }
         public function editAction($value) {        
             if(isset($this->req->body->{strtolower($this->name)})) {
-                return $this->req->body->{strtolower($this->name)};
+                $this->response = $this->req->body->{strtolower($this->name)};
             } else {
-                return null;
+                $this->response = null;
             }
+            return $this;
         }
     
     }

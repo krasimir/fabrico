@@ -1,7 +1,7 @@
 <?php
     
-    require_once("presenters/Presenter.php");
-    require_once("actions/Action.php");
+    inject("presenters/Presenter.php");
+    inject("actions/Action.php");
 
     class Deleting extends Action {
         
@@ -13,7 +13,7 @@
             
             $id = $req->params["id"];
             if(isset($id)) {
-                 $fields = $this->model->fields;
+                $fields = $this->model->fields;
                 $record = $this->model->get()->where("id='".$id."'")->flush();
                 if($record) {
                     $record = $record[0];

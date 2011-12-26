@@ -1,7 +1,7 @@
 <?php
 
-    require_once("pages/Page.php");
-    require_once("tools/view.php");
+    inject("pages/Page.php");
+    inject("tools/view.php");
 
     class Login extends Page {
         

@@ -16,7 +16,7 @@
     
     */
 
-    require_once("presenters/Select.php");
+    inject("presenters/Select.php");
 
     class SelectRadio extends Select {
         
@@ -33,10 +33,11 @@
                     "checked" => $default == $option->key ? 'checked="checked"' : ""
                 ));
             }
-            return $this->view("adding.html", array(
+            $this->response = $this->view("adding.html", array(
                 "field" => $this->name,
                 "options" => $options
             ));
+            return $this;
         }
     
     }

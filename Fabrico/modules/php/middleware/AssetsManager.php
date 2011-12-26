@@ -1,8 +1,8 @@
 <?php
 
-    require_once("tools/rglob.php");
-    require_once("tools/FileJoin.php");
-    require_once("Middleware.php");
+    inject("tools/rglob.php");
+    inject("tools/FileJoin.php");
+    inject("Middleware.php");
     
     class AssetsManager extends Middleware {
         

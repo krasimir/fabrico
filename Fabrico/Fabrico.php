@@ -1,34 +1,39 @@
 <?php
 
     define("FABRICO_ROOT", dirname(__FILE__));
-
-    // set include path
-    require_once(FABRICO_ROOT."/modules/php/tools/IncludePath.php");
-    IncludePath::add(FABRICO_ROOT."/modules/php");
-    IncludePath::add(FABRICO_ROOT."/controllers/php");
+    define("FABRICO_ROOT_MODULES", dirname(__FILE__)."/modules/php");
+    define("FABRICO_ROOT_CONTROLLERS", dirname(__FILE__)."/controllers/php");
+    
+    require(FABRICO_ROOT."/modules/php/tools/Injector.php");
+    $fabricoInjector = new Injector();
+    $fabricoInjector->setRoot(FABRICO_ROOT);
+    
+    function inject($args) {
+        global $fabricoInjector;
+        return $fabricoInjector->inject($args);
+    }
+    
+    inject(array(
+        "tools/ErrorHandler.php",
+        "tools/view.php",
+        "Middleware.php",
+        "Request.php",
+        "Response.php",
+        "middleware/Router.php"
+    ));
     
      // setup error handler callback
-    require_once("tools/ErrorHandler.php");
-    require_once("pages/Error.php");
-    $errorHandler = new ErrorHandler();
-    $errorHandler->onError = function(Exception $e) {
-        new Error($e);
-    };
+    $ERROR_HANDLER_CONTROLLER = "pages/Error.php";
     
     // configure the views
-    require_once("tools/view.php");
     ViewConfig::config(array(
         "root" => FABRICO_ROOT."/views/",
         "searchIn" => "Default"
     ));
     
-    require_once("Middleware.php");
-    require_once("Request.php");
-    require_once("Response.php");
-    
     class Fabrico extends Middleware {
         
-        public function __construct($configFile = "/config/config.json") {
+        public function __construct($configFile = "/config/config.json", $req = null, $res = null) {
         
             // setup middleware
             $this->using(array(
@@ -46,7 +51,9 @@
                 "assets" => "middleware/AssetsManager.php",
                 // control the access
                 "access" => "middleware/Access.php",
-                // router of the adminer
+                // setting the routes
+                "routes" => "Routes.php",
+                // router
                 "router" => "middleware/Router.php"
             ));
             
@@ -55,18 +62,24 @@
                 "fabrico" => FABRICO_ROOT.$configFile
             ));
             
+            // setting the Fabrico's credentials
+            $this->access->setCredentials(
+                $this->config->get("fabrico.access.user"), 
+                $this->config->get("fabrico.access.pass")
+            );
+            
             // the ModelsManager uses the path to find the models' json files
             $this->models->root = FABRICO_ROOT;
             
-            // setting the routes of fabrico
-            $this->router->using("Routes.php");
-            
             // assets configuration
             $this->assets->root = FABRICO_ROOT;
-            $this->assets->using("Assets.php");           
+            $this->assets->using("Assets.php");
+            
+    
+            $this->run($req, $res);
             
         }
-        public function run($req = null, $res = null) {
+        public function run($req, $res) {
         
             if($req == null) { $req = new Request(); }
             if($res == null) { $res = new Response(); }
@@ -82,14 +95,7 @@
             
             // showing benchmark information if fabrico is in debug mode
             if($this->debug->enable) {
-                $benchmark = $this->benchmark;
-                $self = $this;
-                $res->beforeExitHandler = function() use ($benchmark, $self) {
-                    var_dump("Benchmark: ".$benchmark->elpasedTime());
-                    foreach($self->models->models as $model) {
-                        $model->report();
-                    }
-                };
+                $res->beforeExitHandler = array((object) array("obj" => $this, "method" => "onExit"));
             }
             
              // setting a pointer to the fabrico
@@ -98,7 +104,13 @@
             // running middleware
             parent::run($req, $res);
             
-        }        
+        }
+        public function onExit() {
+            var_dump("Benchmark: ".$this->benchmark->elpasedTime());
+            foreach($this->models->models as $model) {
+                $model->report();
+            }
+        }
     
     }
 

@@ -30,7 +30,7 @@
                     $result .= $arg->run();
                 }
             } if(is_string($arg)){
-            	require_once($arg);
+            	inject($arg);
 				$parts = explode("/", $arg);
 	            $className = str_replace(".php", "", array_pop($parts));
 	            $instance = new $className();

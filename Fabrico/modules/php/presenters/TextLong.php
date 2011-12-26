@@ -1,6 +1,6 @@
 <?php
 
-    require_once("presenters/Text.php");
+    inject("presenters/Text.php");
 
     class TextLong extends Text {
     
@@ -9,10 +9,11 @@
         }
         public function listing($value) {
             if(strlen($value) > 300) {
-                return substr($value, 0, 300)."...";
+                $this->response = substr($value, 0, 300)."...";
             } else {
-                return $value;
+                $this->response = $value;
             }
+            return $this;
         }
     
     }

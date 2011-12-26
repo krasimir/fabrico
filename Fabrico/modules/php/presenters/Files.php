@@ -12,8 +12,10 @@
     
     */
 
-    require_once("presenters/File.php");
-    require_once("tools/view.php");
+    inject(array(
+        "presenters/File.php",
+        "tools/view.php"
+    ));
 
     class Files extends File {
         
@@ -47,15 +49,18 @@
                         ));
                     }
                 }
-                return $result;
+                $this->response = $result;
+            } else {
+                $this->response = $value;
             }
-            return $value;
+            return $this;
         }
-        public function add() {            
-            return $this->view("adding.html", array(
+        public function add($default = null) {            
+            $this->response = $this->view("adding.html", array(
                 "field" => $this->name,
-                "value" => ""
+                "value" => $default != null ? $default : "",
             ));
+            return $this;
         }
         public function addAction() {
             $numOfFields = $this->req->body->{strtolower($this->name."_numOfFields")};
@@ -72,17 +77,19 @@
                     }
                 }
             }
-            return $result;
+            $this->response = $result;
+            return $this;
         }
         public function edit($value) {
-            return $this->view("editing.html", array(
+            $this->response = $this->view("editing.html", array(
                 "field" => $this->name,
-                "current" => $this->listing($value, true),
-                "adding" => $this->add()
+                "current" => $this->listing($value, true)->response->value,
+                "adding" => $this->add()->response->value
             ));
+            return $this;
         }
         public function editAction($value) {
-            $newFiles = $this->addAction();
+            $newFiles = $this->addAction()->response->value;
             $oldFiles = "";
             if($value != "") {
                 $files = explode("|", $value);
@@ -103,7 +110,8 @@
                     }
                 }
             }
-            return ($newFiles != "" ? $newFiles."|" : "").$oldFiles;
+            $this->response = ($newFiles != "" ? $newFiles."|" : "").$oldFiles;
+            return $this;
         }
         public function deleteAction($value) {
             if($value != "") {
@@ -115,6 +123,7 @@
                     }
                 }
             }
+            return $this;
         }
     
     }

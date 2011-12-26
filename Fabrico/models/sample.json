@@ -3,19 +3,26 @@
     "freeze": false,
     "fields": [
         {
-            "name": "time",
-            "presenter": "presenters/Text.php"
+            "name": "category",
+            "presenter": "presenters/SelectRadio.php",
+            "config": {
+                "options": [
+                    {"key": "yes", "label": "answer Yes"},
+                    {"key": "no", "label": "answer No"},
+                    {"key": "maybe", "label": "answer Maybe"}
+                ]
+            }
         },
         {
-            "name": "lastName",
-            "label": "The name:",
-            "default": "...",
-            "description": "Some description here.",
-            "presenter": "presenters/Text.php"
+            "name": "description33",
+            "presenter": "presenters/TextRich.php"
         },
         {
-            "name": "date",
-            "presenter": "presenters/Date.php"
+            "name": "image",
+            "presenter": "presenters/File.php",
+            "config": {
+                "destination": "/assets/uploads"
+            }
         }
     ]
 }

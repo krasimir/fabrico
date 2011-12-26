@@ -1,7 +1,7 @@
 <?php
 
-    require_once("tools/view.php");
-    require_once("presenters/Presenter.php");
+    inject("tools/view.php");
+    inject("presenters/Presenter.php");
 
     class Action {
     

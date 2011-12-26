@@ -46,11 +46,9 @@ class Request {
         foreach ($properties as $name => $value) {
             $this->$name = $value;
         }
-
-        if ($this->base != '/' && strpos($this->url, $this->base) === 0) {
-            $this->url = substr($this->url, strlen($this->base));
-        }
-
+        
+        $this->base = str_replace(" ", "%20", $this->base);
+        
         if (empty($this->url)) {
             $this->url = '/';
         } else {
@@ -58,7 +56,10 @@ class Request {
         }
         
         if($this->base != "/") {
-            $this->url = str_replace(str_replace(" ", "%20", $this->base), "", $this->url);
+            $pos = strpos($this->url, $this->base);
+            if($pos !== FALSE) {
+                $this->url = substr($this->url, $pos + strlen($this->base), strlen($this->url));
+            }            
         }
     }
 

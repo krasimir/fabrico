@@ -1,6 +1,6 @@
 RewriteEngine On
 
-# RewriteBase /
+#RewriteBase /
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^fabrico(.*)?$ index.php [QSA,L]

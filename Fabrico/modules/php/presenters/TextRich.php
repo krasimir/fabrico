@@ -20,7 +20,7 @@
     
     */
 
-    require_once("presenters/Text.php");
+    inject("presenters/Text.php");
 
     class TextRich extends Text {
     
@@ -60,21 +60,24 @@
         public function listing($value) {
             $value = strip_tags($value);
             if(strlen($value) > 300) {
-                return substr($value, 0, 300)."...";
+                $this->response = substr($value, 0, 300)."...";
             } else {
-                return $value;
+                $this->response = $value;
             }
+            return $this;
         }
         public function add($default = null) {
             $this->config->swfURL = $this->req->fabrico->root->httpFiles.$this->config->swfURL;
-            return $this->view("view.html", array(
+            $this->response = $this->view("view.html", array(
                 "settings" => json_encode($this->config),
                 "field" => $this->name,
                 "value" => $default != null ? $default : ""
             ));
+            return $this;
         }
         public function edit($value) {
-            return $this->add(addslashes($value));
+            $this->response = $this->add(addslashes($value))->response->value;
+            return $this;
         }
     
     }

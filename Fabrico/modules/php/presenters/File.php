@@ -12,8 +12,8 @@
     
     */
 
-    require_once("presenters/Presenter.php");
-    require_once("tools/view.php");
+    inject("presenters/Presenter.php");
+    inject("tools/view.php");
 
     class File extends Presenter {
         
@@ -32,36 +32,43 @@
         }
         public function listing($value) {
             if($value != "") {
-                return $this->view("listing.html", array(
+                $this->response = $this->view("listing.html", array(
                     "filepath" => $this->getAbsolutePathHttp($value),
                     "filename" => $this->getFileName($value),
                     "ext" => $this->getExtension($value)
                 ));
+            } else {
+                $this->response = "";
             }
-            return $value;
+            return $this;
         }
-        public function add() {            
-            return $this->view("adding.html", array(
+        public function add($default = null) {            
+            $this->response = $this->view("adding.html", array(
                 "field" => $this->name,
-                "value" => ""
+                "value" => $default != null ? $default : "",
             ));
+            return $this;
         }
         public function addAction() {
-            return $this->upload($this->name);
+            $this->response = $this->upload($this->name);
+            return $this;
         }
         public function edit($value) {
-            return $this->view("editing.html", array(
+            $this->response = $this->view("editing.html", array(
                 "field" => $this->name,
-                "listing" => $this->listing($value)
+                "listing" => $this->listing($value)->response->value
             ));
+            return $this;
         }
         public function editAction($value) {
             $result = $this->upload($this->name);
             if($result != "") {
                 $this->deleteAction($value);
-                return $result;
+                $this->response = $result;
+            } else {
+                $this->response = $value;
             }
-            return $value;
+            return $this;
         }
         public function deleteAction($value) {
             if($value != "") {

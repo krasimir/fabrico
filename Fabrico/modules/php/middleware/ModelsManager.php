@@ -32,7 +32,7 @@
             $classNameConfig = $className."Config";
             
             // including model's classes 
-            require_once($jsonConfig->adapter);
+            inject($jsonConfig->adapter);
             
             // adding the properties from fabrico's config file
             $fabricoAdapterConfig = $this->req->fabrico->config->get("fabrico.adapters.".$className);

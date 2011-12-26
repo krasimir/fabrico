@@ -13,8 +13,7 @@
     
     */
 
-    require_once("presenters/Presenter.php");
-    require_once("tools/RedBean.php");
+    inject("presenters/Presenter.php");
 
     class SelectDb extends Presenter {
         
@@ -25,17 +24,22 @@
             $model = $this->req->fabrico->models->get($this->config->model);
             if($model) {
                 $items = $model->get()->order("position")->desc()->flush();
+                $found = false;
                 if($items) {
                     foreach($items as $item) {
                         if($item->id == $value) {
-                            return $item->{$this->config->field};
+                            $found = true;
+                            $this->response = $item->{$this->config->field};
                         }
                     }
                 }
-                return "";
+                if(!$found) {
+                    $this->response = "";
+                }
             } else {
                 throw new Exception($this.": model '".$this->config->model."' could not be found.");
             }
+            return $this;
         }
         public function add($default = null) {
             $options = "";
@@ -51,26 +55,30 @@
                         ));
                     }
                 }
-                return $this->view("adding.html", array(
+                $this->response = $this->view("adding.html", array(
                     "field" => $this->name,
                     "options" => $options
                 ));
             } else {
                 throw new Exception($this.": model '".$this->config->model."' could not be found.");
             }
+            return $this;
         }
         public function addAction() {
             if(isset($this->req->body->{strtolower($this->name)})) {
-                return $this->req->body->{strtolower($this->name)};
+                $this->response = $this->req->body->{strtolower($this->name)};
             } else {
-                return null;
+                $this->response = null;
             }
+            return $this;
         }
         public function edit($value) {
-            return $this->add($value);
+            $this->response = $this->add($value)->response->value;
+            return $this;
         }
         public function editAction($value) {
-            return $this->addAction();
+            $this->response = $this->addAction()->response->value;
+            return $this;
         }
     
     }

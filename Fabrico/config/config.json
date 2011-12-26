@@ -11,7 +11,7 @@
         {"url": "/sample(.*)?", "controller": "pages/Page.php", "model": "models/sample.json"},
         {"url": "/logout(.*)?", "controller": "pages/Logout.php"},
         {"url": "/login(.*)?", "controller": "pages/Login.php"},
-        {"url": "/(.*)?", "controller": "pages/Home.php"}
+        {"url": "(.*)?", "controller": "pages/Home.php"}
     ],
     "adapters": {
         "MySQL": {

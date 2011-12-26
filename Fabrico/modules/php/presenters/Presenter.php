@@ -1,6 +1,9 @@
 <?php
 
     class Presenter {
+    
+        private $responseValue = "...";
+        private $responseFailedValidator;
         
         public function __construct($properties = array()) {
             foreach($properties as $prop => $value) {
@@ -10,23 +13,78 @@
         public function __toString() {
             return "Presenter";
         }
-        public function listing($value) {
-            return $value;
+        public function __set($key, $value) {
+            switch($key) {
+                case "response":
+                    // setting the response
+                    $this->responseValue = $value;
+                    // validation
+                    if(isset($this->validators)) {
+                        if(!is_array($this->validators)) {
+                            $this->validators = array($this->validators);
+                        }
+                        $valid = true;
+                        $this->responseFailedValidator = null;
+                        foreach($this->validators as $validator) {
+                            if($valid) {
+                                if(!isset($validator->class)) {
+                                    throw new Exception($this." missing ->class property of validator for field '".$this->name."'");
+                                } else {
+                                    $className = inject($validator->class);
+                                    $validatorInstance = new $className($this);
+                                    $method = isset($validator->method) ? $validator->method : "run";
+                                    if(!$validatorInstance->$method($value, isset($validator->parameters) ? $validator->parameters : null)) {
+                                        $valid = false;
+                                        $this->responseFailedValidator = (object) array(
+                                            "validator" => $validatorInstance,
+                                            "message" => isset($validator->message) ? $validator->message : "Wrong input."
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                break;
+                default:
+                    $this->$key = $value;
+                break;
+            }
         }
-        public function add() {
-            return "";
+        public function __get($key) {
+            switch($key) {
+                case "response":
+                    return (object) array(
+                        "value" => $this->responseValue,
+                        "valid" => isset($this->validators) ? $this->responseFailedValidator === null : true,
+                        "validator" => $this->responseFailedValidator !== null ? $this->responseFailedValidator->validator : null,
+                        "message" => $this->responseFailedValidator !== null ? $this->responseFailedValidator->message : null
+                    );
+                break;
+            }
+        }
+        public function listing($value) {
+            $this->response = $value;
+            return $this;
+        }
+        public function add($default = null) {
+            $this->response = $value;
+            return $this;
         }
         public function addAction() {
-            return "";
+            $this->response = $value;
+            return $this;
         }
         public function edit($value) {
-            return "";
+            $this->response = $value;
+            return $this;
         }
         public function editAction($value) {
-            return "";
+            $this->response = $value;
+            return $this;
         }
         public function deleteAction($value) {
-            return false;
+            $this->response = $value;
+            return $this;
         }
         public function view($template, $data) {
             $searchIn = array();
@@ -36,8 +94,7 @@
             $searchIn []= $this->controller."/".$this;
             $searchIn []= ViewConfig::$searchIn[count(ViewConfig::$searchIn)-1]."/".$this;
             return view($template, $data, $searchIn);
-        }
-        
+        }        
     }
     
     class PresenterFactory {
@@ -53,7 +110,7 @@
                 $field->$key = $value;
             }
             
-            require_once($field->presenter);
+            inject($field->presenter);
             $presenter = new $presenterName($field);
             
             if(self::$enableDebug) {

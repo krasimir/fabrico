@@ -16,7 +16,7 @@
     
     */
 
-    require_once("presenters/Presenter.php");
+    inject("presenters/Presenter.php");
 
     class Select extends Presenter {
         
@@ -30,12 +30,17 @@
             return "Select";
         }
         public function listing($value) {
+            $found = false;
             foreach($this->config->options as $option) {
                 if($option->key == $value) {
-                    return $option->label;
+                    $found = true;
+                    $this->response = $option->label;
                 }
             }
-            return $value;
+            if(!$found) {
+                $this->response = $value;
+            }
+            return $this;
         }
         public function add($default = null) {
             $options = "";
@@ -46,27 +51,31 @@
                     "selected" => $default == $option->key ? 'selected="selected"' : ""
                 ));
             }
-            return $this->view("adding.html", array(
+            $this->response = $this->view("adding.html", array(
                 "field" => $this->name,
                 "options" => $options
             ));
+            return $this;
         }
         public function addAction() {
             if(isset($this->req->body->{strtolower($this->name)})) {
-                return $this->req->body->{strtolower($this->name)};
+                $this->response = $this->req->body->{strtolower($this->name)};
             } else {
-                return null;
+                $this->response = null;
             }
+            return $this;
         }
         public function edit($value) {
-            return $this->add($value);
+            $this->response = $this->add($value)->response->value;
+            return $this;
         }
         public function editAction($value) {
             if(isset($this->req->body->{strtolower($this->name)})) {
-                return $this->req->body->{strtolower($this->name)};
+                $this->response = $this->req->body->{strtolower($this->name)};
             } else {
-                return null;
+                $this->response = null;
             }
+            return $this;
         }
     
     }

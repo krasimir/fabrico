@@ -1,8 +1,8 @@
 <?php
 
-    require_once("Middleware.php");
-    require_once("middleware/Router.php");
-    require_once("middleware/Router.php");
+    inject("Middleware.php");
+    inject("middleware/Router.php");
+    inject("middleware/Router.php");
     
     class Page extends Middleware {
     

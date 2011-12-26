@@ -1,7 +1,7 @@
 <?php
 
-    require_once("actions/Action.php");
-    require_once("presenters/Presenter.php");
+    inject("actions/Action.php");
+    inject("presenters/Presenter.php");
 
     class Listing extends Action {
         
@@ -26,7 +26,7 @@
                         $value = $item->{$field->name};
                         $presenter = $this->getPresenter($field);
                         $tableColumns .= $this->view("column.html", array(
-                            "data" => $presenter ? $presenter->listing($value) : $value
+                            "data" => $presenter ? $presenter->listing($value)->response->value : $value
                         ));
                     }
                     $tableColumns .= $this->view("columnOptions.html", array(

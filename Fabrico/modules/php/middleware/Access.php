@@ -9,12 +9,11 @@
         public $logged = false;
         public $loginError = "";
         
-        public function __construct($router) {
-            $router->access = $this;
-            $this->form = (object) array("username" => "username", "password" => "password");
+        public function setCredentials($user, $pass) {
+            $this->credentials = (object) array("username" => $user, "password" => $pass);
         }
         public function run($req, $res) {
-            $this->credentials = (object) array("username" => $req->fabrico->config->get("fabrico.access.user"), "password" => $req->fabrico->config->get("fabrico.access.pass"));
+            $this->form = (object) array("username" => "username", "password" => "password");
             if(
                 isset($_SESSION["username"]) && 
                 $_SESSION["username"] == $this->credentials->username && 

@@ -16,7 +16,7 @@
     
     */
 
-    require_once("presenters/Select.php");
+    inject("presenters/Select.php");
 
     class SelectCheck extends Select {
         
@@ -42,7 +42,8 @@
                     
                 }
             }
-            return $result;
+            $this->response = $result;
+            return $this;
         }
         public function add($default = null) {
             $boxes = "";
@@ -55,9 +56,10 @@
                     "checked" => in_array($option->key, $defaultArr) ? 'checked="checked"' : ""
                 ));
             }
-            return $this->view("adding.html", array(
+            $this->response = $this->view("adding.html", array(
                 "boxes" => $boxes
             ));
+            return $this;
         }
         public function addAction() {
             $result = "";
@@ -66,10 +68,12 @@
                     $result .= $this->req->body->{strtolower($this->name."_".$option->key)}."|";
                 }
             }
-            return $result;
+            $this->response = $result;
+            return $this;
         }
         public function editAction($value) {
-            return $this->addAction();
+           $this->response = $this->addAction()->response->value;
+           return $this;
         }
     
     }

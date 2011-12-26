@@ -16,7 +16,7 @@ class Middleware {
 		}
 
         foreach($modules as $name => $path) {
-            require_once($path);
+            inject($path);
             $parts = explode("/", $path);
             $className = str_replace(".php", "", array_pop($parts));
             $instance = new $className($this);
@@ -29,11 +29,11 @@ class Middleware {
         return $this;
     }
 
-    public function run($request, $response) {
+    public function run($req, $res) {
 
         // then, execute all middleware modules in FIFO sequence
         foreach($this->modules as $module) {
-            $module["instance"]->run($request, $response);
+            $module["instance"]->run($req, $res);
         }
 		
     }

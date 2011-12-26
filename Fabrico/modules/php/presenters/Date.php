@@ -12,7 +12,7 @@
     
     */
 
-    require_once("presenters/Text.php");
+    inject("presenters/Text.php");
 
     class Date extends Text {
         
@@ -32,15 +32,17 @@
             return "Date";
         }
         public function add($default = null) {
-            return $this->view("view.html", array(
+            $this->response = $this->view("view.html", array(
                 "field" => $this->name,
                 "value" => $default != null ? $default : $this->getCurrentDate(),
                 "showsTime" => $this->config->showsTime,
                 "format" => $this->config->showsTime == "true" ? $this->config->formatWithTime : $this->config->formatWithoutTime
             ));
+            return $this;
         }
         public function edit($value) {
-            return $this->add($value);
+            $this->response = $this->add($value)->response->value;
+            return $this;
         }
         private function getCurrentDate() {
             if($this->config->showsTime == "true") {

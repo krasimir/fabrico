@@ -1,6 +1,6 @@
 <?php
 
-require_once("tools/rglob.php");
+inject("tools/rglob.php");
 
 class FileJoin {
     private $root;

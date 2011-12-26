@@ -170,9 +170,13 @@ class Response {
             }
         }
         
-        if(isset($this->beforeExitHandler)) {
-            $handler = $this->beforeExitHandler;
-            $handler();
+        if(isset($this->beforeExitHandler) && is_array($this->beforeExitHandler)) {
+            foreach($this->beforeExitHandler as $handler) {
+                if($handler->obj && $handler->method) {
+                    $method = $handler->method;
+                    $handler->obj->$method();
+                }
+            }
         }
 
         if($body != NULL)

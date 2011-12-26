@@ -1,8 +1,8 @@
 <?php
     
-    require_once("tools/RedBean.php");
-    require_once("tools/view.php");
-    require_once("presenters/Presenter.php");
+    inject("tools/RedBean.php");
+    inject("tools/view.php");
+    inject("presenters/Presenter.php");
 
     class Debug {
     

@@ -1,6 +1,6 @@
 <?php
 
-    require_once("presenters/Text.php");
+    inject("presenters/Text.php");
 
     class Color extends Text {
         
@@ -8,9 +8,10 @@
             return "Color";
         }
         public function listing($value) {
-            return $this->view("listing.html", array(
+            $this->response = $this->view("listing.html", array(
                 "color" => $value
             ));
+            return $this;
         }
     
     }

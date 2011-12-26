@@ -1,6 +1,6 @@
 <?php
 
-    require_once("actions/Action.php");
+    inject("actions/Action.php");
 
     class Ordering extends Action {
         

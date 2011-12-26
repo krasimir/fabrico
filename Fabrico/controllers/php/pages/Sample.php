@@ -1,6 +1,6 @@
 <?php
 
-    require_once("pages/Page.php");
+    inject("pages/Page.php");
 
     class Sample extends Page {
     
