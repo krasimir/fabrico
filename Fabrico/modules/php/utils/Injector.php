@@ -5,6 +5,9 @@
     */
     class Injector {
     
+        /** If true shows the injected files. (false by default) */
+        public $debug = false;
+    
         private $map;
         private $injected;
         

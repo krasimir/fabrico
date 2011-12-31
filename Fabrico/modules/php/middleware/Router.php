@@ -8,6 +8,7 @@
         private $_rules;
         
         public $matchedRule = "";
+        public $debug = false;
 
         public function __construct(){
             
@@ -55,6 +56,9 @@
                     /*var_dump("('".$pattern."' == '".$req->url."') ('".$req->method."' == '".$rule->method."') (handler=".$handler.") (match=".($match ? "true" : "false").")");
                     var_dump($match);*/
                     if($match) {
+                        if($this->debug) {
+                            $this->log("Router:<br />matched pattern: '".$pattern."'<br />Handler: '".$handler."'", "#D3D5E7");
+                        }
                         $this->matchedRule = $rule;
                         if(is_callable($handler)) {
                             $handler($req, $res);
@@ -144,6 +148,9 @@
                 $rule->priority = false;
             }
             return $rule;
+        }
+        private function log($str, $color) {
+            echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
         }
     }
     

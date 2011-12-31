@@ -50,7 +50,7 @@
             }
             
             // setting debug flag and the name of the model
-            $jsonConfig->debug = $this->req->fabrico->debug->enable;
+            $jsonConfig->debug = DEBUG_MODE;
             $jsonConfig->name = $this->getFilename($modelJSONFile);
             
             // created the model

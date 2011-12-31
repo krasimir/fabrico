@@ -96,7 +96,7 @@
                     "validatorMessage" => ""
                 ));
                 $content = $this->view("form.html", array(
-                    "workersContent" => $this->view("table.html", array(
+                    "presentersContent" => $this->view("table.html", array(
                         "rows" => $content
                     )),
                     "actionURL" => $req->fabrico->root->http.$this->controller->url."/editing/".$id,

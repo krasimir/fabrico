@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sat, 31 Dec 2011 10:59:26 +0000">
+<meta name="when" content="Sat, 31 Dec 2011 14:16:06 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -53,12 +53,20 @@ Detail: <a href="#detail_global">Global</a>
 <table id="summary_global" class="title">
 <tr><th colspan="2" class="title">Global Summary</th></tr>
 <tr>
+<td class="type">final  mixed</td>
+<td class="description"><p class="name"><a href="#DEBUG_MODE">DEBUG_MODE</a></p><p class="description">If ?debug=1 an additional information is shown on the page.</p></td>
+</tr>
+<tr>
 <td class="type"> mixed</td>
 <td class="description"><p class="name"><a href="#ERROR_HANDLER_CONTROLLER">ERROR_HANDLER_CONTROLLER</a></p><p class="description">Setup error handler callback.</p></td>
 </tr>
 <tr>
 <td class="type">final  mixed</td>
 <td class="description"><p class="name"><a href="#FABRICO_ROOT">FABRICO_ROOT</a></p><p class="description">The root path of Fabrico's files.</p></td>
+</tr>
+<tr>
+<td class="type"> mixed</td>
+<td class="description"><p class="name"><a href="#_GET">_GET</a></p></td>
 </tr>
 <tr>
 <td class="type"> mixed</td>
@@ -71,7 +79,17 @@ Detail: <a href="#detail_global">Global</a>
 </table>
 
 <h2 id="detail_global">Global Detail</h2>
-<a href="../source/fabrico/fabrico.php.html#line38" class="location">Fabrico\Fabrico.php at line 38</a>
+<a href="../source/fabrico/fabrico.php.html#line6" class="location">Fabrico\Fabrico.php at line 6</a>
+
+<h3 id="DEBUG_MODE">DEBUG_MODE</h3>
+<code class="signature">public final  mixed <strong>DEBUG_MODE</strong> = isset($_GET[&quot;debug&quot;]</code>
+<div class="details">
+<p>If ?debug=1 an additional information is shown on the page.</p>
+</div>
+
+<hr>
+
+<a href="../source/fabrico/fabrico.php.html#line39" class="location">Fabrico\Fabrico.php at line 39</a>
 
 <h3 id="ERROR_HANDLER_CONTROLLER">ERROR_HANDLER_CONTROLLER</h3>
 <code class="signature">public  mixed <strong>ERROR_HANDLER_CONTROLLER</strong> = &quot;pages/Error.php&quot;</code>
@@ -81,12 +99,21 @@ Detail: <a href="#detail_global">Global</a>
 
 <hr>
 
-<a href="../source/fabrico/fabrico.php.html#line6" class="location">Fabrico\Fabrico.php at line 6</a>
+<a href="../source/fabrico/fabrico.php.html#line4" class="location">Fabrico\Fabrico.php at line 4</a>
 
 <h3 id="FABRICO_ROOT">FABRICO_ROOT</h3>
 <code class="signature">public final  mixed <strong>FABRICO_ROOT</strong> = dirname(__FILE__</code>
 <div class="details">
 <p>The root path of Fabrico's files.</p>
+</div>
+
+<hr>
+
+<a href="../source/fabrico/fabrico.php.html#line6" class="location">Fabrico\Fabrico.php at line 6</a>
+
+<h3 id="_GET">_GET</h3>
+<code class="signature">public  mixed <strong>_GET</strong></code>
+<div class="details">
 </div>
 
 <hr>

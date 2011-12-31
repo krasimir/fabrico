@@ -4,27 +4,20 @@
     "fields": [
         {
             "name": "firstName",
-            "presenter": "presenters/Text.php",
-            "validators": [
-                {
-                    "class": "validators/OnlyNumbers.php",
-                    "message": "only numbers please"
-                },
-                {
-                    "class": "validators/LengthExact.php",
-                    "message": "exact 5 digits",
-                    "parameters": {
-                        "length": 5
-                    }
-                }
-            ]
+            "presenter": "presenters/Text.php"
         },
         {
             "name": "avatar",
             "presenter": "presenters/Files.php",
             "config": {
                 "destination": "/assets/uploads"
-            }
+            },
+            "dependencies": [
+                {
+                    "field": "firstName",
+                    "shouldMatch": "[0-9]"
+                }                
+            ]
         },
         {
             "name": "category",

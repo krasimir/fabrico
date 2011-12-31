@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sat, 31 Dec 2011 10:59:27 +0000">
+<meta name="when" content="Sat, 31 Dec 2011 14:16:06 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -58,26 +58,23 @@
 <a name="line14"></a>            \t\t\t},
 <a name="line15"></a>            \t\t\t"method": "run", // optional
 <a name="line16"></a>            \t\t\t"message": "Wrong input!" // optional
-<a name="line17"></a>            \t\t{
+<a name="line17"></a>            \t\t}
 <a name="line18"></a>        \t]
 <a name="line19"></a>    }
 <a name="line20"></a>    </pre>
 <a name="line21"></a>    * @package Fabrico\Modules\Validators
 <a name="line22"></a>    */
 <a name="line23"></a>    class RegEx {
-<a name="line24"></a>        public function __construct($presenter) {
-<a name="line25"></a>        
-<a name="line26"></a>        }
-<a name="line27"></a>        public function run($value, $parameters) {
-<a name="line28"></a>            if(!isset($parameters) || !isset($parameters->match)) {
-<a name="line29"></a>                throw new Exception("RegEx validator requires 'parameters': { 'match': '[your regular expression here]' }");
-<a name="line30"></a>            }
-<a name="line31"></a>            $result = preg_match($parameters->match, $value);
-<a name="line32"></a>            return $result === 0 ? false : true;
-<a name="line33"></a>        }
-<a name="line34"></a>    }
-<a name="line35"></a>
-<a name="line36"></a>?></pre>
+<a name="line24"></a>        public function run($value, $parameters) {
+<a name="line25"></a>            if(!isset($parameters) || !isset($parameters->match)) {
+<a name="line26"></a>                throw new Exception("RegEx validator requires 'parameters': { 'match': '[your regular expression here]' }");
+<a name="line27"></a>            }
+<a name="line28"></a>            $result = preg_match($parameters->match, $value);
+<a name="line29"></a>            return $result === 0 ? false : true;
+<a name="line30"></a>        }
+<a name="line31"></a>    }
+<a name="line32"></a>
+<a name="line33"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

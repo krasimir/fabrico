@@ -1,4 +1,9 @@
 <form method="post" action="{actionURL}" enctype="multipart/form-data">
     <input type="hidden" name="action" value="add"/>
-    {workersContent}
+    {presentersContent}
 </form>
+<script>
+    $(document).ready(function() {
+        global.fabrico.modules.presenters.Dependencies.config({fields});
+    });
+</script>

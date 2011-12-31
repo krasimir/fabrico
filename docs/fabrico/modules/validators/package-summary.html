@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sat, 31 Dec 2011 10:59:26 +0000">
+<meta name="when" content="Sat, 31 Dec 2011 14:16:05 +0000">
 
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
 <link rel="start" href="../../../overview-summary.html">
@@ -166,7 +166,7 @@ Definition:
 \t\t\t},
 \t\t\t"method": "run", // optional
 \t\t\t"message": "Wrong input!" // optional
-\t\t{
+\t\t}
 \t]
 }
 </td></tr>
@@ -183,6 +183,25 @@ Definition:
 \t\t{
 \t]
 }
+</td></tr>
+<tr><td class="name"><a href="../../../fabrico/modules/validators/validatorfactory.html">ValidatorFactory</a></td><td class="description">Creates and execute validator.
+Method 'get' accepts an object ($validator) and the value that will be tested ($value):
+
+{
+\t"class": "validators/RegEx.php",
+\t"parameters": {
+\t\t"match": "/^[0-9]+$/"
+\t},
+\t"method": "run", // optional
+\t"message": "Wrong input!" // optional
+}
+
+Returns:
+
+(object) array(
+\t"validator" => $validatorInstance, // if the validation passes returns 'null', otherwise it returns the validator
+\t"message" => isset($validator->message) ? $validator->message : "Wrong input."
+);
 </td></tr>
 </table>
 

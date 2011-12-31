@@ -2,7 +2,7 @@
 
     inject(array(
         "tools/view.php",
-        "presenters/Presenter.php"
+        "presenters/PresenterFactory.php"
     ));
 
     /**

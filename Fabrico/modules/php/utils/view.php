@@ -83,7 +83,7 @@ class View {
         
         if(!$cache) {
             if(ViewConfig::$debug) {
-                var_dump("view: ".str_replace($root, "", $path));
+               $this->log("view: ".str_replace($root, "", $path), "#BEC7B1");
             }
             $fh = @fopen($path, "r");
             if(!$fh) {
@@ -108,6 +108,10 @@ class View {
 
 		return $output;
 	}
+    
+    private function log($str, $color) {
+        echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
+    }
 }
 
 /**

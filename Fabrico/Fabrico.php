@@ -1,9 +1,9 @@
 <?php
 
-    /**
-    * The root path of Fabrico's files.
-    */
+    /** The root path of Fabrico's files. */
     define("FABRICO_ROOT", dirname(__FILE__));
+    /** If ?debug=1 an additional information is shown on the page. */
+    define("DEBUG_MODE", isset($_GET["debug"]) && $_GET["debug"] == 1);
     
     require(FABRICO_ROOT."/modules/php/utils/Injector.php");
     /**
@@ -28,7 +28,8 @@
         "Middleware.php",
         "Request.php",
         "Response.php",
-        "middleware/Router.php"
+        "middleware/Router.php",
+        "presenters/PresenterFactory.php"
     ));
     
     /**
@@ -62,8 +63,6 @@
                 "config" => "tools/JSONConfig.php",
                 // read and construct the current application's models
                 "models" => "middleware/ModelsManager.php",
-                // debugging
-                "debug" => "middleware/Debug.php",
                 // $request->body will be parsed to object if incoming request is POST or PUT
                 "bodyParser" => "middleware/BodyParser.php",
                 // taking care for the assets
@@ -108,13 +107,13 @@
                 "httpFiles" => $req->host.($req->base == "/" ? "" : $req->base).$this->config->get("fabrico.paths.files"),
                 "files" => FABRICO_ROOT
             );
-        
-            // enable debug mode if ?debug=1
-            $this->debug->enable = isset($req->params["debug"]) && $req->params["debug"] == 1;
             
             // showing benchmark information if fabrico is in debug mode
-            if($this->debug->enable) {
+            if(DEBUG_MODE) {
+                ViewConfig::config(array("debug" => true));
+                PresenterFactory::debug(true);
                 $res->beforeExitHandler = array((object) array("obj" => $this, "method" => "onExit"));
+                $this->router->debug = true;
             }
             
              // setting a pointer to the fabrico
@@ -124,11 +123,19 @@
             parent::run($req, $res);
             
         }
-        private function onExit() {
-            var_dump("Benchmark: ".$this->benchmark->elpasedTime());
+        
+        /**
+        * Called if ?debug=1. Displays information Benchmark and ModelsManager information.
+        */
+        public function onExit() {
             foreach($this->models->models as $model) {
                 $model->report();
             }
+            $this->log("Benchmark: ".$this->benchmark->elpasedTime(), "#D5D5FF");
+        }
+        
+        private function log($str, $color) {
+            echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
         }
     
     }

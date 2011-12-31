@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sat, 31 Dec 2011 10:59:26 +0000">
+<meta name="when" content="Sat, 31 Dec 2011 14:16:05 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -47,7 +47,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <hr>
 
 <div class="qualifiedName">Fabrico\Fabrico</div>
-<a href="../source/fabrico/fabrico.php.html#line53" class="location">Fabrico\Fabrico.php at line 53</a>
+<a href="../source/fabrico/fabrico.php.html#line54" class="location">Fabrico\Fabrico.php at line 54</a>
 
 <h1>Class Fabrico</h1>
 
@@ -77,6 +77,10 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <td class="type"> void</td>
 <td class="description"><p class="name"><a href="#run()">run</a>(mixed req, mixed res)</p></td>
 </tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#onExit()">onExit</a>()</p><p class="description">Called if ?debug=1. </p></td>
+</tr>
 </table>
 
 <table class="inherit">
@@ -84,7 +88,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <tr><td><a href="../fabrico/modules/utils/middleware.html#__construct()">__construct</a>, <a href="../fabrico/modules/utils/middleware.html#run()">run</a>, <a href="../fabrico/modules/utils/middleware.html#using()">using</a></td></tr></table>
 
 <h2 id="detail_method">Constructor Detail</h2>
-<a href="../source/fabrico/fabrico.php.html#line55" class="location">Fabrico\Fabrico.php at line 55</a>
+<a href="../source/fabrico/fabrico.php.html#line56" class="location">Fabrico\Fabrico.php at line 56</a>
 
 <h3 id="__construct()">__construct</h3>
 <code class="signature">public  void <strong>__construct</strong>(str configFile, mixed req, mixed res, array options)</code>
@@ -98,12 +102,21 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <hr>
 
 <h2 id="detail_method">Method Detail</h2>
-<a href="../source/fabrico/fabrico.php.html#line101" class="location">Fabrico\Fabrico.php at line 101</a>
+<a href="../source/fabrico/fabrico.php.html#line100" class="location">Fabrico\Fabrico.php at line 100</a>
 
 <h3 id="run()">run</h3>
 <code class="signature">public  void <strong>run</strong>(mixed req, mixed res)</code>
 <div class="details">
 </div>
+
+<hr>
+
+<a href="../source/fabrico/fabrico.php.html#line130" class="location">Fabrico\Fabrico.php at line 130</a>
+
+<h3 id="onExit()">onExit</h3>
+<code class="signature">public  void <strong>onExit</strong>()</code>
+<div class="details">
+<p>Called if ?debug=1. Displays information Benchmark and ModelsManager information.</p></div>
 
 <hr>
 

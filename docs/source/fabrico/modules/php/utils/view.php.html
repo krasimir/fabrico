@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sat, 31 Dec 2011 10:59:27 +0000">
+<meta name="when" content="Sat, 31 Dec 2011 14:16:06 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -127,7 +127,7 @@
 <a name="line83"></a>        
 <a name="line84"></a>        if(!$cache) {
 <a name="line85"></a>            if(ViewConfig::$debug) {
-<a name="line86"></a>                var_dump("view: ".str_replace($root, "", $path));
+<a name="line86"></a>               $this->log("view: ".str_replace($root, "", $path), "#BEC7B1");
 <a name="line87"></a>            }
 <a name="line88"></a>            $fh = @fopen($path, "r");
 <a name="line89"></a>            if(!$fh) {
@@ -152,16 +152,20 @@
 <a name="line108"></a>
 <a name="line109"></a>		return $output;
 <a name="line110"></a>	}
-<a name="line111"></a>}
-<a name="line112"></a>
-<a name="line113"></a>/**
-<a name="line114"></a>*	helper global function
-<a name="line115"></a>*	@returns View
-<a name="line116"></a>*/
-<a name="line117"></a>function view($path, $data = array(), $searchIn = null) {
-<a name="line118"></a>	return new View($path, $data, $searchIn);
-<a name="line119"></a>}
-<a name="line120"></a>?></pre>
+<a name="line111"></a>    
+<a name="line112"></a>    private function log($str, $color) {
+<a name="line113"></a>        echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
+<a name="line114"></a>    }
+<a name="line115"></a>}
+<a name="line116"></a>
+<a name="line117"></a>/**
+<a name="line118"></a>*	helper global function
+<a name="line119"></a>*	@returns View
+<a name="line120"></a>*/
+<a name="line121"></a>function view($path, $data = array(), $searchIn = null) {
+<a name="line122"></a>	return new View($path, $data, $searchIn);
+<a name="line123"></a>}
+<a name="line124"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

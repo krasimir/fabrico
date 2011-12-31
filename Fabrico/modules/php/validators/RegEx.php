@@ -14,16 +14,13 @@
             \t\t\t},
             \t\t\t"method": "run", // optional
             \t\t\t"message": "Wrong input!" // optional
-            \t\t{
+            \t\t}
         \t]
     }
     </pre>
     * @package Fabrico\Modules\Validators
     */
     class RegEx {
-        public function __construct($presenter) {
-        
-        }
         public function run($value, $parameters) {
             if(!isset($parameters) || !isset($parameters->match)) {
                 throw new Exception("RegEx validator requires 'parameters': { 'match': '[your regular expression here]' }");

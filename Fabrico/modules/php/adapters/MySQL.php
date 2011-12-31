@@ -99,8 +99,11 @@
             return $this;
         }
         public function report() {
-            var_dump($this."");
-            var_dump($this->queries);
+            $queriesReport = '';
+            foreach($this->queries as $query) {
+                $queriesReport .= $query."<br />";
+            }
+            $this->log($this.":<br />".$queriesReport, "#FFFFD2");
             return $this;
         }
         public function flush() {
@@ -270,6 +273,9 @@
         }
         private function error($str) {
             throw new Exception($this.": ".$str);
+        }
+        private function log($str, $color) {
+            echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
         }
     
     }

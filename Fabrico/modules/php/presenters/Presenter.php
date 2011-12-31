@@ -1,5 +1,7 @@
 <?php
 
+    inject("validators/ValidatorFactory.php");
+
     /**
     The presenter is responsible for the database field's operations. I.e. showing, adding, editing and deleting.
     * @package Fabrico\Modules\Presenters
@@ -31,19 +33,10 @@
                         $this->responseFailedValidator = null;
                         foreach($this->validators as $validator) {
                             if($valid) {
-                                if(!isset($validator->class)) {
-                                    throw new Exception($this." missing ->class property of validator for field '".$this->name."'");
-                                } else {
-                                    $className = inject($validator->class);
-                                    $validatorInstance = new $className($this);
-                                    $method = isset($validator->method) ? $validator->method : "run";
-                                    if(!$validatorInstance->$method($value, isset($validator->parameters) ? $validator->parameters : null)) {
-                                        $valid = false;
-                                        $this->responseFailedValidator = (object) array(
-                                            "validator" => $validatorInstance,
-                                            "message" => isset($validator->message) ? $validator->message : "Wrong input."
-                                        );
-                                    }
+                                $validatorResponse = ValidatorFactory::get($validator, $value);
+                                if($validatorResponse->validator !== null) {
+                                    $valid = false;
+                                    $this->responseFailedValidator = $validatorResponse;
                                 }
                             }
                         }
@@ -60,8 +53,8 @@
                     return (object) array(
                         "value" => $this->responseValue,
                         "valid" => isset($this->validators) ? $this->responseFailedValidator === null : true,
-                        "validator" => $this->responseFailedValidator !== null ? $this->responseFailedValidator->validator : null,
-                        "message" => $this->responseFailedValidator !== null ? $this->responseFailedValidator->message : null
+                        "validator" => $this->responseFailedValidator !== null ? $this->responseFailedValidator->validator :  null,
+                        "message" => $this->responseFailedValidator !== null ? $this->responseFailedValidator->message :  null
                     );
                 break;
             }
@@ -103,37 +96,6 @@
             $searchIn []= ViewConfig::$searchIn[count(ViewConfig::$searchIn)-1]."/".$this;
             return view($template, $data, $searchIn);
         }        
-    }
-    
-    /**
-    * @package Fabrico\Modules\Presenters
-    */
-    class PresenterFactory {
-    
-        private static $enableDebug = false;
-        
-        public static function get($field, $properties = array()) {
-        
-            $parts = explode("/", $field->presenter);
-            $presenterName = str_replace(".php", "", array_pop($parts));
-            
-            foreach($properties as $key => $value) {
-                $field->$key = $value;
-            }
-            
-            inject($field->presenter);
-            $presenter = new $presenterName($field);
-            
-            if(self::$enableDebug) {
-                var_dump("presenter: ".$field->presenter);
-            }
-            
-            return $presenter;
-        }
-        public static function debug($value) {
-            self::$enableDebug = $value;
-        }
-    
     }
 
 ?>

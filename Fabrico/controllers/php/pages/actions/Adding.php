@@ -74,6 +74,7 @@
                 $presenter = $this->getPresenter($field);
                 $content .= $this->view("row.html", array(
                     "name" => (isset($field->label) ? $field->label : $field->name),
+                    "field" => $field->name,
                     "description" => (isset($field->description) ? $field->description : ""),
                     "presenter" => $presenter->add($default)->response->value,
                     "validatorMessage" => $validatorMessage !== null ? $this->view("wrongInput.html", array(
@@ -83,15 +84,17 @@
             }
             $content .= $this->view("row.html", array(
                 "name" => "",
+                "field" => "",
                 "description" => "",
                 "presenter" => $this->view("submit.html"),
                 "validatorMessage" => ""
             ));
             $content = $this->view("form.html", array(
-                "workersContent" => $this->view("table.html", array(
+                "presentersContent" => $this->view("table.html", array(
                     "rows" => $content
                 )),
-                "actionURL" => $req->fabrico->root->http.$this->controller->url."/adding"
+                "actionURL" => $req->fabrico->root->http.$this->controller->url."/adding",
+                "fields" => json_encode($this->model->fields)
             ));
             $content = $this->view("subnav.html", array(
                 "http" => $req->fabrico->root->http.$this->controller->url
