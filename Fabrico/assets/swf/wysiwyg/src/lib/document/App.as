@@ -66,7 +66,7 @@ package lib.document {
 			
 			if(FlexUtils.isInBrowser()) {
 				ExternalInterface.addCallback("setText", receiveText);
-				ExternalInterface.call("global.fabrico.modules.workers.TextRich.getDefaultText", _field);
+				ExternalInterface.call("global.fabrico.modules.presenters.TextRich.getDefaultText", _field);
 			}
 			
 		}
@@ -81,7 +81,7 @@ package lib.document {
 		private function send(str:String):void {
 			Debug.echo(className + " send str=" + str);
 			if(FlexUtils.isInBrowser()) {
-				ExternalInterface.call("global.fabrico.modules.workers.TextRich.onTextChange", _field, str);
+				ExternalInterface.call("global.fabrico.modules.presenters.TextRich.onTextChange", _field, str);
 			}
 		}
 		private function receiveText(str:String):void {

@@ -2,7 +2,7 @@
     global.fabrico = function() {
         
         var modules = {};
-        modules.workers = {};
+        modules.presenters = {};
         
         var run = function() {
             global.debug("fabrico").log("run");

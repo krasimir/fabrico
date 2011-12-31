@@ -1,0 +1,367 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<script src="../utils/js/jquery-1.6.3.min.js"></script>
+<script src="../utils/js/jquery.snippet.min.js"></script>
+<script src="../utils/js/scripts.js" type="text/javascript" language="JavaScript"></script>
+<link rel="stylesheet" type="text/css" href="../utils/css/jquery.snippet.min.css">
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
+<meta name="when" content="Sat, 31 Dec 2011 10:59:26 +0000">
+
+<link rel="stylesheet" type="text/css" href="../stylesheet.css">
+<link rel="start" href="../overview-summary.html">
+
+<title>Fabrico\modules\php\adapters\MySQL.php (Fabrico)</title>
+
+</head>
+<body id="file" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../overview-summary.html">Overview</a></li>
+<li>Package</li><li>Class</li><li>Tree</li><li><a href="../overview-files.html">Files</a></li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../todo-list.html">Todo</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../index.html" target="_top">Frames</a>
+<a href="../source\fabrico\modules\php\adapters\mysql.php.html" target="_top">No frames</a>
+</div>
+<hr>
+
+<h1>Fabrico\modules\php\adapters\MySQL.php</h1>
+<hr>
+
+<a name="line1"></a><pre><?php
+<a name="line2"></a>
+<a name="line3"></a>    /**
+<a name="line4"></a>    * @package Fabrico\Modules\Adapters
+<a name="line5"></a>    */
+<a name="line6"></a>    class MySQL {
+<a name="line7"></a>        
+<a name="line8"></a>        public $debug = false;
+<a name="line9"></a>        
+<a name="line10"></a>        private $configs;
+<a name="line11"></a>        private $initialized = false;
+<a name="line12"></a>        private $queries = array();
+<a name="line13"></a>        private $tableName = "";
+<a name="line14"></a>        private $query;
+<a name="line15"></a>        
+<a name="line16"></a>        public function __construct($configs) {
+<a name="line17"></a>            $this->configs = $configs;
+<a name="line18"></a>            $this->query = (object) array();
+<a name="line19"></a>        }
+<a name="line20"></a>        public function __toString() {
+<a name="line21"></a>            return "MySQL";
+<a name="line22"></a>        }
+<a name="line23"></a>        public function __get($key) {
+<a name="line24"></a>            if(isset($this->$key)) {
+<a name="line25"></a>                return $this->$key;
+<a name="line26"></a>            } else if(isset($this->configs->$key)) {
+<a name="line27"></a>                return $this->configs->$key;
+<a name="line28"></a>            } else {
+<a name="line29"></a>                return null; 
+<a name="line30"></a>            }
+<a name="line31"></a>        }
+<a name="line32"></a>        public function get() {
+<a name="line33"></a>            $this->query->select = "SELECT * FROM {tableName}";
+<a name="line34"></a>            return $this;
+<a name="line35"></a>        }
+<a name="line36"></a>        public function store($record) {
+<a name="line37"></a>        
+<a name="line38"></a>            if($record) {
+<a name="line39"></a>        
+<a name="line40"></a>                // updating
+<a name="line41"></a>                if(isset($record->id) && $record->id) {
+<a name="line42"></a>                    $this->query->update = "UPDATE {tableName} SET ";
+<a name="line43"></a>                    foreach($record as $key => $value) {
+<a name="line44"></a>                        if($key != "id") {
+<a name="line45"></a>                            $this->query->update .= $key."='".$value."', ";
+<a name="line46"></a>                        }
+<a name="line47"></a>                    }
+<a name="line48"></a>                    $this->query->update = substr($this->query->update, 0, strlen($this->query->update)-2);
+<a name="line49"></a>                    $this->where("id='".$record->id."'");
+<a name="line50"></a>                    $this->flush();
+<a name="line51"></a>                    return $record->id;
+<a name="line52"></a>                    
+<a name="line53"></a>                // inserting
+<a name="line54"></a>                } else {
+<a name="line55"></a>                    $record->position = $this->getNextPosition();
+<a name="line56"></a>                    $this->query->insert = "INSERT INTO {tableName} (";
+<a name="line57"></a>                    $fields = "";
+<a name="line58"></a>                    $values = "";
+<a name="line59"></a>                    foreach($record as $key => $value) {
+<a name="line60"></a>                        $fields .= $key.", ";
+<a name="line61"></a>                        $values .= "'".$value."', ";
+<a name="line62"></a>                    }
+<a name="line63"></a>                    $fields = substr($fields, 0, strlen($fields)-2);
+<a name="line64"></a>                    $values = substr($values, 0, strlen($values)-2);
+<a name="line65"></a>                    $this->query->insert .= $fields.") VALUES (".$values.")";
+<a name="line66"></a>                    $this->flush();
+<a name="line67"></a>                    $res = $this->action("SELECT max(id) as value FROM {tableName}");
+<a name="line68"></a>                    return $res[0]->value;
+<a name="line69"></a>                }
+<a name="line70"></a>            
+<a name="line71"></a>            }
+<a name="line72"></a>            
+<a name="line73"></a>            return FALSE;
+<a name="line74"></a>        }
+<a name="line75"></a>        public function trash($record) {
+<a name="line76"></a>            $this->query->delete = "DELETE FROM {tableName}";
+<a name="line77"></a>            $this->where("id='".$record->id."'");
+<a name="line78"></a>            $this->flush();
+<a name="line79"></a>            return $record->id;
+<a name="line80"></a>        }
+<a name="line81"></a>        public function order($str) {
+<a name="line82"></a>            $this->query->order = " ORDER BY ".$str;
+<a name="line83"></a>            return $this;
+<a name="line84"></a>        }
+<a name="line85"></a>        public function asc() {
+<a name="line86"></a>            $this->query->asc = " ASC";
+<a name="line87"></a>            return $this;
+<a name="line88"></a>        }
+<a name="line89"></a>        public function desc() {
+<a name="line90"></a>            $this->query->desc = " DESC";
+<a name="line91"></a>            return $this;
+<a name="line92"></a>        }
+<a name="line93"></a>        public function where($str) {
+<a name="line94"></a>            if(isset($this->query->where)) {
+<a name="line95"></a>                $this->query->where .= $str;
+<a name="line96"></a>            } else {
+<a name="line97"></a>                $this->query->where = $str;
+<a name="line98"></a>            }
+<a name="line99"></a>            return $this;
+<a name="line100"></a>        }
+<a name="line101"></a>        public function report() {
+<a name="line102"></a>            var_dump($this."");
+<a name="line103"></a>            var_dump($this->queries);
+<a name="line104"></a>            return $this;
+<a name="line105"></a>        }
+<a name="line106"></a>        public function flush() {
+<a name="line107"></a>            $result = $this->action();
+<a name="line108"></a>            $this->query = (object) array();
+<a name="line109"></a>            return $result;
+<a name="line110"></a>        }
+<a name="line111"></a>        public function action($queryStr = FALSE) {
+<a name="line112"></a>            $this->initialize();
+<a name="line113"></a>            if($queryStr === FALSE) {
+<a name="line114"></a>                $queryStr = $this->composeQueryStr();
+<a name="line115"></a>            }
+<a name="line116"></a>            $queryStr = str_replace("{tableName}", $this->tableName, $queryStr);
+<a name="line117"></a>            $this->queries []= $queryStr;
+<a name="line118"></a>            $res = mysql_query($queryStr);
+<a name="line119"></a>            if(is_resource($res)) {
+<a name="line120"></a>                if(mysql_num_rows($res) === 0) {
+<a name="line121"></a>                    return mysql_fetch_object($res);
+<a name="line122"></a>                } else {
+<a name="line123"></a>                    $rows = array();
+<a name="line124"></a>                    while($row = mysql_fetch_object($res)) {
+<a name="line125"></a>                        $rows []= $row;
+<a name="line126"></a>                    }
+<a name="line127"></a>                    return $rows;
+<a name="line128"></a>                }
+<a name="line129"></a>            }
+<a name="line130"></a>            return $res;
+<a name="line131"></a>        }
+<a name="line132"></a>        private function initialize() {
+<a name="line133"></a>        
+<a name="line134"></a>            if($this->initialized) { return true; };
+<a name="line135"></a>            $this->initialized = true;
+<a name="line136"></a>            
+<a name="line137"></a>            // checks
+<a name="line138"></a>            if($this->host === null) {
+<a name="line139"></a>                $this->error("missing property 'host' in '".$this."' (check /config/config.json:adapters)");
+<a name="line140"></a>            }
+<a name="line141"></a>            if($this->dbname === null) {
+<a name="line142"></a>                $this->error("missing property 'dbname' in '".$this."' (check /config/config.json:adapters)");
+<a name="line143"></a>            }
+<a name="line144"></a>            if($this->user === null) {
+<a name="line145"></a>                $this->error("missing property 'user' in '".$this."' (check /config/config.json:adapters)");
+<a name="line146"></a>            }
+<a name="line147"></a>            if($this->pass === null) {
+<a name="line148"></a>                $this->error("missing property 'pass' in '".$this."' (check /config/config.json:adapters)");
+<a name="line149"></a>            }
+<a name="line150"></a>            
+<a name="line151"></a>            // connecting and select db
+<a name="line152"></a>            $res = @mysql_connect($this->host, $this->user, $this->pass);       
+<a name="line153"></a>            if($res === FALSE) {
+<a name="line154"></a>                $this->error("can't connect (check /config/config.json:adapters.".$this.")");
+<a name="line155"></a>            } else {
+<a name="line156"></a>                $res = @mysql_select_db($this->dbname, $res);
+<a name="line157"></a>                if($res === FALSE) {
+<a name="line158"></a>                    $this->error("can't select database (check /config/config.json:adapters.".$this.")");
+<a name="line159"></a>                }
+<a name="line160"></a>            }
+<a name="line161"></a>            
+<a name="line162"></a>            // setting the table's name
+<a name="line163"></a>            $this->tableName = strtolower($this->name);
+<a name="line164"></a>            
+<a name="line165"></a>            if(!isset($this->freeze) || !$this->freeze) {
+<a name="line166"></a>            
+<a name="line167"></a>                // checking/creating the table
+<a name="line168"></a>                $res = $this->action("SHOW TABLES LIKE '".$this->tableName."'");
+<a name="line169"></a>                if($res === FALSE) {
+<a name="line170"></a>                    $res = $this->action("
+<a name="line171"></a>                        CREATE TABLE IF NOT EXISTS `".$this->tableName."` (
+<a name="line172"></a>                            `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+<a name="line173"></a>                            `position` bigint(20) unsigned NOT NULL,
+<a name="line174"></a>                            PRIMARY KEY (`ID`)
+<a name="line175"></a>                        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+<a name="line176"></a>                    ");
+<a name="line177"></a>                }
+<a name="line178"></a>            
+<a name="line179"></a>                if($this->fields !== null) {
+<a name="line180"></a>               
+<a name="line181"></a>                    // add columns to the table
+<a name="line182"></a>                    $tableFields = $this->action("SHOW COLUMNS FROM ".$this->tableName);
+<a name="line183"></a>                    foreach($this->fields as $field) {
+<a name="line184"></a>                        $add = true;
+<a name="line185"></a>                        foreach($tableFields as $tableField) {
+<a name="line186"></a>                            if($field->name == $tableField->Field) {
+<a name="line187"></a>                                $add = false;
+<a name="line188"></a>                            }
+<a name="line189"></a>                        }
+<a name="line190"></a>                        if($add) {
+<a name="line191"></a>                            $this->action("ALTER TABLE ".$this->tableName." ADD ".$field->name.$this->getMySQLColumnType($field));
+<a name="line192"></a>                        }
+<a name="line193"></a>                    }
+<a name="line194"></a>                    
+<a name="line195"></a>                    // removing columns from the table
+<a name="line196"></a>                    foreach($tableFields as $tableField) {
+<a name="line197"></a>                        $remove = true;
+<a name="line198"></a>                        foreach($this->fields as $field) {
+<a name="line199"></a>                            if($tableField->Field == $field->name) {
+<a name="line200"></a>                                $remove = false;
+<a name="line201"></a>                            }
+<a name="line202"></a>                        }
+<a name="line203"></a>                        if($remove && $tableField->Field != "id" && $tableField->Field != "position") {
+<a name="line204"></a>                            $this->action("ALTER TABLE ".$this->tableName." DROP COLUMN ".$tableField->Field);
+<a name="line205"></a>                        }
+<a name="line206"></a>                    }
+<a name="line207"></a>                
+<a name="line208"></a>                }
+<a name="line209"></a>                
+<a name="line210"></a>            }
+<a name="line211"></a>                
+<a name="line212"></a>        }
+<a name="line213"></a>        private function composeQueryStr() {
+<a name="line214"></a>            $str = "";
+<a name="line215"></a>            if(isset($this->query->select)) {
+<a name="line216"></a>                $str .= $this->query->select;
+<a name="line217"></a>                $str .= isset($this->query->where) ? " WHERE ".$this->query->where : "";
+<a name="line218"></a>                $str .= isset($this->query->order) ? $this->query->order : "";
+<a name="line219"></a>                $str .= isset($this->query->asc) ? $this->query->asc : "";
+<a name="line220"></a>                $str .= isset($this->query->desc) ? $this->query->desc : "";
+<a name="line221"></a>            } else if(isset($this->query->insert)) {
+<a name="line222"></a>                $str = $this->query->insert;
+<a name="line223"></a>            } else if(isset($this->query->delete)) {
+<a name="line224"></a>                $str = $this->query->delete;
+<a name="line225"></a>                $str .= isset($this->query->where) ? " WHERE ".$this->query->where : "";
+<a name="line226"></a>            } else if(isset($this->query->update)) {
+<a name="line227"></a>                $str = $this->query->update;
+<a name="line228"></a>                $str .= isset($this->query->where) ? " WHERE ".$this->query->where : "";
+<a name="line229"></a>            }
+<a name="line230"></a>            return $str;
+<a name="line231"></a>        }
+<a name="line232"></a>        private function getNextPosition() {
+<a name="line233"></a>            $res = $this->action("SELECT max(position) as value FROM {tableName}");
+<a name="line234"></a>            return isset($res[0]) ? $res[0]->value + 1 : 1;
+<a name="line235"></a>        }
+<a name="line236"></a>        private function getMySQLColumnType($field) {
+<a name="line237"></a>            $parts = explode("/", $field->presenter);
+<a name="line238"></a>            $presenterName = str_replace(".php", "", array_pop($parts));
+<a name="line239"></a>            $str = "";
+<a name="line240"></a>            switch($presenterName) {
+<a name="line241"></a>                case "Text": $str .= " VARCHAR(100) "; break;
+<a name="line242"></a>                case "Digit": $str .= " INT(10) "; break;
+<a name="line243"></a>                case "Color": $str .= " VARCHAR(10) "; break;
+<a name="line244"></a>                case "Date":
+<a name="line245"></a>                    if(isset($field->config)) {
+<a name="line246"></a>                        if($field->config->showsTime) {
+<a name="line247"></a>                            return " DATETIME ";
+<a name="line248"></a>                        } else {
+<a name="line249"></a>                            return " DATE ";
+<a name="line250"></a>                        }
+<a name="line251"></a>                    } else {
+<a name="line252"></a>                        return " DATE ";
+<a name="line253"></a>                    }
+<a name="line254"></a>                break;
+<a name="line255"></a>                case "File": $str .= " LONGTEXT "; break;
+<a name="line256"></a>                case "Files": $str .= " LONGTEXT "; break;
+<a name="line257"></a>                case "Select": $str .= " LONGTEXT "; break;
+<a name="line258"></a>                case "SelectCheck": $str .= " LONGTEXT "; break;
+<a name="line259"></a>                case "SelectDb": $str .= " LONGTEXT "; break;
+<a name="line260"></a>                case "SelectRadio": $str .= " LONGTEXT "; break;
+<a name="line261"></a>                case "TextLong": $str .= " LONGTEXT "; break;
+<a name="line262"></a>                case "TextRich": $str .= " LONGTEXT "; break;
+<a name="line263"></a>                default: $str .= " VARCHAR(100) "; break;
+<a name="line264"></a>            }
+<a name="line265"></a>            if(isset($field->default)) {
+<a name="line266"></a>                $str .= " NOT NULL DEFAULT '".$field->default."' ";
+<a name="line267"></a>            }
+<a name="line268"></a>            return $str;
+<a name="line269"></a>            // ALTER TABLE  `sample` ADD  `gsd` INT( 10 ) NOT NULL AFTER  `price`
+<a name="line270"></a>        }
+<a name="line271"></a>        private function error($str) {
+<a name="line272"></a>            throw new Exception($this.": ".$str);
+<a name="line273"></a>        }
+<a name="line274"></a>    
+<a name="line275"></a>    }
+<a name="line276"></a>    
+<a name="line277"></a>    /**
+<a name="line278"></a>    * @package Fabrico\Modules\Adapters
+<a name="line279"></a>    */
+<a name="line280"></a>    class MySQLConfig {
+<a name="line281"></a>    
+<a name="line282"></a>        public $name = null;
+<a name="line283"></a>        public $host = "";
+<a name="line284"></a>        public $user = "";
+<a name="line285"></a>        public $pass = "";
+<a name="line286"></a>        public $dbname = "";
+<a name="line287"></a>        public $freeze = false;
+<a name="line288"></a>        public $fields = null;
+<a name="line289"></a>        public $debug = false;
+<a name="line290"></a>        
+<a name="line291"></a>        public function __construct($props = null) {
+<a name="line292"></a>            if($props != null) {
+<a name="line293"></a>                foreach($props as $key => $value) {
+<a name="line294"></a>                    $this->$key = $value;
+<a name="line295"></a>                }
+<a name="line296"></a>            }
+<a name="line297"></a>        }
+<a name="line298"></a>        
+<a name="line299"></a>    }
+<a name="line300"></a>
+<a name="line301"></a>?></pre>
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../overview-summary.html">Overview</a></li>
+<li>Package</li><li>Class</li><li>Tree</li><li><a href="../overview-files.html">Files</a></li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../todo-list.html">Todo</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../index.html" target="_top">Frames</a>
+<a href="../source\fabrico\modules\php\adapters\mysql.php.html" target="_top">No frames</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>

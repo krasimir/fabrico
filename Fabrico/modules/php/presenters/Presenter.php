@@ -1,6 +1,7 @@
 <?php
 
     /**
+    The presenter is responsible for the database field's operations. I.e. showing, adding, editing and deleting.
     * @package Fabrico\Modules\Presenters
     */
     class Presenter {
@@ -65,6 +66,10 @@
                 break;
             }
         }
+        /**
+        After the call of this method $presenter->response->value will contain html formated code. A visual presentation of value.
+        @param $value The current value from the database.
+        */
         public function listing($value) {
             $this->response = $value;
             return $this;

@@ -3,6 +3,13 @@
     inject("presenters/Presenter.php");
 
     /**
+    Definition:
+    <pre class="code">
+    {
+        \t"name": "nameField",
+        \t"presenter": "presenters/Text.php"
+    }
+    </pre>
     * @package Fabrico\Modules\Presenters
     */
     class Text extends Presenter {

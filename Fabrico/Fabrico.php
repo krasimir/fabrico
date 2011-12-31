@@ -5,7 +5,7 @@
     */
     define("FABRICO_ROOT", dirname(__FILE__));
     
-    require(FABRICO_ROOT."/modules/php/tools/Injector.php");
+    require(FABRICO_ROOT."/modules/php/utils/Injector.php");
     /**
     * Instance of Injector class.
     * @see Injector

@@ -3,6 +3,13 @@
     inject("presenters/Text.php");
 
     /**
+    Definition:
+    <pre class="code">
+    {
+        \t"name": "colorField",
+        \t"presenter": "presenters/Color.php"
+    }
+    </pre>
     * @package Fabrico\Modules\Presenters
     */
     class Color extends Text {

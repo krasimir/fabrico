@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<script src="../../../utils/js/jquery-1.6.3.min.js"></script>
+<script src="../../../utils/js/jquery.snippet.min.js"></script>
+<script src="../../../utils/js/scripts.js" type="text/javascript" language="JavaScript"></script>
+<link rel="stylesheet" type="text/css" href="../../../utils/css/jquery.snippet.min.css">
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
+<meta name="when" content="Sat, 31 Dec 2011 10:59:26 +0000">
+
+<link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
+<link rel="start" href="../../../overview-summary.html">
+
+<title>Middleware (Fabrico)</title>
+
+</head>
+<body id="definition" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="../../../fabrico/modules/utils/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../../fabrico/modules/utils/package-tree.html">Tree</a></li>
+<li><a href="../../../overview-files.html">Files</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../todo-list.html">Todo</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../../index.html" target="_top">Frames</a>
+<a href="../../../fabrico\modules\utils\middleware.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<div class="qualifiedName">Fabrico\Modules\Utils\Middleware</div>
+<a href="../../../source/fabrico/modules/php/utils/middleware.php.html#line7" class="location">Fabrico\modules\php\utils\Middleware.php at line 7</a>
+
+<h1>Class Middleware</h1>
+
+<pre class="tree"><strong>Middleware</strong><br /></pre>
+
+<dl>
+<dt>All Known Subclasses:</dt>
+<dd><a href="../../../fabrico/modules/middleware/assetsmanager.html">Fabrico\Modules\Middleware\AssetsManager</a> <a href="../../../fabrico/fabrico.html">Fabrico\Fabrico</a> <a href="../../../fabrico/controllers/pages/page.html">Fabrico\Controllers\Pages\Page</a> </dd>
+</dl>
+
+<hr>
+
+<p class="signature">public  class <strong>Middleware</strong></p>
+
+<div class="comment" id="overview_description"><p>Class that realize a middleware architecture. I.e. components/classes which are run one after each other. Normally every part of the middleware has method 'run' which accepts $request and $response.</p></div>
+
+<hr>
+
+<table id="summary_constructor">
+<tr><th colspan="2">Constructor Summary</th></tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#__construct()">__construct</a>(array options)</p><p class="description"></p></td>
+</tr>
+</table>
+
+<table id="summary_method">
+<tr><th colspan="2">Method Summary</th></tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#using()">using</a>(array|string modules)</p><p class="description">Set the middleware items.
+</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#run()">run</a>(mixed req, mixed res)</p></td>
+</tr>
+</table>
+
+<h2 id="detail_method">Constructor Detail</h2>
+<a href="../../../source/fabrico/modules/php/utils/middleware.php.html#line17" class="location">Fabrico\modules\php\utils\Middleware.php at line 17</a>
+
+<h3 id="__construct()">__construct</h3>
+<code class="signature">public  void <strong>__construct</strong>(array options)</code>
+<div class="details">
+<p></p><dl>
+<dt>Parameters:</dt>
+<dd>options - Associative array. All the array's items are attached as public properties.</dd>
+</dl>
+</div>
+
+<hr>
+
+<h2 id="detail_method">Method Detail</h2>
+<a href="../../../source/fabrico/modules/php/utils/middleware.php.html#line33" class="location">Fabrico\modules\php\utils\Middleware.php at line 33</a>
+
+<h3 id="using()">using</h3>
+<code class="signature">public  void <strong>using</strong>(array|string modules)</code>
+<div class="details">
+<p>Set the middleware items.
+Example:
+<pre>
+$this->using(array(
+"benchmark" => "middleware/Benchmark.php",
+"config" => "tools/JSONConfig.php",
+"models" => "middleware/ModelsManager.php"
+));
+</pre></p><dl>
+<dt>Parameters:</dt>
+<dd>modules - The middleware items</dd>
+</dl>
+</div>
+
+<hr>
+
+<a href="../../../source/fabrico/modules/php/utils/middleware.php.html#line53" class="location">Fabrico\modules\php\utils\Middleware.php at line 53</a>
+
+<h3 id="run()">run</h3>
+<code class="signature">public  void <strong>run</strong>(mixed req, mixed res)</code>
+<div class="details">
+</div>
+
+<hr>
+
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="../../../fabrico/modules/utils/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../../fabrico/modules/utils/package-tree.html">Tree</a></li>
+<li><a href="../../../overview-files.html">Files</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../todo-list.html">Todo</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../../index.html" target="_top">Frames</a>
+<a href="../../../fabrico\modules\utils\middleware.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>

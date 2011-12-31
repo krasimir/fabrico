@@ -3,20 +3,48 @@
     "freeze": false,
     "fields": [
         {
-            "name": "description",
-            "presenter": "presenters/TextRich.php",
+            "name": "firstName",
+            "presenter": "presenters/Text.php",
+            "validators": [
+                {
+                    "class": "validators/OnlyNumbers.php",
+                    "message": "only numbers please"
+                },
+                {
+                    "class": "validators/LengthExact.php",
+                    "message": "exact 5 digits",
+                    "parameters": {
+                        "length": 5
+                    }
+                }
+            ]
+        },
+        {
+            "name": "avatar",
+            "presenter": "presenters/Files.php",
             "config": {
-                "swfURL": "/assets/swf/wysiwyg/bin/swf/Project.swf",
-                "fontFamily": "no",
-                "bullets": "no",
-                "linkInput": "yes",
-                "fontSize": "no",
-                "colorPicker": "no",
-                "alignButtons": "no",
-                "bold": "yes",
-                "italic": "yes",
-                "underline": "yes"
+                "destination": "/assets/uploads"
             }
+        },
+        {
+            "name": "category",
+            "presenter": "presenters/Select.php",
+            "config": {
+                "options": [
+                    {"key": "yes", "label": "answer Yes"},
+                    {"key": "no", "label": "answer No"},
+                    {"key": "maybe", "label": "answer Maybe"}
+                ]
+            }
+        },
+        {
+            "name": "color",
+            "presenter": "presenters/Color.php"
         }
-    ]
+    ],
+    "actions": {
+        "listing": {
+            "fieldsToHide": ["avatar", "color"]
+        }
+    }
 }

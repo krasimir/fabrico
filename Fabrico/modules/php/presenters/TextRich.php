@@ -3,25 +3,25 @@
     inject("presenters/Text.php");
 
     /**
-    * Configuration:
-    * <code><pre>
-    * {
-    *    &nbsp;&nbsp;&nbsp;&nbsp;"name": "description",
-    *    &nbsp;&nbsp;&nbsp;&nbsp;"presenter": "presenters/TextRich.php",
-    *    &nbsp;&nbsp;&nbsp;&nbsp;"config": {
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"swfURL": "/assets/swf/wysiwyg/bin/swf/Project.swf",
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"fontFamily": "no",
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"bullets": "no",
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"linkInput": "yes",
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"fontSize": "no",
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"colorPicker": "no",
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"alignButtons": "no",
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"bold": "yes",
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"italic": "yes",
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"underline": "yes"
-        &nbsp;&nbsp;&nbsp;&nbsp;}
-    * }
-    * </pre></code>
+    Definition:
+    <pre class="code">
+    {
+        \t"name": "description",
+        \t"presenter": "presenters/TextRich.php",
+        \t"config": {
+            \t\t"swfURL": "/assets/swf/wysiwyg/bin/swf/Project.swf",
+            \t\t"fontFamily": "no",
+            \t\t"bullets": "no",
+            \t\t"linkInput": "yes",
+            \t\t"fontSize": "no",
+            \t\t"colorPicker": "no",
+            \t\t"alignButtons": "no",
+            \t\t"bold": "yes",
+            \t\t"italic": "yes",
+            \t\t"underline": "yes"
+        \t}
+    }
+    </pre>
     * @package Fabrico\Modules\Presenters
     */
     class TextRich extends Text {

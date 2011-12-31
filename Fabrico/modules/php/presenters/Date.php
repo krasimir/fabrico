@@ -3,16 +3,16 @@
     inject("presenters/Text.php");
 
     /**
-    * Configuration:
-    * <code><pre>
-    * {
-    *    &nbsp;&nbsp;&nbsp;&nbsp;"name": "date",
-    *    &nbsp;&nbsp;&nbsp;&nbsp;"presenter": "presenters/Date.php",
-    *    &nbsp;&nbsp;&nbsp;&nbsp;"config": {
-    *        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"showsTime": true
-    *    &nbsp;&nbsp;&nbsp;&nbsp;}
-    * }
-    * </pre></code>
+    Definition:
+    <pre class="code">
+    {
+        \t"name": "date",
+        \t"presenter": "presenters/Date.php",
+        \t"config": {
+            \t\t"showsTime": true
+        \t}
+    }
+    </pre>
     * @package Fabrico\Modules\Presenters
     */
     class Date extends Text {

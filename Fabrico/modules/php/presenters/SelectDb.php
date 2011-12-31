@@ -3,17 +3,17 @@
     inject("presenters/Presenter.php");
 
     /**
-    * Configuration:
-    * <code><pre>
-    * {
-    *    &nbsp;&nbsp;&nbsp;&nbsp;"name": "category",
-    *    &nbsp;&nbsp;&nbsp;&nbsp;"presenter": "presenters/SelectDb.php",
-    *    &nbsp;&nbsp;&nbsp;&nbsp;"config": {
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"model": "models/categories.json",
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"field": "categoryLabel"
-         &nbsp;&nbsp;&nbsp;&nbsp;}
-    * }
-    * </pre></code>
+    Definition:
+    <pre class="code">
+    {
+        \t"name": "category",
+        \t"presenter": "presenters/SelectDb.php",
+        \t"config": {
+            \t\t"model": "models/categories.json",
+            \t\t"field": "categoryLabel"
+        \t}
+    }
+    </pre>
     * @package Fabrico\Modules\Presenters
     */
     class SelectDb extends Presenter {

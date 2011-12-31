@@ -6,16 +6,16 @@
     ));
 
     /**
-    * Configuration:
-    * <code><pre>
-    * {
-    *     &nbsp;&nbsp;&nbsp;&nbsp;"name": "image",
-    *     &nbsp;&nbsp;&nbsp;&nbsp;"presenter": "presenters/Files.php",
-    *     &nbsp;&nbsp;&nbsp;&nbsp;"config": {
-    *         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"destination": "/assets/uploads"
-    *     &nbsp;&nbsp;&nbsp;&nbsp;}
-    * }
-    * </pre></code>
+    Definition:
+    <pre class="code">
+    {
+        \t"name": "image",
+        \t"presenter": "presenters/File.php",
+        \t"config": {
+            \t\t"destination": "/assets/uploads"
+        \t}
+    }
+    </pre>
     * @package Fabrico\Modules\Presenters
     */
     class Files extends File {

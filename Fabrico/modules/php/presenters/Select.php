@@ -3,20 +3,20 @@
     inject("presenters/Presenter.php");
 
     /**
-    * Configuration:
-    * <code><pre>
-    * {
-    *    &nbsp;&nbsp;&nbsp;&nbsp;"name": "category",
-    *    &nbsp;&nbsp;&nbsp;&nbsp;"presenter": "presenters/Select.php",
-    *    &nbsp;&nbsp;&nbsp;&nbsp;"config": {
-    *        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"options": [
-    *           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{"key": "yes", "label": "answer Yes"},
-    *           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{"key": "no", "label": "answer No"},
-    *           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{"key": "maybe", "label": "answer Maybe"}
-    *        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
-    *    &nbsp;&nbsp;&nbsp;&nbsp;}
-    * }
-    * </pre></code>
+    Definition:
+    <pre class="code">
+    {
+        \t"name": "category",
+        \t"presenter": "presenters/Select.php",
+        \t"config": {
+            \t\t"options": [
+                \t\t\t{"key": "yes", "label": "answer Yes"},
+                \t\t\t{"key": "no", "label": "answer No"},
+                \t\t\t{"key": "maybe", "label": "answer Maybe"}
+            \t\t]
+        \t}
+    }
+    </pre>
     * @package Fabrico\Modules\Presenters
     */
     class Select extends Presenter {

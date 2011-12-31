@@ -1,0 +1,366 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<script src="../utils/js/jquery-1.6.3.min.js"></script>
+<script src="../utils/js/jquery.snippet.min.js"></script>
+<script src="../utils/js/scripts.js" type="text/javascript" language="JavaScript"></script>
+<link rel="stylesheet" type="text/css" href="../utils/css/jquery.snippet.min.css">
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
+<meta name="when" content="Sat, 31 Dec 2011 10:59:27 +0000">
+
+<link rel="stylesheet" type="text/css" href="../stylesheet.css">
+<link rel="start" href="../overview-summary.html">
+
+<title>Fabrico\modules\php\utils\Test.php (Fabrico)</title>
+
+</head>
+<body id="file" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../overview-summary.html">Overview</a></li>
+<li>Package</li><li>Class</li><li>Tree</li><li><a href="../overview-files.html">Files</a></li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../todo-list.html">Todo</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../index.html" target="_top">Frames</a>
+<a href="../source\fabrico\modules\php\utils\test.php.html" target="_top">No frames</a>
+</div>
+<hr>
+
+<h1>Fabrico\modules\php\utils\Test.php</h1>
+<hr>
+
+<a name="line1"></a><pre><?php
+<a name="line2"></a>
+<a name="line3"></a>	/**
+<a name="line4"></a>    * Example usage:
+<a name="line5"></a>    * <code><pre>
+<a name="line6"></a>    *   class MyTest extends TestCase {
+<a name="line7"></a>	* 	    &nbsp;&nbsp;&nbsp;&nbsp;function testMyFeature() {
+<a name="line8"></a>    *           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$module = ...
+<a name="line9"></a>    *           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$result = $module->getResult();
+<a name="line10"></a>    *           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this->describe("Checking if the result is not NULL")->isNotNull($result);
+<a name="line11"></a>    *           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this->describe("Checking if the result is > 10")->isTrue($result > 10);
+<a name="line12"></a>    *       &nbsp;&nbsp;&nbsp;&nbsp;}
+<a name="line13"></a>    *   }
+<a name="line14"></a>	*
+<a name="line15"></a>	*   die(Test::run(new OpenXTesting()));
+<a name="line16"></a>    * </pre></code>
+<a name="line17"></a>    * @package Fabrico\Modules\Utils
+<a name="line18"></a>    */
+<a name="line19"></a>	class Test {
+<a name="line20"></a>
+<a name="line21"></a>		public static function run($arg) {
+<a name="line22"></a>            $result = "";
+<a name="line23"></a>			if(is_array($arg)) {
+<a name="line24"></a>                $numOfTests = count($arg);
+<a name="line25"></a>                for($i=0; $i<$numOfTests; $i++) {
+<a name="line26"></a>                    $result .= $arg->run();
+<a name="line27"></a>                }
+<a name="line28"></a>            } if(is_string($arg)){
+<a name="line29"></a>            	inject($arg);
+<a name="line30"></a>				$parts = explode("/", $arg);
+<a name="line31"></a>	            $className = str_replace(".php", "", array_pop($parts));
+<a name="line32"></a>	            $instance = new $className();
+<a name="line33"></a>	            $isntance->run();
+<a name="line34"></a>            } else {
+<a name="line35"></a>                $result = $arg->run();
+<a name="line36"></a>            }
+<a name="line37"></a>            return $result;
+<a name="line38"></a>
+<a name="line39"></a>		}
+<a name="line40"></a>	};
+<a name="line41"></a>	 
+<a name="line42"></a>    /**
+<a name="line43"></a>    * responsible for displaying the results
+<a name="line44"></a>    * @package Fabrico\Modules\Utils
+<a name="line45"></a>    */
+<a name="line46"></a>	class TestResult {
+<a name="line47"></a>    
+<a name="line48"></a>        private $result = "";
+<a name="line49"></a>        
+<a name="line50"></a>		public function __construct() {
+<a name="line51"></a>			$this->result .= '
+<a name="line52"></a>				<style type="text/css">
+<a name="line53"></a>					body {
+<a name="line54"></a>						font-family: Tahoma;
+<a name="line55"></a>						font-size: 14px;
+<a name="line56"></a>					}
+<a name="line57"></a>				</style>
+<a name="line58"></a>			';
+<a name="line59"></a>		}
+<a name="line60"></a>		public function title($str) {
+<a name="line61"></a>			$this->result .= '<h1 style="font-size:20px;">'.$str.'</h1>';
+<a name="line62"></a>		}
+<a name="line63"></a>		public function passed($str) {
+<a name="line64"></a>			$this->result .= '<p style="color: #256D1B; margin: 0; padding: 0;">Passed &#187; '.$str.'</p>';
+<a name="line65"></a>		}
+<a name="line66"></a>		public function failed($str) {
+<a name="line67"></a>			$this->result .= '<p style="color: #FF0000; font-weight: bold; margin: 0; padding: 0;">Failed &#187; '.$str.'</p>';
+<a name="line68"></a>		}
+<a name="line69"></a>		public function sectionStart($title) {
+<a name="line70"></a>			$this->result .= '<fieldset><legend>'.$title.'</legend>';
+<a name="line71"></a>		}
+<a name="line72"></a>		public function sectionEnd() {
+<a name="line73"></a>			$this->result .= '</fieldset>';
+<a name="line74"></a>		}
+<a name="line75"></a>		public function note($str) {
+<a name="line76"></a>			$this->result .= '
+<a name="line77"></a>				<p 
+<a name="line78"></a>					style="
+<a name="line79"></a>						border-left: solid 10px #42A5CA;
+<a name="line80"></a>						border-top: solid 1px #49C2BF;
+<a name="line81"></a>						margin: 2px 0 0 0;
+<a name="line82"></a>						padding: 5px 0 5px 5px;
+<a name="line83"></a>						font-size: 12px;
+<a name="line84"></a>						font-weight: bold;
+<a name="line85"></a>						color: #42A5CA;
+<a name="line86"></a>					"
+<a name="line87"></a>				>'.$str.'</p>';
+<a name="line88"></a>		}
+<a name="line89"></a>        public function __toString() {		
+<a name="line90"></a>            return $this->result;
+<a name="line91"></a>        }
+<a name="line92"></a>	};
+<a name="line93"></a>	
+<a name="line94"></a>    /**
+<a name="line95"></a>    * custom exception which help us to investigate the result of the test
+<a name="line96"></a>    * @package Fabrico\Modules\Utils
+<a name="line97"></a>    */
+<a name="line98"></a>	class TestException extends Exception {
+<a name="line99"></a>	
+<a name="line100"></a>		public $status;
+<a name="line101"></a>	
+<a name="line102"></a>		function __construct($status) {
+<a name="line103"></a>			$this->status = $status;
+<a name="line104"></a>		}
+<a name="line105"></a>	};
+<a name="line106"></a>
+<a name="line107"></a>    /**
+<a name="line108"></a>    * the actual test class
+<a name="line109"></a>    * @package Fabrico\Modules\Utils
+<a name="line110"></a>    */
+<a name="line111"></a>	class TestCase {
+<a name="line112"></a>	
+<a name="line113"></a>		protected $_result;
+<a name="line114"></a>		private $_skipMethods = array(
+<a name="line115"></a>            "__construct",
+<a name="line116"></a>			"run", 
+<a name="line117"></a>			"TestCase", 
+<a name="line118"></a>			"getTraceInformation", 
+<a name="line119"></a>			"processResult", 
+<a name="line120"></a>			"isTrue", 
+<a name="line121"></a>			"isFalse", 
+<a name="line122"></a>			"isNull", 
+<a name="line123"></a>			"isNotNull", 
+<a name="line124"></a>			"isA", 
+<a name="line125"></a>			"isNotA",
+<a name="line126"></a>			"isEqual",
+<a name="line127"></a>			"isNotEqual",
+<a name="line128"></a>			"isIdentical",
+<a name="line129"></a>			"isNotIdentical",
+<a name="line130"></a>			"isEmptyString",
+<a name="line131"></a>			"isNotEmptyString",
+<a name="line132"></a>			"isMoreThen",
+<a name="line133"></a>			"isLessThen",
+<a name="line134"></a>			"describe"
+<a name="line135"></a>		);
+<a name="line136"></a>        
+<a name="line137"></a>		public function __construct() {
+<a name="line138"></a>			$this->_result = new TestResult();
+<a name="line139"></a>		}
+<a name="line140"></a>		public function run() {
+<a name="line141"></a>		
+<a name="line142"></a>			$this->_result->title("class ".get_class($this));
+<a name="line143"></a>				
+<a name="line144"></a>			$methods = get_class_methods(get_class($this));
+<a name="line145"></a>			$numOfMethods = count($methods);
+<a name="line146"></a>			for($i=0; $i<$numOfMethods; $i++) {
+<a name="line147"></a>				$method = $methods[$i];
+<a name="line148"></a>				if(!in_array($method, $this->_skipMethods)) {
+<a name="line149"></a>					$this->_result->sectionStart("method : ".$method);
+<a name="line150"></a>					$this->$method();
+<a name="line151"></a>					$this->_result->sectionEnd();
+<a name="line152"></a>				}
+<a name="line153"></a>			}
+<a name="line154"></a>            
+<a name="line155"></a>            return $this->_result;
+<a name="line156"></a>			
+<a name="line157"></a>		}
+<a name="line158"></a>		public function describe($str) {
+<a name="line159"></a>			$this->_result->note($str);
+<a name="line160"></a>			return $this;
+<a name="line161"></a>		}
+<a name="line162"></a>		protected function isTrue($expression, $catch = true) {
+<a name="line163"></a>			if($catch) {
+<a name="line164"></a>				try {
+<a name="line165"></a>					if($expression) {
+<a name="line166"></a>						throw new TestException(true);
+<a name="line167"></a>					} else {
+<a name="line168"></a>						throw new TestException(false);
+<a name="line169"></a>					}
+<a name="line170"></a>				} catch(TestException $e) {
+<a name="line171"></a>					$this->processResult($e);
+<a name="line172"></a>				}
+<a name="line173"></a>			} else {
+<a name="line174"></a>				if(!$expression) {
+<a name="line175"></a>					throw new TestException(false);
+<a name="line176"></a>				}
+<a name="line177"></a>			}
+<a name="line178"></a>		}
+<a name="line179"></a>		protected function isFalse($expression, $catch = true) {
+<a name="line180"></a>			$this->isTrue(!$expression, $catch);
+<a name="line181"></a>		}
+<a name="line182"></a>		protected function isNull($expression, $catch = true) {
+<a name="line183"></a>			$this->isTrue($expression === NULL, $catch);
+<a name="line184"></a>		}
+<a name="line185"></a>		protected function isNotNull($expression, $catch = true) {
+<a name="line186"></a>			$this->isTrue($expression !== NULL, $catch);
+<a name="line187"></a>		}
+<a name="line188"></a>		protected function isA($ob, $className) {
+<a name="line189"></a>			try {
+<a name="line190"></a>				$this->isNotNull($ob, false);
+<a name="line191"></a>				$this->isNotNull($className, false);
+<a name="line192"></a>				$this->isTrue(get_class($ob) == $className);
+<a name="line193"></a>			} catch(TestException $e) {
+<a name="line194"></a>				$this->processResult($e);
+<a name="line195"></a>			}
+<a name="line196"></a>		}
+<a name="line197"></a>		protected function isNotA($ob, $className) {
+<a name="line198"></a>			try {
+<a name="line199"></a>				$this->isNotNull($ob, false);
+<a name="line200"></a>				$this->isNotNull($className, false);
+<a name="line201"></a>				$this->isTrue(get_class($ob) != $className);
+<a name="line202"></a>			} catch(TestException $e) {
+<a name="line203"></a>				$this->processResult($e);
+<a name="line204"></a>			}
+<a name="line205"></a>		}
+<a name="line206"></a>		protected function isEqual($a, $b) {
+<a name="line207"></a>			try {
+<a name="line208"></a>				$this->isNotNull($a, false);
+<a name="line209"></a>				$this->isNotNull($b, false);
+<a name="line210"></a>				$this->isTrue($a == $b);
+<a name="line211"></a>			} catch(TestException $e) {
+<a name="line212"></a>				$this->processResult($e);
+<a name="line213"></a>			}
+<a name="line214"></a>		}
+<a name="line215"></a>		protected function isNotEqual($a, $b) {
+<a name="line216"></a>			try {
+<a name="line217"></a>				$this->isNotNull($a, false);
+<a name="line218"></a>				$this->isNotNull($b, false);
+<a name="line219"></a>				$this->isTrue(!($a == $b));
+<a name="line220"></a>			} catch(TestException $e) {
+<a name="line221"></a>				$this->processResult($e);
+<a name="line222"></a>			}
+<a name="line223"></a>		}
+<a name="line224"></a>		protected function isIdentical($a, $b) {
+<a name="line225"></a>			try {
+<a name="line226"></a>				$this->isNotNull($a, false);
+<a name="line227"></a>				$this->isNotNull($b, false);
+<a name="line228"></a>				$this->isTrue($a === $b);
+<a name="line229"></a>			} catch(TestException $e) {
+<a name="line230"></a>				$this->processResult($e);
+<a name="line231"></a>			}
+<a name="line232"></a>		}
+<a name="line233"></a>		protected function isNotIdentical($a, $b) {
+<a name="line234"></a>			try {
+<a name="line235"></a>				$this->isNotNull($a, false);
+<a name="line236"></a>				$this->isNotNull($b, false);
+<a name="line237"></a>				$this->isTrue(!($a === $b));
+<a name="line238"></a>			} catch(TestException $e) {
+<a name="line239"></a>				$this->processResult($e);
+<a name="line240"></a>			}
+<a name="line241"></a>		}
+<a name="line242"></a>		protected function isEmptyString($str) {
+<a name="line243"></a>			try {
+<a name="line244"></a>				$this->isNotNull($str, false);
+<a name="line245"></a>				$this->isIdentical($str, "");
+<a name="line246"></a>			} catch(TestException $e) {
+<a name="line247"></a>				$this->processResult($e);
+<a name="line248"></a>			}
+<a name="line249"></a>		}
+<a name="line250"></a>		protected function isNotEmptyString($str) {
+<a name="line251"></a>			try {
+<a name="line252"></a>				$this->isNotNull($str, false);
+<a name="line253"></a>				$this->isNotIdentical($str, "");
+<a name="line254"></a>			} catch(TestException $e) {
+<a name="line255"></a>				$this->processResult($e);
+<a name="line256"></a>			}
+<a name="line257"></a>		}
+<a name="line258"></a>		protected function isMoreThen($a, $value) {
+<a name="line259"></a>			try {
+<a name="line260"></a>				$this->isNotNull($a, false);
+<a name="line261"></a>				$this->isTrue($a > $value);
+<a name="line262"></a>			} catch(TestException $e) {
+<a name="line263"></a>				$this->processResult($e);
+<a name="line264"></a>			}
+<a name="line265"></a>		}
+<a name="line266"></a>		protected function isLessThen($a, $value) {
+<a name="line267"></a>			try {
+<a name="line268"></a>				$this->isNotNull($a, false);
+<a name="line269"></a>				$this->isTrue($a < $value);
+<a name="line270"></a>			} catch(TestException $e) {
+<a name="line271"></a>				$this->processResult($e);
+<a name="line272"></a>			}
+<a name="line273"></a>		}
+<a name="line274"></a>		private function getTraceInformation($trace) {
+<a name="line275"></a>			$numOfTraces = count($trace);
+<a name="line276"></a>			for($i=0; $i<$numOfTraces; $i++) {
+<a name="line277"></a>				if($trace[$i]["class"] != 'TestCase' && $i > 0) {
+<a name="line278"></a>					return $trace[$i-1];
+<a name="line279"></a>				}
+<a name="line280"></a>			}
+<a name="line281"></a>			return $trace[0];
+<a name="line282"></a>		}
+<a name="line283"></a>		private function processResult($e) {
+<a name="line284"></a>			$trace = $this->getTraceInformation($e->getTrace());
+<a name="line285"></a>			if(isset($trace)) {
+<a name="line286"></a>				$file = basename($trace["file"]);
+<a name="line287"></a>				$resultMessage = '';
+<a name="line288"></a>				$resultMessage .= '<strong>'.$file.'</strong>';
+<a name="line289"></a>				$resultMessage .= ' (line: '.$trace["line"].', method: '.$trace["function"].')';
+<a name="line290"></a>				if($e->status) {
+<a name="line291"></a>					$this->_result->passed($resultMessage);
+<a name="line292"></a>				} else {
+<a name="line293"></a>					$this->_result->failed($resultMessage);
+<a name="line294"></a>				}
+<a name="line295"></a>			}
+<a name="line296"></a>		}
+<a name="line297"></a>	
+<a name="line298"></a>	};
+<a name="line299"></a>	
+<a name="line300"></a>?></pre>
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../overview-summary.html">Overview</a></li>
+<li>Package</li><li>Class</li><li>Tree</li><li><a href="../overview-files.html">Files</a></li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../todo-list.html">Todo</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../index.html" target="_top">Frames</a>
+<a href="../source\fabrico\modules\php\utils\test.php.html" target="_top">No frames</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>
