@@ -36,6 +36,7 @@
             $this->response = $this->view("view.html", array(
                 "field" => $this->name,
                 "value" => $default != null ? $default : $this->getCurrentDate(),
+                "currentDate" => $this->getCurrentDate(),
                 "showsTime" => $this->config->showsTime,
                 "format" => $this->config->showsTime == "true" ? $this->config->formatWithTime : $this->config->formatWithoutTime
             ));

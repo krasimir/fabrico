@@ -67,6 +67,7 @@
             $fields = $this->model->fields;
             foreach($fields as $field) {
                 $default = $validatorMessage = null;
+                $dependencies = isset($field->dependencies) ? $field->dependencies : null;
                 if(isset($sentData) && isset($sentData->{$field->name})) {
                     $default =  $sentData->{$field->name}->value;
                     $validatorMessage = !$sentData->{$field->name}->presenterResponse->valid ? $sentData->{$field->name}->presenterResponse->message : null;
@@ -79,7 +80,8 @@
                     "presenter" => $presenter->add($default)->response->value,
                     "validatorMessage" => $validatorMessage !== null ? $this->view("wrongInput.html", array(
                         "text" => $validatorMessage
-                    )) : ""
+                    )) : "",
+                    "rowClass" => $dependencies !== null ? "has-dependencies" : "no-dependencies"
                 ));
             }
             $content .= $this->view("row.html", array(
@@ -87,7 +89,8 @@
                 "field" => "",
                 "description" => "",
                 "presenter" => $this->view("submit.html"),
-                "validatorMessage" => ""
+                "validatorMessage" => "",
+                "rowClass" => ""
             ));
             $content = $this->view("form.html", array(
                 "presentersContent" => $this->view("table.html", array(

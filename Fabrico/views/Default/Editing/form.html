@@ -3,3 +3,8 @@
     <input type="hidden" name="id" value="{id}"/>
     {presentersContent}
 </form>
+<script>
+    $(document).ready(function() {
+        global.fabrico.modules.presenters.Dependencies.config({fields});
+    });
+</script>

@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sat, 31 Dec 2011 14:16:06 +0000">
+<meta name="when" content="Sun, 01 Jan 2012 22:56:13 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -80,32 +80,33 @@
 <a name="line36"></a>            $this->response = $this->view("view.html", array(
 <a name="line37"></a>                "field" => $this->name,
 <a name="line38"></a>                "value" => $default != null ? $default : $this->getCurrentDate(),
-<a name="line39"></a>                "showsTime" => $this->config->showsTime,
-<a name="line40"></a>                "format" => $this->config->showsTime == "true" ? $this->config->formatWithTime : $this->config->formatWithoutTime
-<a name="line41"></a>            ));
-<a name="line42"></a>            return $this;
-<a name="line43"></a>        }
-<a name="line44"></a>        public function edit($value) {
-<a name="line45"></a>            $this->response = $this->add($value)->response->value;
-<a name="line46"></a>            return $this;
-<a name="line47"></a>        }
-<a name="line48"></a>        private function getCurrentDate() {
-<a name="line49"></a>            if($this->config->showsTime == "true") {
-<a name="line50"></a>                $str = $this->config->formatWithTime;  
-<a name="line51"></a>            } else {
-<a name="line52"></a>                $str = $this->config->formatWithoutTime;
-<a name="line53"></a>            }
-<a name="line54"></a>            $str = str_replace("%Y", date("Y"), $str);
-<a name="line55"></a>            $str = str_replace("%m", date("m"), $str);
-<a name="line56"></a>            $str = str_replace("%d", date("d"), $str);
-<a name="line57"></a>            $str = str_replace("%H", date("H"), $str);
-<a name="line58"></a>            $str = str_replace("%M", date("i"), $str);
-<a name="line59"></a>            return $str;
-<a name="line60"></a>        }
-<a name="line61"></a>    
-<a name="line62"></a>    }
-<a name="line63"></a>    
-<a name="line64"></a>?></pre>
+<a name="line39"></a>                "currentDate" => $this->getCurrentDate(),
+<a name="line40"></a>                "showsTime" => $this->config->showsTime,
+<a name="line41"></a>                "format" => $this->config->showsTime == "true" ? $this->config->formatWithTime : $this->config->formatWithoutTime
+<a name="line42"></a>            ));
+<a name="line43"></a>            return $this;
+<a name="line44"></a>        }
+<a name="line45"></a>        public function edit($value) {
+<a name="line46"></a>            $this->response = $this->add($value)->response->value;
+<a name="line47"></a>            return $this;
+<a name="line48"></a>        }
+<a name="line49"></a>        private function getCurrentDate() {
+<a name="line50"></a>            if($this->config->showsTime == "true") {
+<a name="line51"></a>                $str = $this->config->formatWithTime;  
+<a name="line52"></a>            } else {
+<a name="line53"></a>                $str = $this->config->formatWithoutTime;
+<a name="line54"></a>            }
+<a name="line55"></a>            $str = str_replace("%Y", date("Y"), $str);
+<a name="line56"></a>            $str = str_replace("%m", date("m"), $str);
+<a name="line57"></a>            $str = str_replace("%d", date("d"), $str);
+<a name="line58"></a>            $str = str_replace("%H", date("H"), $str);
+<a name="line59"></a>            $str = str_replace("%M", date("i"), $str);
+<a name="line60"></a>            return $str;
+<a name="line61"></a>        }
+<a name="line62"></a>    
+<a name="line63"></a>    }
+<a name="line64"></a>    
+<a name="line65"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

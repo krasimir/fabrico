@@ -1,10 +1,14 @@
 <input type="text" id="{field}" name="{field}" value="{value}" class="worker-text-field" />
 <script>
 $(document).ready(function() {
-    Calendar.setup({
-        inputField : "{field}",
-        ifFormat : "{format}",
-        showsTime: {showsTime}
-    });
+    global.fabrico.modules.presenters.Date.init{field} = function() {
+        Calendar.setup({
+            inputField : "{field}",
+            ifFormat : "{format}",
+            showsTime: {showsTime}
+        });
+    };
+    global.fabrico.modules.presenters.currentDate = "{currentDate}";
+    global.fabrico.modules.presenters.Date.init{field}();
 });
 </script>

@@ -3,41 +3,43 @@
     "freeze": false,
     "fields": [
         {
-            "name": "firstName",
-            "presenter": "presenters/Text.php"
-        },
-        {
-            "name": "avatar",
-            "presenter": "presenters/Files.php",
-            "config": {
-                "destination": "/assets/uploads"
-            },
-            "dependencies": [
-                {
-                    "field": "firstName",
-                    "shouldMatch": "[0-9]"
-                }                
-            ]
-        },
-        {
-            "name": "category",
+            "name": "userType",
+            "label": "Type:",
             "presenter": "presenters/Select.php",
             "config": {
                 "options": [
-                    {"key": "yes", "label": "answer Yes"},
-                    {"key": "no", "label": "answer No"},
-                    {"key": "maybe", "label": "answer Maybe"}
+                    {"key": "admin", "label": "Administrator"},
+                    {"key": "user", "label": "Regular user"}
                 ]
             }
         },
         {
-            "name": "color",
-            "presenter": "presenters/Color.php"
-        }
+            "name": "userEmail",
+            "label": "Email:",
+            "presenter": "presenters/Text.php",
+            "dependencies": [
+                {
+                    "field": "userType",
+                    "shouldMatch": "^user$"
+                }
+            ]
+        },
+        {
+            "name": "myName",
+            "label": "Name:",
+            "presenter": "presenters/Text.php",
+            "validators": [
+                {
+                    "class": "validators/NotEmpty.php",
+                    "method": "run",
+                    "message": "Please type your name!"
+                }
+            ]
+        }        
     ],
     "actions": {
         "listing": {
-            "fieldsToHide": ["avatar", "color"]
+            "fieldsToHide": ["myName"]
         }
     }
 }

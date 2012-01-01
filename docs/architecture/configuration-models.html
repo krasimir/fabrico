@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+
+<script src="../utils/js/jquery-1.6.3.min.js"></script>
+<script src="../utils/js/jquery.snippet.min.js"></script>
+<script src="../utils/js/scripts.js" type="text/javascript" language="JavaScript"></script>
+
+<link rel="stylesheet" type="text/css" href="../utils/css/jquery.snippet.min.css">
+<link rel="stylesheet" type="text/css" href="../stylesheet.css">
+<link rel="stylesheet" type="text/css" href="architecture.css">
+<link rel="start" href="../overview-summary.html">
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
+<meta name="when" content="Sat, 31 Dec 2011 10:53:14 +0000">
+    
+<title>Fabrico</title>
+
+</head>
+<body id="definition" onload="parent.document.title=document.title;">
+<table id="summary_constructor">
+    <tr><th colspan="2">Models definition</th></tr>
+    <tr>
+        <td class="description">
+            
+<p>
+    The models are defined in json files. Normally those files are stored in <strong>/models</strong> directory. The format of the model's json:
+</p>
+<p>
+<pre class="code">
+{    
+    "adapter": "[path_to_adapter_php]", // example: tools/adapters/MySQL.php
+    "freeze": false, // if true the structure of the database will not be checked/changed
+    "fields": [
+        <a href="#fields_object">[fields_object]</a>, 
+        <a href="#fields_object">[fields_object]</a>, 
+        ...
+    ],
+    "actions": { // optional
+        "listing": {
+            "fieldsToHide": [
+                "[name_of_field]", 
+                "[name_of_field]",
+                ...
+            ]
+        }
+    }
+}
+</pre>
+</p>
+
+<a name="fields_object"></a>
+<h3>Field object</h3>
+<pre class="code">
+{
+    "name": "[name_of_the_field]", // a database field will be created with the same name
+    "presenter": "[path_to_presenter_php]",
+    "label": "[label_of_the_field]", // optional
+    "config": { // optional
+        [configuration_of_the_presenter] // please check the documentation for the specific presenter
+    },
+    "dependencies": [ // optional
+        <a href="#dependency_object">[dependency_object]</a>, 
+        <a href="#dependency_object">[dependency_object]</a>, 
+        ...
+    ],
+    "validators": [ // optional
+        <a href="#validator_object">[validator_object]</a>, 
+        <a href="#validator_object">[validator_object]</a>, 
+        ...
+    ]
+}
+</pre>
+
+<a name="dependency_object"></a>
+<h3>Dependency object</h3>
+<pre class="code">
+{
+    "field": "[name_of_field]",
+    "shouldMatch": "[regular_expression]"
+}
+</pre>
+
+<a name="validator_object"></a>
+<h3>Validator object</h3>
+<pre class="code">
+{
+    "class": "[path_to_validator_php]",
+    "parameters": { // optional, please check the specific validator's documentation
+        ...
+    },
+    "method": "run", // optional
+    "message": "Wrong input!" // optional
+}
+</pre>
+
+<br /><br />
+<h3>Example:</h3>
+<pre class="code">
+{    
+    "adapter": "tools/adapters/MySQL.php",
+    "freeze": false,
+    "fields": [
+        {
+            "name": "userType",
+            "label": "Type:",
+            "presenter": "presenters/Select.php",
+            "config": {
+                "options": [
+                    {"key": "admin", "label": "Administrator"},
+                    {"key": "user", "label": "Regular user"}
+                ]
+            }
+        },
+        {
+            "name": "userEmail",
+            "label": "Email:",
+            "presenter": "presenters/Text.php",
+            "dependencies": [
+                {
+                    "field": "userType",
+                    "shouldMatch": "^user$"
+                }
+            ]
+        },
+        {
+            "name": "myName",
+            "label": "Name:",
+            "presenter": "presenters/Text.php",
+            "validators": [
+                {
+                    "class": "validators/NotEmpty.php",
+                    "method": "run",
+                    "message": "Please type your name!"
+                }
+            ]
+        }        
+    ],
+    "actions": {
+        "listing": {
+            "fieldsToHide": ["myName"]
+        }
+    }
+}
+</pre>
+
+        </td>
+    </tr>
+</table>
+</body>
+
+</html>

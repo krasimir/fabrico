@@ -14,7 +14,7 @@
             \t\t\t},
             \t\t\t"method": "run", // optional
             \t\t\t"message": "Wrong input!" // optional
-            \t\t{
+            \t\t}
         \t]
     }
     </pre>

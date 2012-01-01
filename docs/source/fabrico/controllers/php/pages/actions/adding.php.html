@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sat, 31 Dec 2011 14:16:06 +0000">
+<meta name="when" content="Sun, 01 Jan 2012 22:56:13 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -111,44 +111,47 @@
 <a name="line67"></a>            $fields = $this->model->fields;
 <a name="line68"></a>            foreach($fields as $field) {
 <a name="line69"></a>                $default = $validatorMessage = null;
-<a name="line70"></a>                if(isset($sentData) && isset($sentData->{$field->name})) {
-<a name="line71"></a>                    $default =  $sentData->{$field->name}->value;
-<a name="line72"></a>                    $validatorMessage = !$sentData->{$field->name}->presenterResponse->valid ? $sentData->{$field->name}->presenterResponse->message : null;
-<a name="line73"></a>                }
-<a name="line74"></a>                $presenter = $this->getPresenter($field);
-<a name="line75"></a>                $content .= $this->view("row.html", array(
-<a name="line76"></a>                    "name" => (isset($field->label) ? $field->label : $field->name),
-<a name="line77"></a>                    "field" => $field->name,
-<a name="line78"></a>                    "description" => (isset($field->description) ? $field->description : ""),
-<a name="line79"></a>                    "presenter" => $presenter->add($default)->response->value,
-<a name="line80"></a>                    "validatorMessage" => $validatorMessage !== null ? $this->view("wrongInput.html", array(
-<a name="line81"></a>                        "text" => $validatorMessage
-<a name="line82"></a>                    )) : ""
-<a name="line83"></a>                ));
-<a name="line84"></a>            }
-<a name="line85"></a>            $content .= $this->view("row.html", array(
-<a name="line86"></a>                "name" => "",
-<a name="line87"></a>                "field" => "",
-<a name="line88"></a>                "description" => "",
-<a name="line89"></a>                "presenter" => $this->view("submit.html"),
-<a name="line90"></a>                "validatorMessage" => ""
-<a name="line91"></a>            ));
-<a name="line92"></a>            $content = $this->view("form.html", array(
-<a name="line93"></a>                "presentersContent" => $this->view("table.html", array(
-<a name="line94"></a>                    "rows" => $content
-<a name="line95"></a>                )),
-<a name="line96"></a>                "actionURL" => $req->fabrico->root->http.$this->controller->url."/adding",
-<a name="line97"></a>                "fields" => json_encode($this->model->fields)
-<a name="line98"></a>            ));
-<a name="line99"></a>            $content = $this->view("subnav.html", array(
-<a name="line100"></a>                "http" => $req->fabrico->root->http.$this->controller->url
-<a name="line101"></a>            )).$content;
-<a name="line102"></a>            return $content;
-<a name="line103"></a>        }
-<a name="line104"></a>    
-<a name="line105"></a>    }
-<a name="line106"></a>
-<a name="line107"></a>?></pre>
+<a name="line70"></a>                $dependencies = isset($field->dependencies) ? $field->dependencies : null;
+<a name="line71"></a>                if(isset($sentData) && isset($sentData->{$field->name})) {
+<a name="line72"></a>                    $default =  $sentData->{$field->name}->value;
+<a name="line73"></a>                    $validatorMessage = !$sentData->{$field->name}->presenterResponse->valid ? $sentData->{$field->name}->presenterResponse->message : null;
+<a name="line74"></a>                }
+<a name="line75"></a>                $presenter = $this->getPresenter($field);
+<a name="line76"></a>                $content .= $this->view("row.html", array(
+<a name="line77"></a>                    "name" => (isset($field->label) ? $field->label : $field->name),
+<a name="line78"></a>                    "field" => $field->name,
+<a name="line79"></a>                    "description" => (isset($field->description) ? $field->description : ""),
+<a name="line80"></a>                    "presenter" => $presenter->add($default)->response->value,
+<a name="line81"></a>                    "validatorMessage" => $validatorMessage !== null ? $this->view("wrongInput.html", array(
+<a name="line82"></a>                        "text" => $validatorMessage
+<a name="line83"></a>                    )) : "",
+<a name="line84"></a>                    "rowClass" => $dependencies !== null ? "has-dependencies" : "no-dependencies"
+<a name="line85"></a>                ));
+<a name="line86"></a>            }
+<a name="line87"></a>            $content .= $this->view("row.html", array(
+<a name="line88"></a>                "name" => "",
+<a name="line89"></a>                "field" => "",
+<a name="line90"></a>                "description" => "",
+<a name="line91"></a>                "presenter" => $this->view("submit.html"),
+<a name="line92"></a>                "validatorMessage" => "",
+<a name="line93"></a>                "rowClass" => ""
+<a name="line94"></a>            ));
+<a name="line95"></a>            $content = $this->view("form.html", array(
+<a name="line96"></a>                "presentersContent" => $this->view("table.html", array(
+<a name="line97"></a>                    "rows" => $content
+<a name="line98"></a>                )),
+<a name="line99"></a>                "actionURL" => $req->fabrico->root->http.$this->controller->url."/adding",
+<a name="line100"></a>                "fields" => json_encode($this->model->fields)
+<a name="line101"></a>            ));
+<a name="line102"></a>            $content = $this->view("subnav.html", array(
+<a name="line103"></a>                "http" => $req->fabrico->root->http.$this->controller->url
+<a name="line104"></a>            )).$content;
+<a name="line105"></a>            return $content;
+<a name="line106"></a>        }
+<a name="line107"></a>    
+<a name="line108"></a>    }
+<a name="line109"></a>
+<a name="line110"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

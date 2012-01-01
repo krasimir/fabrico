@@ -75,6 +75,7 @@
                 foreach($fields as $field) {
                     $default = $record->{$field->name};
                     $validatorMessage = null;
+                    $dependencies = isset($field->dependencies) ? $field->dependencies : null;
                     if(isset($sentData) && isset($sentData->{$field->name})) {
                         $default = $sentData->{$field->name}->value;
                         $validatorMessage = !$sentData->{$field->name}->presenterResponse->valid ? $sentData->{$field->name}->presenterResponse->message : null;
@@ -82,25 +83,30 @@
                     $presenter = $this->getPresenter($field);
                     $content .= $this->view("row.html", array(
                         "name" => (isset($field->label) ? $field->label : $field->name),
+                        "field" => $field->name,
                         "description" => (isset($field->description) ? $field->description : ""),
                         "presenter" => $presenter->edit($default)->response->value,
                         "validatorMessage" => $validatorMessage !== null ? $this->view("wrongInput.html", array(
                             "text" => $validatorMessage
-                        )) : ""
+                        )) : "",
+                        "rowClass" => $dependencies !== null ? "has-dependencies" : "no-dependencies"
                     ));
                 }
                 $content .= $this->view("row.html", array(
                     "name" => "",
+                    "field" => "",
                     "description" => "",
                     "presenter" => view($this."/submit.html"),
-                    "validatorMessage" => ""
+                    "validatorMessage" => "",
+                    "rowClass" => ""
                 ));
                 $content = $this->view("form.html", array(
                     "presentersContent" => $this->view("table.html", array(
                         "rows" => $content
                     )),
                     "actionURL" => $req->fabrico->root->http.$this->controller->url."/editing/".$id,
-                    "id" => $id
+                    "id" => $id,
+                    "fields" => json_encode($this->model->fields)
                 ));
                 $content = $this->view("subnav.html", array(
                     "http" => $req->fabrico->root->http.$this->controller->url

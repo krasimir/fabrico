@@ -374,7 +374,6 @@ var global = {};
     global.fabrico = function() {
         
         var modules = {};
-        modules.presenters = {};
         
         var run = function() {
             global.debug("fabrico").log("run");
@@ -384,6 +383,25 @@ var global = {};
             modules: modules,
             run: run
         };
+        
+    }();
+})();
+(function() {
+    global.fabrico.modules.presenters = function() {
+        
+        var get = function(presenterPath) {
+            var presenterNameParts = presenterPath.split("/");
+            var presenter = global.fabrico.modules.presenters[presenterNameParts[presenterNameParts.length-1].replace(".php", "")];
+            if(presenter) {
+                return presenter;
+            } else {
+                return null;
+            }
+        };
+        
+        return {
+            get: get
+        }
         
     }();
 })();
@@ -411,34 +429,96 @@ var global = {};
     }();
 })();
 (function() {
+    global.fabrico.modules.presenters.Color = function() {
+        
+        var dependencyHide = function(fieldName) {
+            
+        };
+        var dependencyShow = function(fieldName) {
+            var item = $('[name=' + fieldName + ']');
+            $(".color-" + fieldName).val("FFFFFF");
+            jscolor.bind();
+        };
+        
+        return {
+            dependencyHide: dependencyHide,
+            dependencyShow: dependencyShow
+        }
+        
+    }();
+})();
+(function() {
+    global.fabrico.modules.presenters.Date = function() {
+        
+        var dependencyHide = function(fieldName) {
+        };
+        var dependencyShow = function(fieldName) {
+            if(global.fabrico.modules.presenters.Date["init" + fieldName]) {
+                var item = $('[name=' + fieldName + ']');
+                global.fabrico.modules.presenters.Date["init" + fieldName]();
+                item.val(global.fabrico.modules.presenters.currentDate);                
+            }
+        };
+        
+        return {
+            dependencyHide: dependencyHide,
+            dependencyShow: dependencyShow
+        }
+        
+    }();
+})();
+(function() {
     global.fabrico.modules.presenters.Dependencies = function() {
         
         var fields = [];
         
-        var onPresenterChange = function(fieldName, newValue) {
-            global.debug("Dependencies.onPresenterChange").log("'" + fieldName + "' changed to '" + newValue + "'");
+        var dependencyHide = function(fieldName) {
+            var item = $('[name=' + fieldName + ']');
+            var clone = item.clone(false, false);
+            clone.val("");
+            item.replaceWith(clone);
+            setItemEvents(clone);
+        };
+        var onPresenterChange = function() {
             var numOfFields = fields ? fields.length : 0;
             for(var i=0; i<numOfFields; i++) {
                 var field = fields[i];
                 if(field.dependencies) {
                     var numOfDependencies = field.dependencies.length;
+                    var passDependencies = true;
                     for(var j=0; j<numOfDependencies; j++) {
-                        if(field.dependencies[j].field == fieldName) {
-                            if(!field.dependencies[j].shouldMatch) {
-                                global.debug("Dependencies.onPresenterChange").log(field.name + " should have 'shouldMatch' property in its dependencies.");
-                            } else {
-                                var regexp = new RegExp(field.dependencies[j].shouldMatch);
-                                var pass = regexp.test(newValue);
-                                global.debug("Dependencies.check " + fieldName).log(field.dependencies[j].shouldMatch + "=" + newValue + " pass=" + pass);
-                            }
+                        var item = $('[name=' + field.dependencies[j].field + ']');
+                        var regexp = new RegExp(field.dependencies[j].shouldMatch, "gi");
+                        var pass = regexp.test(item.val());
+                        if(!pass) {
+                            passDependencies = false; 
+                        }
+                    }
+                    var presenter = global.fabrico.modules.presenters.get(field.presenter);
+                    if(passDependencies) {
+                        $("#" + field.name + "-row").css("display", "table-row");
+                        if(presenter && presenter.dependencyShow) {
+                            presenter.dependencyShow(field.name);
+                        }
+                    } else {
+                        $("#" + field.name + "-row").css("display", "none");
+                        if(presenter && presenter.dependencyShow) {
+                            presenter.dependencyHide(field.name);
+                        } else {
+                            dependencyHide(field.name);
                         }
                     }
                 }
             }
-            
+            return;
+        };
+        var setItemEvents = function(item) {
+            item.change(function() {
+                onPresenterChange();
+            });
         };
         var config = function(allFields) {
-            global.debug("Dependencies fields=").log(allFields);
+            // global.debug("Dependencies fields=").log(allFields);
             fields = allFields;
             var numOfFields = fields ? fields.length : 0;
             for(var i=0; i<numOfFields; i++) {
@@ -447,9 +527,8 @@ var global = {};
                 var item = $('[name=' + fieldName + ']');
                 if(item.length > 0) {
                     (function(item, fieldName) {
-                        item.change(function() {
-                            onPresenterChange(fieldName, item.val());
-                        });
+                        setItemEvents(item);
+                        onPresenterChange();
                     })(item, fieldName);
                 }
             }
@@ -478,10 +557,10 @@ var global = {};
                 input = $("#filesInputHolder > .filesInputHolderItem").clone();
             }
             var newInput = input.clone();
-            newInput.attr("class", formField + "_" + numOfFields);
+            newInput.attr("class", formField + "_" + numOfFields + "_row");
             newInput.find("input").attr("name", formField + "_" + numOfFields);
             newInput.find(".remove").css("display", "inline");
-            newInput.find(".remove").attr("href", "javascript:global.fabrico.modules.presenters.Files.removeInput('" + formField + "_" + numOfFields + "');");
+            newInput.find(".remove").attr("href", "javascript:global.fabrico.modules.presenters.Files.removeInput('" + formField + "_" + numOfFields + "_row');");
             $("#filesInputHolder").append(newInput);
             numOfFields += 1;
             updateNumOfFields();
@@ -496,12 +575,77 @@ var global = {};
                $('input[name*="' + field + '_filesToRemove"]').val(value + "|" + linkId)
             });
         };
+        var dependencyHide = function(fieldName) {
+            var numOfFieldsInput = $('[name=' + fieldName + '_numOfFields]');
+            if(numOfFieldsInput.length > 0) {
+                var numOfFields = numOfFieldsInput.val();
+                for(var i=0; i<numOfFields; i++) {
+                    $("." + fieldName + "_" + i + "_row").remove();
+                }
+            }
+        };
+        var dependencyShow = function(fieldName) {
+            
+        };
         
         return {
             addInput: addInput,
             removeInput: removeInput,
-            removeFile: removeFile
+            removeFile: removeFile,
+            dependencyHide: dependencyHide,
+            dependencyShow: dependencyShow
         };
+        
+    }();
+})();
+(function() {
+    global.fabrico.modules.presenters.SelectCheck = function() {
+        
+        var dependencyHide = function(fieldName) {
+            var selector = 'input[name^="' + fieldName + '_"]';
+            var inputs = $(selector);
+            if(inputs.length > 0) {
+                var numOfInputs = inputs.length;
+                for(var i=0; i<numOfInputs; i++) {
+                    var input = inputs.eq(i);
+                    input.attr("checked", false);
+                }
+            }
+        };
+        var dependencyShow = function(fieldName) {
+            
+        };
+        
+        return {
+            dependencyHide: dependencyHide,
+            dependencyShow: dependencyShow
+        }
+        
+    }();
+})();
+(function() {
+    global.fabrico.modules.presenters.SelectRadio = function() {
+        
+        var dependencyHide = function(fieldName) {
+            var selector = 'input[name="' + fieldName + '"]';
+            var inputs = $(selector);
+            var numOfInputs = inputs.length;
+            if(numOfInputs > 0) {
+                for(var i=0; i<numOfInputs; i++) {
+                    var input = inputs.eq(i);
+                    input.checked = false;
+                    input.removeAttr('checked');
+                }
+            }
+        };
+        var dependencyShow = function(fieldName) {
+            
+        };
+        
+        return {
+            dependencyHide: dependencyHide,
+            dependencyShow: dependencyShow
+        }
         
     }();
 })();

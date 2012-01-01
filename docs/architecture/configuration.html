@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+
+<script src="../utils/js/jquery-1.6.3.min.js"></script>
+<script src="../utils/js/jquery.snippet.min.js"></script>
+<script src="../utils/js/scripts.js" type="text/javascript" language="JavaScript"></script>
+
+<link rel="stylesheet" type="text/css" href="../utils/css/jquery.snippet.min.css">
+<link rel="stylesheet" type="text/css" href="../stylesheet.css">
+<link rel="stylesheet" type="text/css" href="architecture.css">
+<link rel="start" href="../overview-summary.html">
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
+<meta name="when" content="Sat, 31 Dec 2011 10:53:14 +0000">
+    
+<title>Fabrico</title>
+
+</head>
+<body id="definition" onload="parent.document.title=document.title;">
+<table id="summary_constructor">
+    <tr><th colspan="2">Configuration of Fabrico</th></tr>
+    <tr>
+        <td class="description">
+            
+<p>
+    The configuration of Fabrico is stored in <strong>/config/config.json</strong>. It has the following structure:
+</p>
+<p>
+<pre class="code">
+{
+    "access": <a href="#access_object">[access_object]</a>,
+    "paths": <a href="#path_object">[path_object]</a>,
+    "routes": [
+        <a href="#route_object">[route_object]</a>, 
+        <a href="#route_object">[route_object]</a>, 
+        ...
+    ],
+    "adapters": {
+        "[adapter_name]": <a href="#adapter_object">[adapter_object]</a>
+    }
+}
+</pre>
+</p>
+
+<a name="access_object"></a>
+<h3>Access object</h3>
+<pre class="code">
+{
+    "user": "admin",
+    "pass": "admin"
+}
+</pre>
+
+<a name="path_object"></a>
+<h3>Path object</h3>
+<pre class="code">
+{
+    "files": "/Fabrico",
+    "http": "/fabrico"
+}
+</pre>
+
+<a name="route_object"></a>
+<h3>Route object</h3>
+<pre class="code">
+{
+    "url": "[regular_expression]", 
+    "controller": "[path_to_controller_php]", 
+    "model": "[path_to_model_json]" // optional
+}
+</pre>
+
+<a name="adapter_object"></a>
+<h3>MySQL adapter object</h3>
+<pre class="code">
+"MySQL": {
+    "host": "localhost",
+    "user": "root",
+    "pass": "",
+    "dbname": "fabrico_test"
+}
+</pre>
+
+<br /><br />
+<h3>Example:</h3>
+<pre class="code">
+{
+    "access": {
+        "user": "admin",
+        "pass": "admin"
+    },
+    "paths": {
+        "files": "/Fabrico",
+        "http": "/fabrico"
+    },
+    "routes": [
+        {"url": "/sample(.*)?", "controller": "pages/Page.php", "model": "models/sample.json"},
+        {"url": "/logout(.*)?", "controller": "pages/Logout.php"},
+        {"url": "/login(.*)?", "controller": "pages/Login.php"},
+        {"url": "(.*)?", "controller": "pages/Home.php"}
+    ],
+    "adapters": {
+        "MySQL": {
+            "host": "localhost",
+            "user": "root",
+            "pass": "",
+            "dbname": "fabrico_test"
+        }
+    }
+}
+</pre>
+
+        </td>
+    </tr>
+</table>
+</body>
+
+</html>

@@ -2,122 +2,19 @@
 <html lang="en">
 <head>
 
-<script src="../utils/js/jquery-1.6.3.min.js"></script>
-<script src="../utils/js/jquery.snippet.min.js"></script>
-<script src="../utils/js/scripts.js" type="text/javascript" language="JavaScript"></script>
-
-<link rel="stylesheet" type="text/css" href="../utils/css/jquery.snippet.min.css">
-<link rel="stylesheet" type="text/css" href="../stylesheet.css">
-<link rel="start" href="../overview-summary.html">
-
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
 <meta name="when" content="Sat, 31 Dec 2011 10:53:14 +0000">
     
 <title>Architecture</title>
 
-<style type="text/css">
-    .quote {
-        display: block;
-        width: 100%;
-        padding: 5px;
-        background: #E5E5E5;
-    }
-    .description {
-        padding: 10px;
-        line-height: 26px;
-    }
-</style>
 
+<frameset rows="20%,80%"  frameborder="0">
+        <frame src="header.html">
+        <frame src="allitems-frame.html" name="architecture-content">
+    </frameset>
 </head>
 <body id="definition" onload="parent.document.title=document.title;">
-
-<!-- ------------------------------------------------------------------------------ HEADER -->
-<div class="small_links">
-    <a href="../index.html" target="_top">Frames</a> | 
-    <a href="../architecture/index.html" target="_top">No frames</a>
-</div>
-<div class="small_links">
-    Summary: architecture of Fabrico
-</div>
-<hr />
-
-<!-- ------------------------------------------------------------------------------ TITLE AND TREE -->
-<h1>Architecture</h1>
-<pre class="tree">
-<a href="#">Architecture</a>
-    └─<a href="#installation">Installation</a>
-    └─<a href="#config">Configuration</a>
-        └─<a href="#config-fabrico">Fabrico</a>
-        └─<a href="#config-models">Models</a>
-</pre>
-<hr />
-
-<!-- ------------------------------------------------------------------------------ installation -->
-<a name="installation"></a>
-<table id="summary_constructor">
-    <tr><th colspan="2">Installation</th></tr>
-    <tr>
-        <td class="description">
-            <p>
-                
-            </p>
-        </td>
-    </tr>
-</table>
-<!-- ------------------------------------------------------------------------------ config fabrico -->
-<a name="config"></a>
-<a name="config-fabrico"></a>
-<table id="summary_constructor">
-    <tr><th colspan="2">Configuration\Fabrico</th></tr>
-    <tr>
-        <td class="description">
-            
-The configuration of Fabrico is stored in:
-<div class="quote">/config/config.json</div>
-The file should have the following format:
-<pre class="code">
-{
-    "access": {
-        "user": "admin",
-        "pass": "admin"
-    },
-    "paths": {
-        "files": "/Fabrico",
-        "http": "/fabrico"
-    },
-    "routes": [
-        {"url": "/sample(.*)?", "controller": "pages/Page.php", "model": "models/sample.json"},
-        {"url": "/logout(.*)?", "controller": "pages/Logout.php"},
-        {"url": "/login(.*)?", "controller": "pages/Login.php"},
-        {"url": "(.*)?", "controller": "pages/Home.php"}
-    ],
-    "adapters": {
-        "MySQL": {
-            "host": "localhost",
-            "user": "root",
-            "pass": "",
-            "dbname": "fabrico_test"
-        }
-    }
-}
-</pre>
-        </td>
-    </tr>
-</table>
-<!-- ------------------------------------------------------------------------------ config models -->
-<a name="config-models"></a>
-<table id="summary_constructor">
-    <tr><th colspan="2">Configuration\Models</th></tr>
-    <tr>
-        <td class="description">
-            <p>
-                
-            </p>
-        </td>
-    </tr>
-</table>
-
+    
 </body>
-
 </html>

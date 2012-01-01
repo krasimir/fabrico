@@ -13,7 +13,7 @@
             \t\t\t"class": "validators/OnlyLettersAndNumbers.php",
             \t\t\t"method": "run", // optional
             \t\t\t"message": "Wrong input!" // optional
-            \t\t{
+            \t\t}
         \t]
     }
     </pre>

@@ -4,10 +4,10 @@
 }
 
 body {
-	font-family: "Times New Roman", Times, serif;
+	font-family: Verdana, Times, serif;
 	margin: 0px;
 	padding: 10px;
-	font-size: 100%;
+	font-size: 12px;
     background-color: #fff;
     color: #000;
 }
@@ -76,7 +76,7 @@ h1 {
 }
 
 h2 {
-    font-size: 120%;
+    font-size: 14px;
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -92,7 +92,7 @@ div.header {
 
 div.header h1 {
     float: right;
-    font-size: 100%;
+    font-size: 12px;
     font-style: italic;
     padding: 0 4px;
     margin: 0;
@@ -105,7 +105,7 @@ div.header ul {
 
 div.header ul li {
     display: inline;
-    font-size: 100%;
+    font-size: 12px;
     font-weight: bold;
     padding: 0 4px;
 }
@@ -131,17 +131,17 @@ div.small_links {
 /* footer */
 
 p#footer {
-	font-size: 80%;
+	font-size: 12px;
 }
 
 /* frames */
 
 #frame h1 {
-    font-size: 120%;
+    font-size: 14px;
 }
 
 #frame h2 {
-    font-size: 100%;
+    font-size: 12px;
 }
 
 #frame ul {
@@ -152,7 +152,7 @@ p#footer {
 /* definition writer */
 
 div.qualifiedName {
-    font-size: 80%;
+    font-size: 12px;
     font-weight: bold;
     margin: 10px 0 0;
 }
@@ -160,13 +160,13 @@ div.qualifiedName {
 div.location,
 a.location {
     display: block;
-    font-size: 80%;
+    font-size: 12px;
 	float: right;
 }
 
 #definition h1 {
     margin: 0 0 10px;
-    font-family: "Times New Roman", Times, serif;
+    font-family: Verdana, Times, serif;
 }
 
 #definition h2 {
@@ -175,7 +175,7 @@ a.location {
     background-color: #ccf;
     text-align: left;
     font-size: 140%;
-    font-family: "Times New Roman", Times, serif;
+    font-family: Verdana, Times, serif;
 }
 
 pre.tree {
@@ -184,7 +184,7 @@ pre.tree {
 
 table.inherit th {
     background-color: #eef;
-    font-size: 120%;
+    font-size: 14px;
 }
 
 p.signature, div.comment {

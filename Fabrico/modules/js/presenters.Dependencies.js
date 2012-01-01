@@ -3,30 +3,53 @@
         
         var fields = [];
         
-        var onPresenterChange = function(fieldName, newValue) {
-            global.debug("Dependencies.onPresenterChange").log("'" + fieldName + "' changed to '" + newValue + "'");
+        var dependencyHide = function(fieldName) {
+            var item = $('[name=' + fieldName + ']');
+            var clone = item.clone(false, false);
+            clone.val("");
+            item.replaceWith(clone);
+            setItemEvents(clone);
+        };
+        var onPresenterChange = function() {
             var numOfFields = fields ? fields.length : 0;
             for(var i=0; i<numOfFields; i++) {
                 var field = fields[i];
                 if(field.dependencies) {
                     var numOfDependencies = field.dependencies.length;
+                    var passDependencies = true;
                     for(var j=0; j<numOfDependencies; j++) {
-                        if(field.dependencies[j].field == fieldName) {
-                            if(!field.dependencies[j].shouldMatch) {
-                                global.debug("Dependencies.onPresenterChange").log(field.name + " should have 'shouldMatch' property in its dependencies.");
-                            } else {
-                                var regexp = new RegExp(field.dependencies[j].shouldMatch);
-                                var pass = regexp.test(newValue);
-                                global.debug("Dependencies.check " + fieldName).log(field.dependencies[j].shouldMatch + "=" + newValue + " pass=" + pass);
-                            }
+                        var item = $('[name=' + field.dependencies[j].field + ']');
+                        var regexp = new RegExp(field.dependencies[j].shouldMatch, "gi");
+                        var pass = regexp.test(item.val());
+                        if(!pass) {
+                            passDependencies = false; 
+                        }
+                    }
+                    var presenter = global.fabrico.modules.presenters.get(field.presenter);
+                    if(passDependencies) {
+                        $("#" + field.name + "-row").css("display", "table-row");
+                        if(presenter && presenter.dependencyShow) {
+                            presenter.dependencyShow(field.name);
+                        }
+                    } else {
+                        $("#" + field.name + "-row").css("display", "none");
+                        if(presenter && presenter.dependencyShow) {
+                            presenter.dependencyHide(field.name);
+                        } else {
+                            dependencyHide(field.name);
                         }
                     }
                 }
             }
-            
+            return;
+        };
+        var setItemEvents = function(item) {
+            item.change(function() {
+                onPresenterChange();
+            });
         };
         var config = function(allFields) {
-            global.debug("Dependencies fields=").log(allFields);
+            // global.debug("Dependencies fields=").log(allFields);
             fields = allFields;
             var numOfFields = fields ? fields.length : 0;
             for(var i=0; i<numOfFields; i++) {
@@ -35,9 +58,8 @@
                 var item = $('[name=' + fieldName + ']');
                 if(item.length > 0) {
                     (function(item, fieldName) {
-                        item.change(function() {
-                            onPresenterChange(fieldName, item.val());
-                        });
+                        setItemEvents(item);
+                        onPresenterChange();
                     })(item, fieldName);
                 }
             }
