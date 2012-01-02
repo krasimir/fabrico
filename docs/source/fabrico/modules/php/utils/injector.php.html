@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:13 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:23 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -54,58 +54,70 @@
 <a name="line10"></a>    
 <a name="line11"></a>        private $map;
 <a name="line12"></a>        private $injected;
-<a name="line13"></a>        
-<a name="line14"></a>        public function __construct() {
-<a name="line15"></a>            
-<a name="line16"></a>        }        
-<a name="line17"></a>        public function setRoot($root) {
-<a name="line18"></a>            $this->injected = (object) array();
-<a name="line19"></a>            $this->map = (object) array();
-<a name="line20"></a>            $files = $this->readDir($root);
-<a name="line21"></a>            foreach($files as $file) {
-<a name="line22"></a>                $this->map->{basename($file)} = $file;
-<a name="line23"></a>            }
-<a name="line24"></a>        }
-<a name="line25"></a>        public function inject($files) {
-<a name="line26"></a>            if(!is_array($files)) {
-<a name="line27"></a>                $files = array($files);
-<a name="line28"></a>            }
-<a name="line29"></a>            $result = array();
-<a name="line30"></a>            foreach($files as $file) {
-<a name="line31"></a>                $basename = basename($file);
-<a name="line32"></a>                if(!isset($this->injected->$basename)) {
-<a name="line33"></a>                    $this->injected->$basename = str_replace(".php", "", $basename);
-<a name="line34"></a>                    if(!isset($this->map->$basename)) {
-<a name="line35"></a>                        throw new Exception("Injector: missing file '".$file."'.");
-<a name="line36"></a>                    } else {
-<a name="line37"></a>                        require($this->map->$basename);
-<a name="line38"></a>                    }
-<a name="line39"></a>                }
-<a name="line40"></a>                $result []= $this->injected->$basename;
-<a name="line41"></a>            }
-<a name="line42"></a>            return count($result) == 1 ? $result[0] : $result;
-<a name="line43"></a>        }
-<a name="line44"></a>        private function readDir($dir) {
-<a name="line45"></a>            $files = array();
-<a name="line46"></a>            if ($handle = opendir($dir)) {
-<a name="line47"></a>                while (false !== ($entry = readdir($handle))) {
-<a name="line48"></a>                    if ($entry != "." && $entry != "..") {
-<a name="line49"></a>                        if(is_dir($dir."/".$entry)) {
-<a name="line50"></a>                            $files = array_merge($files, $this->readDir($dir."/".$entry));
-<a name="line51"></a>                        } else if(is_file($dir."/".$entry)) {
-<a name="line52"></a>                            if(strpos($entry, ".php") !== FALSE) {
-<a name="line53"></a>                                $files []= $dir."/".$entry;
-<a name="line54"></a>                            }
-<a name="line55"></a>                        }
-<a name="line56"></a>                    }
-<a name="line57"></a>                }
-<a name="line58"></a>                closedir($handle);
-<a name="line59"></a>            }
-<a name="line60"></a>            return $files;
-<a name="line61"></a>        }
-<a name="line62"></a>    }
-<a name="line63"></a>
-<a name="line64"></a>?></pre>
+<a name="line13"></a>        private $reportContent = "";
+<a name="line14"></a>        
+<a name="line15"></a>        public function __construct() {
+<a name="line16"></a>            
+<a name="line17"></a>        }        
+<a name="line18"></a>        public function setRoot($root) {
+<a name="line19"></a>            $this->injected = (object) array();
+<a name="line20"></a>            $this->map = (object) array();
+<a name="line21"></a>            $files = $this->readDir($root);
+<a name="line22"></a>            foreach($files as $file) {
+<a name="line23"></a>                $this->map->{basename($file)} = (object) array(
+<a name="line24"></a>                    "path" => $file
+<a name="line25"></a>                );
+<a name="line26"></a>            }
+<a name="line27"></a>        }
+<a name="line28"></a>        public function inject($files) {
+<a name="line29"></a>            if(!is_array($files)) {
+<a name="line30"></a>                $files = array($files);
+<a name="line31"></a>            }
+<a name="line32"></a>            $result = array();
+<a name="line33"></a>            foreach($files as $file) {
+<a name="line34"></a>                $basename = basename($file);
+<a name="line35"></a>                if(!isset($this->injected->$basename)) {
+<a name="line36"></a>                    $this->injected->$basename = str_replace(".php", "", $basename);
+<a name="line37"></a>                    if(!isset($this->map->$basename) && strpos($this->map->{$basename}->path, $file) !== FALSE) {
+<a name="line38"></a>                        throw new Exception("Injector: missing file '".$file."'.");
+<a name="line39"></a>                    } else {
+<a name="line40"></a>                        require($this->map->{$basename}->path);
+<a name="line41"></a>                        $this->log($this->map->{$basename}->path);
+<a name="line42"></a>                    }
+<a name="line43"></a>                }
+<a name="line44"></a>                $result []= $this->injected->$basename;
+<a name="line45"></a>            }
+<a name="line46"></a>            return count($result) == 1 ? $result[0] : $result;
+<a name="line47"></a>        }
+<a name="line48"></a>        public function report($color) {
+<a name="line49"></a>            $matches = array();
+<a name="line50"></a>            $numOfMatches = preg_match_all('<br />', $this->reportContent, $matches);
+<a name="line51"></a>            echo '<div class="debug" style="background:'.$color.'">Injector ('.$numOfMatches.' files injected):<br />'.$this->reportContent.'</div>';
+<a name="line52"></a>        }
+<a name="line53"></a>        private function readDir($dir) {
+<a name="line54"></a>            $files = array();
+<a name="line55"></a>            if ($handle = opendir($dir)) {
+<a name="line56"></a>                while (false !== ($entry = readdir($handle))) {
+<a name="line57"></a>                    if ($entry != "." && $entry != "..") {
+<a name="line58"></a>                        if(is_dir($dir."/".$entry)) {
+<a name="line59"></a>                            $files = array_merge($files, $this->readDir($dir."/".$entry));
+<a name="line60"></a>                        } else if(is_file($dir."/".$entry)) {
+<a name="line61"></a>                            if(strpos($entry, ".php") !== FALSE) {
+<a name="line62"></a>                                $files []= $dir."/".$entry;
+<a name="line63"></a>                            }
+<a name="line64"></a>                        }
+<a name="line65"></a>                    }
+<a name="line66"></a>                }
+<a name="line67"></a>                closedir($handle);
+<a name="line68"></a>            }
+<a name="line69"></a>            return $files;
+<a name="line70"></a>        }
+<a name="line71"></a>        private function log($file) {
+<a name="line72"></a>            $this->reportContent .= $file."<br />";
+<a name="line73"></a>        }
+<a name="line74"></a>    }
+<a name="line75"></a>
+<a name="line76"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

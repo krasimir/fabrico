@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:13 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -51,54 +51,58 @@
 <a name="line7"></a>    <pre class="code">
 <a name="line8"></a>    {
 <a name="line9"></a>        \t"name": "nameField",
-<a name="line10"></a>        \t"presenter": "presenters/Text.php"
-<a name="line11"></a>    }
-<a name="line12"></a>    </pre>
-<a name="line13"></a>    * @package Fabrico\Modules\Presenters
-<a name="line14"></a>    */
-<a name="line15"></a>    class Text extends Presenter {
-<a name="line16"></a>        
-<a name="line17"></a>        public function __toString() {
-<a name="line18"></a>            return "Text";
-<a name="line19"></a>        }
-<a name="line20"></a>        public function listing($value) {
-<a name="line21"></a>            $this->response = $value;
-<a name="line22"></a>            return $this;
+<a name="line10"></a>        \t"presenter": "presenters/Text.php",
+<a name="line11"></a>        \t"label": "[string]", // optional
+<a name="line12"></a>        \t"defaultValue": "[string]", // optional
+<a name="line13"></a>        \t"dependencies": [dependencies], // optional
+<a name="line14"></a>        \t"validators": [validators] // optiona
+<a name="line15"></a>    }
+<a name="line16"></a>    </pre>
+<a name="line17"></a>    * @package Fabrico\Modules\Presenters
+<a name="line18"></a>    */
+<a name="line19"></a>    class Text extends Presenter {
+<a name="line20"></a>        
+<a name="line21"></a>        public function __toString() {
+<a name="line22"></a>            return "Text";
 <a name="line23"></a>        }
-<a name="line24"></a>        public function add($default = null) {
-<a name="line25"></a>            $this->response = $this->view("view.html", array(
-<a name="line26"></a>                "field" => $this->name,
-<a name="line27"></a>                "value" => $default === null ? "" : $default
-<a name="line28"></a>            ));
-<a name="line29"></a>            return $this;
-<a name="line30"></a>        }
-<a name="line31"></a>        public function addAction() {
-<a name="line32"></a>            if(isset($this->req->body->{strtolower($this->name)})) {
-<a name="line33"></a>                $this->response = $this->req->body->{strtolower($this->name)};
-<a name="line34"></a>            } else {
-<a name="line35"></a>                $this->response = null;
-<a name="line36"></a>            }
-<a name="line37"></a>            return $this;
-<a name="line38"></a>        }
-<a name="line39"></a>        public function edit($value) {
-<a name="line40"></a>            $this->response = $this->view("view.html", array(
-<a name="line41"></a>                "field" => $this->name,
-<a name="line42"></a>                "value" => $value
-<a name="line43"></a>            ));
-<a name="line44"></a>            return $this;
-<a name="line45"></a>        }
-<a name="line46"></a>        public function editAction($value) {        
-<a name="line47"></a>            if(isset($this->req->body->{strtolower($this->name)})) {
-<a name="line48"></a>                $this->response = $this->req->body->{strtolower($this->name)};
-<a name="line49"></a>            } else {
-<a name="line50"></a>                $this->response = null;
-<a name="line51"></a>            }
-<a name="line52"></a>            return $this;
-<a name="line53"></a>        }
-<a name="line54"></a>    
-<a name="line55"></a>    }
-<a name="line56"></a>    
-<a name="line57"></a>?></pre>
+<a name="line24"></a>        public function listing($value) {
+<a name="line25"></a>            $this->setResponse($value);
+<a name="line26"></a>            return $this;
+<a name="line27"></a>        }
+<a name="line28"></a>        public function add($default = null) {
+<a name="line29"></a>            $this->setResponse($this->view("view.html", array(
+<a name="line30"></a>                "field" => $this->name,
+<a name="line31"></a>                "value" => $default === null ? (isset($this->defaultValue) ? $this->defaultValue : "") : $default
+<a name="line32"></a>            )));
+<a name="line33"></a>            return $this;
+<a name="line34"></a>        }
+<a name="line35"></a>        public function addAction() {
+<a name="line36"></a>            if(isset($this->req->body->{strtolower($this->name)})) {
+<a name="line37"></a>                $this->setResponse($this->req->body->{strtolower($this->name)});
+<a name="line38"></a>            } else {
+<a name="line39"></a>                $this->setResponse(null);
+<a name="line40"></a>            }
+<a name="line41"></a>            return $this;
+<a name="line42"></a>        }
+<a name="line43"></a>        public function edit($value) {
+<a name="line44"></a>            $this->setResponse($this->view("view.html", array(
+<a name="line45"></a>                "field" => $this->name,
+<a name="line46"></a>                "value" => $value
+<a name="line47"></a>            )));
+<a name="line48"></a>            return $this;
+<a name="line49"></a>        }
+<a name="line50"></a>        public function editAction($value) {        
+<a name="line51"></a>            if(isset($this->req->body->{strtolower($this->name)})) {
+<a name="line52"></a>                $this->setResponse($this->req->body->{strtolower($this->name)});
+<a name="line53"></a>            } else {
+<a name="line54"></a>                $this->setResponse(null);
+<a name="line55"></a>            }
+<a name="line56"></a>            return $this;
+<a name="line57"></a>        }
+<a name="line58"></a>    
+<a name="line59"></a>    }
+<a name="line60"></a>    
+<a name="line61"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

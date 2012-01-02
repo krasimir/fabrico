@@ -2,7 +2,7 @@
     
     inject(array(
         "actions/Action.php",
-        "tools/Signal.php"
+        "utils/Signal.php"
     ));
 
     /**
@@ -35,8 +35,13 @@
                         "value" => $record->{$field->name},
                         "presenterResponse" => $presenter->response
                     );
-                    if($valid && !$presenter->response->valid) {
-                        $valid = false;
+                    if(!$presenter->response->valid) {
+                        $hiddenField = isset($req->body->{strtolower($field->name."_hidden")}) ? $req->body->{strtolower($field->name."_hidden")} : null;
+                        if($hiddenField === null) {
+                            $valid = false;
+                        } else if($hiddenField == "no") {
+                            $valid = false;
+                        }
                     }
                 }
                 if($valid) {

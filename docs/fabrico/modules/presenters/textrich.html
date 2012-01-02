@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:12 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
 <link rel="start" href="../../../overview-summary.html">
@@ -47,7 +47,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <hr>
 
 <div class="qualifiedName">Fabrico\Modules\Presenters\TextRich</div>
-<a href="../../../source/fabrico/modules/php/presenters/textrich.php.html#line27" class="location">Fabrico\modules\php\presenters\TextRich.php at line 27</a>
+<a href="../../../source/fabrico/modules/php/presenters/textrich.php.html#line31" class="location">Fabrico\modules\php\presenters\TextRich.php at line 31</a>
 
 <h1>Class TextRich</h1>
 
@@ -75,7 +75,11 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 \t\t"bold": "yes",
 \t\t"italic": "yes",
 \t\t"underline": "yes"
-\t}
+\t},
+\t"label": "[string]", // optional
+\t"defaultValue": "[string]", // optional
+\t"dependencies": [dependencies], // optional
+\t"validators": [validators] // optiona
 }
 </pre></p></div>
 
@@ -119,10 +123,10 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <table class="inherit">
 <tr><th colspan="2">Methods inherited from Fabrico\Modules\Presenters\Presenter</th></tr>
-<tr><td><a href="../../../fabrico/modules/presenters/presenter.html#__construct()">__construct</a>, <a href="../../../fabrico/modules/presenters/presenter.html#add()">add</a>, <a href="../../../fabrico/modules/presenters/presenter.html#addAction()">addAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#deleteAction()">deleteAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#edit()">edit</a>, <a href="../../../fabrico/modules/presenters/presenter.html#editAction()">editAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#listing()">listing</a>, <a href="../../../fabrico/modules/presenters/presenter.html#view()">view</a></td></tr></table>
+<tr><td><a href="../../../fabrico/modules/presenters/presenter.html#__construct()">__construct</a>, <a href="../../../fabrico/modules/presenters/presenter.html#add()">add</a>, <a href="../../../fabrico/modules/presenters/presenter.html#addAction()">addAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#deleteAction()">deleteAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#edit()">edit</a>, <a href="../../../fabrico/modules/presenters/presenter.html#editAction()">editAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#listing()">listing</a>, <a href="../../../fabrico/modules/presenters/presenter.html#setResponse()">setResponse</a>, <a href="../../../fabrico/modules/presenters/presenter.html#view()">view</a></td></tr></table>
 
 <h2 id="detail_field">Field Detail</h2>
-<a href="../../../source/fabrico/modules/php/presenters/textrich.php.html#line29" class="location">Fabrico\modules\php\presenters\TextRich.php at line 29</a>
+<a href="../../../source/fabrico/modules/php/presenters/textrich.php.html#line33" class="location">Fabrico\modules\php\presenters\TextRich.php at line 33</a>
 
 <h3 id="settings">settings</h3>
 <code class="signature">protected  mixed <strong>$settings</strong> = null</code>
@@ -132,7 +136,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <hr>
 
 <h2 id="detail_method">Constructor Detail</h2>
-<a href="../../../source/fabrico/modules/php/presenters/textrich.php.html#line31" class="location">Fabrico\modules\php\presenters\TextRich.php at line 31</a>
+<a href="../../../source/fabrico/modules/php/presenters/textrich.php.html#line35" class="location">Fabrico\modules\php\presenters\TextRich.php at line 35</a>
 
 <h3 id="__construct()">__construct</h3>
 <code class="signature">public  void <strong>__construct</strong>(mixed properties)</code>
@@ -142,7 +146,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <hr>
 
 <h2 id="detail_method">Method Detail</h2>
-<a href="../../../source/fabrico/modules/php/presenters/textrich.php.html#line62" class="location">Fabrico\modules\php\presenters\TextRich.php at line 62</a>
+<a href="../../../source/fabrico/modules/php/presenters/textrich.php.html#line66" class="location">Fabrico\modules\php\presenters\TextRich.php at line 66</a>
 
 <h3 id="listing()">listing</h3>
 <code class="signature">public  void <strong>listing</strong>(mixed value)</code>
@@ -152,7 +156,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/textrich.php.html#line71" class="location">Fabrico\modules\php\presenters\TextRich.php at line 71</a>
+<a href="../../../source/fabrico/modules/php/presenters/textrich.php.html#line75" class="location">Fabrico\modules\php\presenters\TextRich.php at line 75</a>
 
 <h3 id="add()">add</h3>
 <code class="signature">public  void <strong>add</strong>(mixed default)</code>
@@ -161,7 +165,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/textrich.php.html#line80" class="location">Fabrico\modules\php\presenters\TextRich.php at line 80</a>
+<a href="../../../source/fabrico/modules/php/presenters/textrich.php.html#line84" class="location">Fabrico\modules\php\presenters\TextRich.php at line 84</a>
 
 <h3 id="edit()">edit</h3>
 <code class="signature">public  void <strong>edit</strong>(mixed value)</code>

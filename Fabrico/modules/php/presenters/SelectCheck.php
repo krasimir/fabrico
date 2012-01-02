@@ -14,7 +14,11 @@
                 \t\t\t{"key": "no", "label": "answer No"},
                 \t\t\t{"key": "maybe", "label": "answer Maybe"}
             \t\t]
-        \t}
+        \t},
+        \t"label": "[string]", // optional
+        \t"defaultValue": "[key|key|...]", // optional
+        \t"dependencies": [dependencies], // optional
+        \t"validators": [validators] // optional
     }
     </pre>
     * @package Fabrico\Modules\Presenters
@@ -43,11 +47,12 @@
                     
                 }
             }
-            $this->response = $result;
+            $this->setResponse($result);
             return $this;
         }
         public function add($default = null) {
             $boxes = "";
+            $default = $default == null ? isset($this->defaultValue) ? $this->defaultValue : array() : $default;
             $defaultArr = $default != null ? explode("|", $default) : array();
             foreach($this->config->options as $option) {
                 $boxes .= $this->view("box.html", array(
@@ -57,9 +62,9 @@
                     "checked" => in_array($option->key, $defaultArr) ? 'checked="checked"' : ""
                 ));
             }
-            $this->response = $this->view("adding.html", array(
+            $this->setResponse($this->view("adding.html", array(
                 "boxes" => $boxes
-            ));
+            )));
             return $this;
         }
         public function addAction() {
@@ -69,11 +74,11 @@
                     $result .= $this->req->body->{strtolower($this->name."_".$option->key)}."|";
                 }
             }
-            $this->response = $result;
+            $this->setResponse($result);
             return $this;
         }
         public function editAction($value) {
-           $this->response = $this->addAction()->response->value;
+           $this->setResponse($this->addAction()->response->value);
            return $this;
         }
     

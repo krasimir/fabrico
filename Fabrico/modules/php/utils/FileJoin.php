@@ -1,6 +1,6 @@
 <?php
 
-    inject("tools/rglob.php");
+    inject("utils/rglob.php");
 
     /**
     * @package Fabrico\Modules\Utils

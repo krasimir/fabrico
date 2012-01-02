@@ -7,7 +7,11 @@
     <pre class="code">
     {
         \t"name": "descriptionField",
-        \t"presenter": "presenters/TextLong.php"
+        \t"presenter": "presenters/TextLong.php",
+        \t"label": "[string]", // optional
+        \t"defaultValue": "[string]", // optional
+        \t"dependencies": [dependencies], // optional
+        \t"validators": [validators] // optiona
     }
     </pre>
     * @package Fabrico\Modules\Presenters
@@ -19,9 +23,9 @@
         }
         public function listing($value) {
             if(strlen($value) > 300) {
-                $this->response = substr($value, 0, 300)."...";
+                $this->setResponse(substr($value, 0, 300)."...");
             } else {
-                $this->response = $value;
+                $this->setResponse($value);
             }
             return $this;
         }

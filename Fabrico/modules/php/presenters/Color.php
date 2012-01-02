@@ -7,7 +7,11 @@
     <pre class="code">
     {
         \t"name": "colorField",
-        \t"presenter": "presenters/Color.php"
+        \t"presenter": "presenters/Color.php",
+        \t"label": "[string]", // optional
+        \t"defaultValue": "[string]", // optional
+        \t"dependencies": [dependencies], // optional
+        \t"validators": [validators] // optional
     }
     </pre>
     * @package Fabrico\Modules\Presenters
@@ -18,9 +22,9 @@
             return "Color";
         }
         public function listing($value) {
-            $this->response = $this->view("listing.html", array(
+            $this->setResponse($this->view("listing.html", array(
                 "color" => $value
-            ));
+            )));
             return $this;
         }
     

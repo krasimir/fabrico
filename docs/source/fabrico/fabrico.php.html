@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:13 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -69,8 +69,8 @@
 <a name="line23"></a>    }
 <a name="line24"></a>    
 <a name="line25"></a>    inject(array(
-<a name="line26"></a>        "tools/ErrorHandler.php",
-<a name="line27"></a>        "tools/view.php",
+<a name="line26"></a>        "utils/ErrorHandler.php",
+<a name="line27"></a>        "utils/view.php",
 <a name="line28"></a>        "Middleware.php",
 <a name="line29"></a>        "Request.php",
 <a name="line30"></a>        "Response.php",
@@ -106,7 +106,7 @@
 <a name="line60"></a>                // it stores the configurations and also setup redbean
 <a name="line61"></a>                "benchmark" => "middleware/Benchmark.php",
 <a name="line62"></a>                // it stores the configurations and also setup redbean
-<a name="line63"></a>                "config" => "tools/JSONConfig.php",
+<a name="line63"></a>                "config" => "utils/JSONConfig.php",
 <a name="line64"></a>                // read and construct the current application's models
 <a name="line65"></a>                "models" => "middleware/ModelsManager.php",
 <a name="line66"></a>                // $request->body will be parsed to object if incoming request is POST or PUT
@@ -174,19 +174,21 @@
 <a name="line128"></a>        * Called if ?debug=1. Displays information Benchmark and ModelsManager information.
 <a name="line129"></a>        */
 <a name="line130"></a>        public function onExit() {
-<a name="line131"></a>            foreach($this->models->models as $model) {
-<a name="line132"></a>                $model->report();
-<a name="line133"></a>            }
-<a name="line134"></a>            $this->log("Benchmark: ".$this->benchmark->elpasedTime(), "#D5D5FF");
-<a name="line135"></a>        }
-<a name="line136"></a>        
-<a name="line137"></a>        private function log($str, $color) {
-<a name="line138"></a>            echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
-<a name="line139"></a>        }
-<a name="line140"></a>    
-<a name="line141"></a>    }
-<a name="line142"></a>
-<a name="line143"></a>?></pre>
+<a name="line131"></a>            global $fabricoInjector;
+<a name="line132"></a>            foreach($this->models->models as $model) {
+<a name="line133"></a>                $model->report();
+<a name="line134"></a>            }
+<a name="line135"></a>            $fabricoInjector->report("#E9E9E9");
+<a name="line136"></a>            $this->log("Benchmark: ".$this->benchmark->elpasedTime(), "#D5D5FF");
+<a name="line137"></a>        }
+<a name="line138"></a>        
+<a name="line139"></a>        private function log($str, $color) {
+<a name="line140"></a>            echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
+<a name="line141"></a>        }
+<a name="line142"></a>    
+<a name="line143"></a>    }
+<a name="line144"></a>
+<a name="line145"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

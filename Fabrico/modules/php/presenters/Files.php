@@ -2,7 +2,7 @@
 
     inject(array(
         "presenters/File.php",
-        "tools/view.php"
+        "utils/view.php"
     ));
 
     /**
@@ -13,7 +13,10 @@
         \t"presenter": "presenters/File.php",
         \t"config": {
             \t\t"destination": "/assets/uploads"
-        \t}
+        \t},
+        \t"label": "[string]", // optional
+        \t"dependencies": [dependencies], // optional
+        \t"validators": [validators] // optional
     }
     </pre>
     * @package Fabrico\Modules\Presenters
@@ -50,17 +53,17 @@
                         ));
                     }
                 }
-                $this->response = $result;
+                $this->setResponse($result);
             } else {
-                $this->response = $value;
+                $this->setResponse($value);
             }
             return $this;
         }
         public function add($default = null) {            
-            $this->response = $this->view("adding.html", array(
+            $this->setResponse($this->view("adding.html", array(
                 "field" => $this->name,
                 "value" => $default != null ? $default : "",
-            ));
+            )));
             return $this;
         }
         public function addAction() {
@@ -78,15 +81,15 @@
                     }
                 }
             }
-            $this->response = $result;
+            $this->setResponse($result);
             return $this;
         }
         public function edit($value) {
-            $this->response = $this->view("editing.html", array(
+            $this->setResponse($this->view("editing.html", array(
                 "field" => $this->name,
                 "current" => $this->listing($value, true)->response->value,
                 "adding" => $this->add()->response->value
-            ));
+            )));
             return $this;
         }
         public function editAction($value) {
@@ -111,7 +114,7 @@
                     }
                 }
             }
-            $this->response = ($newFiles != "" ? $newFiles."|" : "").$oldFiles;
+            $this->setResponse(($newFiles != "" ? $newFiles."|" : "").$oldFiles);
             return $this;
         }
         public function deleteAction($value) {

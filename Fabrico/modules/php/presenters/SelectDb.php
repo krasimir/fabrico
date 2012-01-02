@@ -11,7 +11,10 @@
         \t"config": {
             \t\t"model": "models/categories.json",
             \t\t"field": "categoryLabel"
-        \t}
+        \t},
+        \t"label": "[string]", // optional
+        \t"dependencies": [dependencies], // optional
+        \t"validators": [validators] // optional
     }
     </pre>
     * @package Fabrico\Modules\Presenters
@@ -30,12 +33,12 @@
                     foreach($items as $item) {
                         if($item->id == $value) {
                             $found = true;
-                            $this->response = $item->{$this->config->field};
+                            $this->setResponse($item->{$this->config->field});
                         }
                     }
                 }
                 if(!$found) {
-                    $this->response = "";
+                    $this->setResponse("");
                 }
             } else {
                 throw new Exception($this.": model '".$this->config->model."' could not be found.");
@@ -56,10 +59,10 @@
                         ));
                     }
                 }
-                $this->response = $this->view("adding.html", array(
+                $this->setResponse($this->view("adding.html", array(
                     "field" => $this->name,
                     "options" => $options
-                ));
+                )));
             } else {
                 throw new Exception($this.": model '".$this->config->model."' could not be found.");
             }
@@ -67,18 +70,18 @@
         }
         public function addAction() {
             if(isset($this->req->body->{strtolower($this->name)})) {
-                $this->response = $this->req->body->{strtolower($this->name)};
+                $this->setResponse($this->req->body->{strtolower($this->name)});
             } else {
-                $this->response = null;
+                $this->setResponse(null);
             }
             return $this;
         }
         public function edit($value) {
-            $this->response = $this->add($value)->response->value;
+            $this->setResponse($this->add($value)->response->value);
             return $this;
         }
         public function editAction($value) {
-            $this->response = $this->addAction()->response->value;
+            $this->setResponse($this->addAction()->response->value);
             return $this;
         }
     

@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:13 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -54,59 +54,63 @@
 <a name="line10"></a>        \t"presenter": "presenters/Date.php",
 <a name="line11"></a>        \t"config": {
 <a name="line12"></a>            \t\t"showsTime": true
-<a name="line13"></a>        \t}
-<a name="line14"></a>    }
-<a name="line15"></a>    </pre>
-<a name="line16"></a>    * @package Fabrico\Modules\Presenters
-<a name="line17"></a>    */
-<a name="line18"></a>    class Date extends Text {
-<a name="line19"></a>        
-<a name="line20"></a>        public function __construct($properties = array()) {
-<a name="line21"></a>            parent::__construct($properties);
-<a name="line22"></a>            if(!isset($this->config)) {
-<a name="line23"></a>                $this->config = (object) array(
-<a name="line24"></a>                    "showsTime" => "false"
-<a name="line25"></a>                );
-<a name="line26"></a>            } else {
-<a name="line27"></a>                $this->config->showsTime = isset($this->config->showsTime) ? $this->config->showsTime : "false";
-<a name="line28"></a>            }
-<a name="line29"></a>            $this->config->formatWithoutTime = "%Y-%m-%d";
-<a name="line30"></a>            $this->config->formatWithTime = "%Y-%m-%d %H:%M";
-<a name="line31"></a>        }
-<a name="line32"></a>        public function __toString() {
-<a name="line33"></a>            return "Date";
-<a name="line34"></a>        }
-<a name="line35"></a>        public function add($default = null) {
-<a name="line36"></a>            $this->response = $this->view("view.html", array(
-<a name="line37"></a>                "field" => $this->name,
-<a name="line38"></a>                "value" => $default != null ? $default : $this->getCurrentDate(),
-<a name="line39"></a>                "currentDate" => $this->getCurrentDate(),
-<a name="line40"></a>                "showsTime" => $this->config->showsTime,
-<a name="line41"></a>                "format" => $this->config->showsTime == "true" ? $this->config->formatWithTime : $this->config->formatWithoutTime
-<a name="line42"></a>            ));
-<a name="line43"></a>            return $this;
-<a name="line44"></a>        }
-<a name="line45"></a>        public function edit($value) {
-<a name="line46"></a>            $this->response = $this->add($value)->response->value;
+<a name="line13"></a>        \t},
+<a name="line14"></a>        \t"label": "[string]", // optional
+<a name="line15"></a>        \t"defaultValue": "[string]", // optional,
+<a name="line16"></a>        \t"dependencies": [dependencies], // optional
+<a name="line17"></a>        \t"validators": [validators] // optional
+<a name="line18"></a>    }
+<a name="line19"></a>    </pre>
+<a name="line20"></a>    * @package Fabrico\Modules\Presenters
+<a name="line21"></a>    */
+<a name="line22"></a>    class Date extends Text {
+<a name="line23"></a>        
+<a name="line24"></a>        public function __construct($properties = array()) {
+<a name="line25"></a>            parent::__construct($properties);
+<a name="line26"></a>            if(!isset($this->config)) {
+<a name="line27"></a>                $this->config = (object) array(
+<a name="line28"></a>                    "showsTime" => "false"
+<a name="line29"></a>                );
+<a name="line30"></a>            } else {
+<a name="line31"></a>                $this->config->showsTime = isset($this->config->showsTime) ? $this->config->showsTime : "false";
+<a name="line32"></a>            }
+<a name="line33"></a>            $this->config->formatWithoutTime = "%Y-%m-%d";
+<a name="line34"></a>            $this->config->formatWithTime = "%Y-%m-%d %H:%M";
+<a name="line35"></a>        }
+<a name="line36"></a>        public function __toString() {
+<a name="line37"></a>            return "Date";
+<a name="line38"></a>        }
+<a name="line39"></a>        public function add($default = null) {
+<a name="line40"></a>            $this->setResponse($this->view("view.html", array(
+<a name="line41"></a>                "field" => $this->name,
+<a name="line42"></a>                "value" => $default != null ? $default : (isset($this->defaultValue) ? $this->defaultValue : $this->getCurrentDate()),
+<a name="line43"></a>                "currentDate" => $this->getCurrentDate(),
+<a name="line44"></a>                "showsTime" => $this->config->showsTime,
+<a name="line45"></a>                "format" => $this->config->showsTime == "true" ? $this->config->formatWithTime : $this->config->formatWithoutTime
+<a name="line46"></a>            )));
 <a name="line47"></a>            return $this;
 <a name="line48"></a>        }
-<a name="line49"></a>        private function getCurrentDate() {
-<a name="line50"></a>            if($this->config->showsTime == "true") {
-<a name="line51"></a>                $str = $this->config->formatWithTime;  
-<a name="line52"></a>            } else {
-<a name="line53"></a>                $str = $this->config->formatWithoutTime;
-<a name="line54"></a>            }
-<a name="line55"></a>            $str = str_replace("%Y", date("Y"), $str);
-<a name="line56"></a>            $str = str_replace("%m", date("m"), $str);
-<a name="line57"></a>            $str = str_replace("%d", date("d"), $str);
-<a name="line58"></a>            $str = str_replace("%H", date("H"), $str);
-<a name="line59"></a>            $str = str_replace("%M", date("i"), $str);
-<a name="line60"></a>            return $str;
-<a name="line61"></a>        }
-<a name="line62"></a>    
-<a name="line63"></a>    }
-<a name="line64"></a>    
-<a name="line65"></a>?></pre>
+<a name="line49"></a>        public function edit($value) {
+<a name="line50"></a>            $this->setResponse($this->add($value)->response->value);
+<a name="line51"></a>            return $this;
+<a name="line52"></a>        }
+<a name="line53"></a>        private function getCurrentDate() {
+<a name="line54"></a>            if($this->config->showsTime == "true") {
+<a name="line55"></a>                $str = $this->config->formatWithTime;  
+<a name="line56"></a>            } else {
+<a name="line57"></a>                $str = $this->config->formatWithoutTime;
+<a name="line58"></a>            }
+<a name="line59"></a>            $str = str_replace("%Y", date("Y"), $str);
+<a name="line60"></a>            $str = str_replace("%m", date("m"), $str);
+<a name="line61"></a>            $str = str_replace("%d", date("d"), $str);
+<a name="line62"></a>            $str = str_replace("%H", date("H"), $str);
+<a name="line63"></a>            $str = str_replace("%M", date("i"), $str);
+<a name="line64"></a>            return $str;
+<a name="line65"></a>        }
+<a name="line66"></a>    
+<a name="line67"></a>    }
+<a name="line68"></a>    
+<a name="line69"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

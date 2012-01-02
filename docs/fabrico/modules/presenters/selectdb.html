@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:12 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
 <link rel="start" href="../../../overview-summary.html">
@@ -47,7 +47,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <hr>
 
 <div class="qualifiedName">Fabrico\Modules\Presenters\SelectDb</div>
-<a href="../../../source/fabrico/modules/php/presenters/selectdb.php.html#line19" class="location">Fabrico\modules\php\presenters\SelectDb.php at line 19</a>
+<a href="../../../source/fabrico/modules/php/presenters/selectdb.php.html#line22" class="location">Fabrico\modules\php\presenters\SelectDb.php at line 22</a>
 
 <h1>Class SelectDb</h1>
 
@@ -67,11 +67,18 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 \t"config": {
 \t\t"model": "models/categories.json",
 \t\t"field": "categoryLabel"
-\t}
+\t},
+\t"label": "[string]", // optional
+\t"dependencies": [dependencies], // optional
+\t"validators": [validators] // optional
 }
 </pre></p></div>
 
 <hr>
+
+<table class="inherit">
+<tr><th colspan="2">Fields inherited from Fabrico\Modules\Presenters\Presenter</th></tr>
+<tr><td><a href="../../../fabrico/modules/presenters/presenter.html#controller">controller</a>, <a href="../../../fabrico/modules/presenters/presenter.html#model">model</a>, <a href="../../../fabrico/modules/presenters/presenter.html#name">name</a>, <a href="../../../fabrico/modules/presenters/presenter.html#response">response</a>, <a href="../../../fabrico/modules/presenters/presenter.html#validators">validators</a></td></tr></table>
 
 <table id="summary_method">
 <tr><th colspan="2">Method Summary</th></tr>
@@ -99,10 +106,10 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <table class="inherit">
 <tr><th colspan="2">Methods inherited from Fabrico\Modules\Presenters\Presenter</th></tr>
-<tr><td><a href="../../../fabrico/modules/presenters/presenter.html#__construct()">__construct</a>, <a href="../../../fabrico/modules/presenters/presenter.html#add()">add</a>, <a href="../../../fabrico/modules/presenters/presenter.html#addAction()">addAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#deleteAction()">deleteAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#edit()">edit</a>, <a href="../../../fabrico/modules/presenters/presenter.html#editAction()">editAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#listing()">listing</a>, <a href="../../../fabrico/modules/presenters/presenter.html#view()">view</a></td></tr></table>
+<tr><td><a href="../../../fabrico/modules/presenters/presenter.html#__construct()">__construct</a>, <a href="../../../fabrico/modules/presenters/presenter.html#add()">add</a>, <a href="../../../fabrico/modules/presenters/presenter.html#addAction()">addAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#deleteAction()">deleteAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#edit()">edit</a>, <a href="../../../fabrico/modules/presenters/presenter.html#editAction()">editAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#listing()">listing</a>, <a href="../../../fabrico/modules/presenters/presenter.html#setResponse()">setResponse</a>, <a href="../../../fabrico/modules/presenters/presenter.html#view()">view</a></td></tr></table>
 
 <h2 id="detail_method">Method Detail</h2>
-<a href="../../../source/fabrico/modules/php/presenters/selectdb.php.html#line24" class="location">Fabrico\modules\php\presenters\SelectDb.php at line 24</a>
+<a href="../../../source/fabrico/modules/php/presenters/selectdb.php.html#line27" class="location">Fabrico\modules\php\presenters\SelectDb.php at line 27</a>
 
 <h3 id="listing()">listing</h3>
 <code class="signature">public  void <strong>listing</strong>(mixed value)</code>
@@ -112,7 +119,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/selectdb.php.html#line45" class="location">Fabrico\modules\php\presenters\SelectDb.php at line 45</a>
+<a href="../../../source/fabrico/modules/php/presenters/selectdb.php.html#line48" class="location">Fabrico\modules\php\presenters\SelectDb.php at line 48</a>
 
 <h3 id="add()">add</h3>
 <code class="signature">public  void <strong>add</strong>(mixed default)</code>
@@ -121,7 +128,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/selectdb.php.html#line68" class="location">Fabrico\modules\php\presenters\SelectDb.php at line 68</a>
+<a href="../../../source/fabrico/modules/php/presenters/selectdb.php.html#line71" class="location">Fabrico\modules\php\presenters\SelectDb.php at line 71</a>
 
 <h3 id="addAction()">addAction</h3>
 <code class="signature">public  void <strong>addAction</strong>()</code>
@@ -130,7 +137,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/selectdb.php.html#line76" class="location">Fabrico\modules\php\presenters\SelectDb.php at line 76</a>
+<a href="../../../source/fabrico/modules/php/presenters/selectdb.php.html#line79" class="location">Fabrico\modules\php\presenters\SelectDb.php at line 79</a>
 
 <h3 id="edit()">edit</h3>
 <code class="signature">public  void <strong>edit</strong>(mixed value)</code>
@@ -139,7 +146,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/selectdb.php.html#line80" class="location">Fabrico\modules\php\presenters\SelectDb.php at line 80</a>
+<a href="../../../source/fabrico/modules/php/presenters/selectdb.php.html#line83" class="location">Fabrico\modules\php\presenters\SelectDb.php at line 83</a>
 
 <h3 id="editAction()">editAction</h3>
 <code class="signature">public  void <strong>editAction</strong>(mixed value)</code>

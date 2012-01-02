@@ -1,8 +1,8 @@
 <?php
 
     inject(array(
-        "tools/rglob.php",
-        "tools/FileJoin.php",
+        "utils/rglob.php",
+        "utils/FileJoin.php",
         "Middleware.php"
     ));
     

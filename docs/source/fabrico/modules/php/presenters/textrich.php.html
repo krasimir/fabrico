@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:13 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -63,72 +63,76 @@
 <a name="line19"></a>            \t\t"bold": "yes",
 <a name="line20"></a>            \t\t"italic": "yes",
 <a name="line21"></a>            \t\t"underline": "yes"
-<a name="line22"></a>        \t}
-<a name="line23"></a>    }
-<a name="line24"></a>    </pre>
-<a name="line25"></a>    * @package Fabrico\Modules\Presenters
-<a name="line26"></a>    */
-<a name="line27"></a>    class TextRich extends Text {
-<a name="line28"></a>    
-<a name="line29"></a>        protected $settings;
-<a name="line30"></a>        
-<a name="line31"></a>        public function __construct($properties = array()) {
-<a name="line32"></a>            parent::__construct($properties);
-<a name="line33"></a>            if(!isset($this->config)) {
-<a name="line34"></a>                $this->config = (object) array(
-<a name="line35"></a>                    "swfURL" => "/assets/swf/wysiwyg/bin/swf/Project.swf",
-<a name="line36"></a>                    "fontFamily" => "no",
-<a name="line37"></a>                    "bullets" => "no",
-<a name="line38"></a>                    "linkInput" => "yes",
-<a name="line39"></a>                    "fontSize" => "no",
-<a name="line40"></a>                    "colorPicker" => "no",
-<a name="line41"></a>                    "alignButtons" => "no",
-<a name="line42"></a>                    "bold" => "yes",
-<a name="line43"></a>                    "italic" => "yes",
-<a name="line44"></a>                    "underline" => "yes"
-<a name="line45"></a>                );
-<a name="line46"></a>            } else {
-<a name="line47"></a>                $this->config->swfURL = isset($this->config->swfURL) ? $this->config->swfURL : "/assets/swf/wysiwyg/bin/swf/Project.swf";
-<a name="line48"></a>                $this->config->fontFamily = isset($this->config->fontFamily) ? $this->config->fontFamily : "no";
-<a name="line49"></a>                $this->config->bullets = isset($this->config->bullets) ? $this->config->bullets : "no";
-<a name="line50"></a>                $this->config->linkInput = isset($this->config->linkInput) ? $this->config->linkInput : "yes";
-<a name="line51"></a>                $this->config->fontSize = isset($this->config->fontSize) ? $this->config->fontSize : "no";
-<a name="line52"></a>                $this->config->colorPicker = isset($this->config->colorPicker) ? $this->config->colorPicker : "no";
-<a name="line53"></a>                $this->config->alignButtons = isset($this->config->alignButtons) ? $this->config->alignButtons : "no";
-<a name="line54"></a>                $this->config->bold = isset($this->config->bold) ? $this->config->bold : "yes";
-<a name="line55"></a>                $this->config->italic = isset($this->config->italic) ? $this->config->italic : "yes";
-<a name="line56"></a>                $this->config->underline = isset($this->config->underline) ? $this->config->underline : "yes";
-<a name="line57"></a>            }
-<a name="line58"></a>        }
-<a name="line59"></a>        public function __toString() {
-<a name="line60"></a>            return "TextRich";
-<a name="line61"></a>        }
-<a name="line62"></a>        public function listing($value) {
-<a name="line63"></a>            $value = strip_tags($value);
-<a name="line64"></a>            if(strlen($value) > 300) {
-<a name="line65"></a>                $this->response = substr($value, 0, 300)."...";
-<a name="line66"></a>            } else {
-<a name="line67"></a>                $this->response = $value;
-<a name="line68"></a>            }
-<a name="line69"></a>            return $this;
-<a name="line70"></a>        }
-<a name="line71"></a>        public function add($default = null) {
-<a name="line72"></a>            $this->config->swfURL = $this->req->fabrico->root->httpFiles.$this->config->swfURL;
-<a name="line73"></a>            $this->response = $this->view("view.html", array(
-<a name="line74"></a>                "settings" => json_encode($this->config),
-<a name="line75"></a>                "field" => $this->name,
-<a name="line76"></a>                "value" => $default != null ? $default : ""
-<a name="line77"></a>            ));
-<a name="line78"></a>            return $this;
-<a name="line79"></a>        }
-<a name="line80"></a>        public function edit($value) {
-<a name="line81"></a>            $this->response = $this->add(addslashes($value))->response->value;
+<a name="line22"></a>        \t},
+<a name="line23"></a>        \t"label": "[string]", // optional
+<a name="line24"></a>        \t"defaultValue": "[string]", // optional
+<a name="line25"></a>        \t"dependencies": [dependencies], // optional
+<a name="line26"></a>        \t"validators": [validators] // optiona
+<a name="line27"></a>    }
+<a name="line28"></a>    </pre>
+<a name="line29"></a>    * @package Fabrico\Modules\Presenters
+<a name="line30"></a>    */
+<a name="line31"></a>    class TextRich extends Text {
+<a name="line32"></a>    
+<a name="line33"></a>        protected $settings;
+<a name="line34"></a>        
+<a name="line35"></a>        public function __construct($properties = array()) {
+<a name="line36"></a>            parent::__construct($properties);
+<a name="line37"></a>            if(!isset($this->config)) {
+<a name="line38"></a>                $this->config = (object) array(
+<a name="line39"></a>                    "swfURL" => "/assets/swf/wysiwyg/bin/swf/Project.swf",
+<a name="line40"></a>                    "fontFamily" => "no",
+<a name="line41"></a>                    "bullets" => "no",
+<a name="line42"></a>                    "linkInput" => "yes",
+<a name="line43"></a>                    "fontSize" => "no",
+<a name="line44"></a>                    "colorPicker" => "no",
+<a name="line45"></a>                    "alignButtons" => "no",
+<a name="line46"></a>                    "bold" => "yes",
+<a name="line47"></a>                    "italic" => "yes",
+<a name="line48"></a>                    "underline" => "yes"
+<a name="line49"></a>                );
+<a name="line50"></a>            } else {
+<a name="line51"></a>                $this->config->swfURL = isset($this->config->swfURL) ? $this->config->swfURL : "/assets/swf/wysiwyg/bin/swf/Project.swf";
+<a name="line52"></a>                $this->config->fontFamily = isset($this->config->fontFamily) ? $this->config->fontFamily : "no";
+<a name="line53"></a>                $this->config->bullets = isset($this->config->bullets) ? $this->config->bullets : "no";
+<a name="line54"></a>                $this->config->linkInput = isset($this->config->linkInput) ? $this->config->linkInput : "yes";
+<a name="line55"></a>                $this->config->fontSize = isset($this->config->fontSize) ? $this->config->fontSize : "no";
+<a name="line56"></a>                $this->config->colorPicker = isset($this->config->colorPicker) ? $this->config->colorPicker : "no";
+<a name="line57"></a>                $this->config->alignButtons = isset($this->config->alignButtons) ? $this->config->alignButtons : "no";
+<a name="line58"></a>                $this->config->bold = isset($this->config->bold) ? $this->config->bold : "yes";
+<a name="line59"></a>                $this->config->italic = isset($this->config->italic) ? $this->config->italic : "yes";
+<a name="line60"></a>                $this->config->underline = isset($this->config->underline) ? $this->config->underline : "yes";
+<a name="line61"></a>            }
+<a name="line62"></a>        }
+<a name="line63"></a>        public function __toString() {
+<a name="line64"></a>            return "TextRich";
+<a name="line65"></a>        }
+<a name="line66"></a>        public function listing($value) {
+<a name="line67"></a>            $value = strip_tags($value);
+<a name="line68"></a>            if(strlen($value) > 300) {
+<a name="line69"></a>                $this->setResponse(substr($value, 0, 300)."...");
+<a name="line70"></a>            } else {
+<a name="line71"></a>                $this->setResponse($value);
+<a name="line72"></a>            }
+<a name="line73"></a>            return $this;
+<a name="line74"></a>        }
+<a name="line75"></a>        public function add($default = null) {
+<a name="line76"></a>            $this->config->swfURL = $this->req->fabrico->root->httpFiles.$this->config->swfURL;
+<a name="line77"></a>            $this->setResponse($this->view("view.html", array(
+<a name="line78"></a>                "settings" => json_encode($this->config),
+<a name="line79"></a>                "field" => $this->name,
+<a name="line80"></a>                "value" => $default != null ? $default : (isset($this->defaultValue) ? $this->defaultValue : "")
+<a name="line81"></a>            )));
 <a name="line82"></a>            return $this;
 <a name="line83"></a>        }
-<a name="line84"></a>    
-<a name="line85"></a>    }
-<a name="line86"></a>    
-<a name="line87"></a>?></pre>
+<a name="line84"></a>        public function edit($value) {
+<a name="line85"></a>            $this->setResponse($this->add(addslashes($value))->response->value);
+<a name="line86"></a>            return $this;
+<a name="line87"></a>        }
+<a name="line88"></a>    
+<a name="line89"></a>    }
+<a name="line90"></a>    
+<a name="line91"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

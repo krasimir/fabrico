@@ -19,7 +19,11 @@
             \t\t"bold": "yes",
             \t\t"italic": "yes",
             \t\t"underline": "yes"
-        \t}
+        \t},
+        \t"label": "[string]", // optional
+        \t"defaultValue": "[string]", // optional
+        \t"dependencies": [dependencies], // optional
+        \t"validators": [validators] // optiona
     }
     </pre>
     * @package Fabrico\Modules\Presenters
@@ -62,23 +66,23 @@
         public function listing($value) {
             $value = strip_tags($value);
             if(strlen($value) > 300) {
-                $this->response = substr($value, 0, 300)."...";
+                $this->setResponse(substr($value, 0, 300)."...");
             } else {
-                $this->response = $value;
+                $this->setResponse($value);
             }
             return $this;
         }
         public function add($default = null) {
             $this->config->swfURL = $this->req->fabrico->root->httpFiles.$this->config->swfURL;
-            $this->response = $this->view("view.html", array(
+            $this->setResponse($this->view("view.html", array(
                 "settings" => json_encode($this->config),
                 "field" => $this->name,
-                "value" => $default != null ? $default : ""
-            ));
+                "value" => $default != null ? $default : (isset($this->defaultValue) ? $this->defaultValue : "")
+            )));
             return $this;
         }
         public function edit($value) {
-            $this->response = $this->add(addslashes($value))->response->value;
+            $this->setResponse($this->add(addslashes($value))->response->value);
             return $this;
         }
     

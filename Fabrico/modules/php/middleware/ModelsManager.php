@@ -31,7 +31,7 @@
             if($jsonConfig === null) {
                 throw new Exception($this.": error reading '".$modelJSONFile."'");
             }
-            $jsonConfig->adapter = isset($jsonConfig->adapter) ? $jsonConfig->adapter : "tools/adapters/MySQL.php";
+            $jsonConfig->adapter = isset($jsonConfig->adapter) ? $jsonConfig->adapter : "adapters/MySQL.php";
             
             // getting model's classes names
             $className = $this->getFilename($jsonConfig->adapter);

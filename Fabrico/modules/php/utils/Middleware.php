@@ -24,7 +24,7 @@
         * <pre>
         * $this->using(array(                
         *    "benchmark" => "middleware/Benchmark.php",
-        *    "config" => "tools/JSONConfig.php",
+        *    "config" => "utils/JSONConfig.php",
         *    "models" => "middleware/ModelsManager.php"
         * ));
         * </pre>

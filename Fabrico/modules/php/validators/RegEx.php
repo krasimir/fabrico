@@ -21,8 +21,8 @@
     * @package Fabrico\Modules\Validators
     */
     class RegEx {
-        public function run($value, $parameters) {
-            if(!isset($parameters) || !isset($parameters->match)) {
+        public function run($value, $parameters = null) {
+            if(!isset($parameters) || !isset($parameters->match) || $parameters == null) {
                 throw new Exception("RegEx validator requires 'parameters': { 'match': '[your regular expression here]' }");
             }
             $result = preg_match($parameters->match, $value);

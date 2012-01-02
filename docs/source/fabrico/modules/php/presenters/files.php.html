@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:13 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -46,7 +46,7 @@
 <a name="line2"></a>
 <a name="line3"></a>    inject(array(
 <a name="line4"></a>        "presenters/File.php",
-<a name="line5"></a>        "tools/view.php"
+<a name="line5"></a>        "utils/view.php"
 <a name="line6"></a>    ));
 <a name="line7"></a>
 <a name="line8"></a>    /**
@@ -57,123 +57,126 @@
 <a name="line13"></a>        \t"presenter": "presenters/File.php",
 <a name="line14"></a>        \t"config": {
 <a name="line15"></a>            \t\t"destination": "/assets/uploads"
-<a name="line16"></a>        \t}
-<a name="line17"></a>    }
-<a name="line18"></a>    </pre>
-<a name="line19"></a>    * @package Fabrico\Modules\Presenters
-<a name="line20"></a>    */
-<a name="line21"></a>    class Files extends File {
-<a name="line22"></a>        
-<a name="line23"></a>        public function __construct($properties = array()) {
-<a name="line24"></a>            parent::__construct($properties);
-<a name="line25"></a>            if(!isset($this->config)) {
-<a name="line26"></a>                $this->config = (object) array(
-<a name="line27"></a>                    "destination" => "/assets/uploads"
-<a name="line28"></a>                );
-<a name="line29"></a>            } else {
-<a name="line30"></a>                $this->config->destination = isset($this->config->destination) ? $this->config->destination : "/assets/uploads";
-<a name="line31"></a>            }
-<a name="line32"></a>        }
-<a name="line33"></a>        public function __toString() {
-<a name="line34"></a>            return "Files";
+<a name="line16"></a>        \t},
+<a name="line17"></a>        \t"label": "[string]", // optional
+<a name="line18"></a>        \t"dependencies": [dependencies], // optional
+<a name="line19"></a>        \t"validators": [validators] // optional
+<a name="line20"></a>    }
+<a name="line21"></a>    </pre>
+<a name="line22"></a>    * @package Fabrico\Modules\Presenters
+<a name="line23"></a>    */
+<a name="line24"></a>    class Files extends File {
+<a name="line25"></a>        
+<a name="line26"></a>        public function __construct($properties = array()) {
+<a name="line27"></a>            parent::__construct($properties);
+<a name="line28"></a>            if(!isset($this->config)) {
+<a name="line29"></a>                $this->config = (object) array(
+<a name="line30"></a>                    "destination" => "/assets/uploads"
+<a name="line31"></a>                );
+<a name="line32"></a>            } else {
+<a name="line33"></a>                $this->config->destination = isset($this->config->destination) ? $this->config->destination : "/assets/uploads";
+<a name="line34"></a>            }
 <a name="line35"></a>        }
-<a name="line36"></a>        public function listing($value, $remove = false) {
-<a name="line37"></a>            if($value != "") {
-<a name="line38"></a>                $files = explode("|", $value);
-<a name="line39"></a>                $result = "";
-<a name="line40"></a>                foreach($files as $file) {
-<a name="line41"></a>                    if($file != "") {
-<a name="line42"></a>                        $result .= $this->view("listing.html", array(
-<a name="line43"></a>                            "filepath" => $this->getAbsolutePathHttp($file),
-<a name="line44"></a>                            "filename" => $this->getFileName($file),
-<a name="line45"></a>                            "ext" => $this->getExtension($file),
-<a name="line46"></a>                            "remove" => !$remove ? "" : $this->view("remove.html", array(
-<a name="line47"></a>                                "field" => $this->name,
-<a name="line48"></a>                                "id" => md5($file)
-<a name="line49"></a>                            ))
-<a name="line50"></a>                        ));
-<a name="line51"></a>                    }
-<a name="line52"></a>                }
-<a name="line53"></a>                $this->response = $result;
-<a name="line54"></a>            } else {
-<a name="line55"></a>                $this->response = $value;
-<a name="line56"></a>            }
-<a name="line57"></a>            return $this;
-<a name="line58"></a>        }
-<a name="line59"></a>        public function add($default = null) {            
-<a name="line60"></a>            $this->response = $this->view("adding.html", array(
-<a name="line61"></a>                "field" => $this->name,
-<a name="line62"></a>                "value" => $default != null ? $default : "",
-<a name="line63"></a>            ));
-<a name="line64"></a>            return $this;
-<a name="line65"></a>        }
-<a name="line66"></a>        public function addAction() {
-<a name="line67"></a>            $numOfFields = $this->req->body->{strtolower($this->name."_numOfFields")};
-<a name="line68"></a>            $files = array();
-<a name="line69"></a>            $files []= $this->upload($this->name);
-<a name="line70"></a>            for($i=0; $i<$numOfFields; $i++) {
-<a name="line71"></a>                $files []= $this->upload($this->name."_".$i);
-<a name="line72"></a>            }
-<a name="line73"></a>            $result = "";
-<a name="line74"></a>            if(!empty($files)) {
-<a name="line75"></a>                foreach($files as $file) {
-<a name="line76"></a>                    if($file != "") {
-<a name="line77"></a>                        $result .= $file."|";
-<a name="line78"></a>                    }
-<a name="line79"></a>                }
-<a name="line80"></a>            }
-<a name="line81"></a>            $this->response = $result;
-<a name="line82"></a>            return $this;
-<a name="line83"></a>        }
-<a name="line84"></a>        public function edit($value) {
-<a name="line85"></a>            $this->response = $this->view("editing.html", array(
-<a name="line86"></a>                "field" => $this->name,
-<a name="line87"></a>                "current" => $this->listing($value, true)->response->value,
-<a name="line88"></a>                "adding" => $this->add()->response->value
-<a name="line89"></a>            ));
-<a name="line90"></a>            return $this;
-<a name="line91"></a>        }
-<a name="line92"></a>        public function editAction($value) {
-<a name="line93"></a>            $newFiles = $this->addAction()->response->value;
-<a name="line94"></a>            $oldFiles = "";
-<a name="line95"></a>            if($value != "") {
-<a name="line96"></a>                $files = explode("|", $value);
-<a name="line97"></a>                $filesToRemove = $this->req->body->{strtolower($this->name."_filesToRemove")};
-<a name="line98"></a>                $filesToRemove = explode("|", $filesToRemove);
-<a name="line99"></a>                foreach($files as $file) {
-<a name="line100"></a>                    if($file != "") {
-<a name="line101"></a>                        $found = false;
-<a name="line102"></a>                        foreach($filesToRemove as $fileToRemove) {
-<a name="line103"></a>                            if($fileToRemove == md5($file)) {
-<a name="line104"></a>                                $found = true;
-<a name="line105"></a>                                parent::deleteAction($file);
-<a name="line106"></a>                            }
-<a name="line107"></a>                        }
-<a name="line108"></a>                        if(!$found) {
-<a name="line109"></a>                            $oldFiles .= $file."|";
+<a name="line36"></a>        public function __toString() {
+<a name="line37"></a>            return "Files";
+<a name="line38"></a>        }
+<a name="line39"></a>        public function listing($value, $remove = false) {
+<a name="line40"></a>            if($value != "") {
+<a name="line41"></a>                $files = explode("|", $value);
+<a name="line42"></a>                $result = "";
+<a name="line43"></a>                foreach($files as $file) {
+<a name="line44"></a>                    if($file != "") {
+<a name="line45"></a>                        $result .= $this->view("listing.html", array(
+<a name="line46"></a>                            "filepath" => $this->getAbsolutePathHttp($file),
+<a name="line47"></a>                            "filename" => $this->getFileName($file),
+<a name="line48"></a>                            "ext" => $this->getExtension($file),
+<a name="line49"></a>                            "remove" => !$remove ? "" : $this->view("remove.html", array(
+<a name="line50"></a>                                "field" => $this->name,
+<a name="line51"></a>                                "id" => md5($file)
+<a name="line52"></a>                            ))
+<a name="line53"></a>                        ));
+<a name="line54"></a>                    }
+<a name="line55"></a>                }
+<a name="line56"></a>                $this->setResponse($result);
+<a name="line57"></a>            } else {
+<a name="line58"></a>                $this->setResponse($value);
+<a name="line59"></a>            }
+<a name="line60"></a>            return $this;
+<a name="line61"></a>        }
+<a name="line62"></a>        public function add($default = null) {            
+<a name="line63"></a>            $this->setResponse($this->view("adding.html", array(
+<a name="line64"></a>                "field" => $this->name,
+<a name="line65"></a>                "value" => $default != null ? $default : "",
+<a name="line66"></a>            )));
+<a name="line67"></a>            return $this;
+<a name="line68"></a>        }
+<a name="line69"></a>        public function addAction() {
+<a name="line70"></a>            $numOfFields = $this->req->body->{strtolower($this->name."_numOfFields")};
+<a name="line71"></a>            $files = array();
+<a name="line72"></a>            $files []= $this->upload($this->name);
+<a name="line73"></a>            for($i=0; $i<$numOfFields; $i++) {
+<a name="line74"></a>                $files []= $this->upload($this->name."_".$i);
+<a name="line75"></a>            }
+<a name="line76"></a>            $result = "";
+<a name="line77"></a>            if(!empty($files)) {
+<a name="line78"></a>                foreach($files as $file) {
+<a name="line79"></a>                    if($file != "") {
+<a name="line80"></a>                        $result .= $file."|";
+<a name="line81"></a>                    }
+<a name="line82"></a>                }
+<a name="line83"></a>            }
+<a name="line84"></a>            $this->setResponse($result);
+<a name="line85"></a>            return $this;
+<a name="line86"></a>        }
+<a name="line87"></a>        public function edit($value) {
+<a name="line88"></a>            $this->setResponse($this->view("editing.html", array(
+<a name="line89"></a>                "field" => $this->name,
+<a name="line90"></a>                "current" => $this->listing($value, true)->response->value,
+<a name="line91"></a>                "adding" => $this->add()->response->value
+<a name="line92"></a>            )));
+<a name="line93"></a>            return $this;
+<a name="line94"></a>        }
+<a name="line95"></a>        public function editAction($value) {
+<a name="line96"></a>            $newFiles = $this->addAction()->response->value;
+<a name="line97"></a>            $oldFiles = "";
+<a name="line98"></a>            if($value != "") {
+<a name="line99"></a>                $files = explode("|", $value);
+<a name="line100"></a>                $filesToRemove = $this->req->body->{strtolower($this->name."_filesToRemove")};
+<a name="line101"></a>                $filesToRemove = explode("|", $filesToRemove);
+<a name="line102"></a>                foreach($files as $file) {
+<a name="line103"></a>                    if($file != "") {
+<a name="line104"></a>                        $found = false;
+<a name="line105"></a>                        foreach($filesToRemove as $fileToRemove) {
+<a name="line106"></a>                            if($fileToRemove == md5($file)) {
+<a name="line107"></a>                                $found = true;
+<a name="line108"></a>                                parent::deleteAction($file);
+<a name="line109"></a>                            }
 <a name="line110"></a>                        }
-<a name="line111"></a>                    }
-<a name="line112"></a>                }
-<a name="line113"></a>            }
-<a name="line114"></a>            $this->response = ($newFiles != "" ? $newFiles."|" : "").$oldFiles;
-<a name="line115"></a>            return $this;
-<a name="line116"></a>        }
-<a name="line117"></a>        public function deleteAction($value) {
-<a name="line118"></a>            if($value != "") {
-<a name="line119"></a>                $files = explode("|", $value);
-<a name="line120"></a>                $result = "";
-<a name="line121"></a>                foreach($files as $file) {
-<a name="line122"></a>                    if($file != "") {
-<a name="line123"></a>                        parent::deleteAction($file);
-<a name="line124"></a>                    }
-<a name="line125"></a>                }
-<a name="line126"></a>            }
-<a name="line127"></a>            return $this;
-<a name="line128"></a>        }
-<a name="line129"></a>    
-<a name="line130"></a>    }
-<a name="line131"></a>    
-<a name="line132"></a>?></pre>
+<a name="line111"></a>                        if(!$found) {
+<a name="line112"></a>                            $oldFiles .= $file."|";
+<a name="line113"></a>                        }
+<a name="line114"></a>                    }
+<a name="line115"></a>                }
+<a name="line116"></a>            }
+<a name="line117"></a>            $this->setResponse(($newFiles != "" ? $newFiles."|" : "").$oldFiles);
+<a name="line118"></a>            return $this;
+<a name="line119"></a>        }
+<a name="line120"></a>        public function deleteAction($value) {
+<a name="line121"></a>            if($value != "") {
+<a name="line122"></a>                $files = explode("|", $value);
+<a name="line123"></a>                $result = "";
+<a name="line124"></a>                foreach($files as $file) {
+<a name="line125"></a>                    if($file != "") {
+<a name="line126"></a>                        parent::deleteAction($file);
+<a name="line127"></a>                    }
+<a name="line128"></a>                }
+<a name="line129"></a>            }
+<a name="line130"></a>            return $this;
+<a name="line131"></a>        }
+<a name="line132"></a>    
+<a name="line133"></a>    }
+<a name="line134"></a>    
+<a name="line135"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

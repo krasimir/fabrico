@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:12 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
 <link rel="start" href="../../../overview-summary.html">
@@ -47,7 +47,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <hr>
 
 <div class="qualifiedName">Fabrico\Modules\Presenters\File</div>
-<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line21" class="location">Fabrico\modules\php\presenters\File.php at line 21</a>
+<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line24" class="location">Fabrico\modules\php\presenters\File.php at line 24</a>
 
 <h1>Class File</h1>
 
@@ -71,11 +71,18 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 \t"presenter": "presenters/File.php",
 \t"config": {
 \t\t"destination": "/assets/uploads"
-\t}
+\t},
+\t"label": "[string]", // optional
+\t"dependencies": [dependencies], // optional
+\t"validators": [validators] // optional
 }
 </pre></p></div>
 
 <hr>
+
+<table class="inherit">
+<tr><th colspan="2">Fields inherited from Fabrico\Modules\Presenters\Presenter</th></tr>
+<tr><td><a href="../../../fabrico/modules/presenters/presenter.html#controller">controller</a>, <a href="../../../fabrico/modules/presenters/presenter.html#model">model</a>, <a href="../../../fabrico/modules/presenters/presenter.html#name">name</a>, <a href="../../../fabrico/modules/presenters/presenter.html#response">response</a>, <a href="../../../fabrico/modules/presenters/presenter.html#validators">validators</a></td></tr></table>
 
 <table id="summary_constructor">
 <tr><th colspan="2">Constructor Summary</th></tr>
@@ -135,10 +142,10 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <table class="inherit">
 <tr><th colspan="2">Methods inherited from Fabrico\Modules\Presenters\Presenter</th></tr>
-<tr><td><a href="../../../fabrico/modules/presenters/presenter.html#__construct()">__construct</a>, <a href="../../../fabrico/modules/presenters/presenter.html#add()">add</a>, <a href="../../../fabrico/modules/presenters/presenter.html#addAction()">addAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#deleteAction()">deleteAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#edit()">edit</a>, <a href="../../../fabrico/modules/presenters/presenter.html#editAction()">editAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#listing()">listing</a>, <a href="../../../fabrico/modules/presenters/presenter.html#view()">view</a></td></tr></table>
+<tr><td><a href="../../../fabrico/modules/presenters/presenter.html#__construct()">__construct</a>, <a href="../../../fabrico/modules/presenters/presenter.html#add()">add</a>, <a href="../../../fabrico/modules/presenters/presenter.html#addAction()">addAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#deleteAction()">deleteAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#edit()">edit</a>, <a href="../../../fabrico/modules/presenters/presenter.html#editAction()">editAction</a>, <a href="../../../fabrico/modules/presenters/presenter.html#listing()">listing</a>, <a href="../../../fabrico/modules/presenters/presenter.html#setResponse()">setResponse</a>, <a href="../../../fabrico/modules/presenters/presenter.html#view()">view</a></td></tr></table>
 
 <h2 id="detail_method">Constructor Detail</h2>
-<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line23" class="location">Fabrico\modules\php\presenters\File.php at line 23</a>
+<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line26" class="location">Fabrico\modules\php\presenters\File.php at line 26</a>
 
 <h3 id="__construct()">__construct</h3>
 <code class="signature">public  void <strong>__construct</strong>(mixed properties)</code>
@@ -148,7 +155,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <hr>
 
 <h2 id="detail_method">Method Detail</h2>
-<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line36" class="location">Fabrico\modules\php\presenters\File.php at line 36</a>
+<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line39" class="location">Fabrico\modules\php\presenters\File.php at line 39</a>
 
 <h3 id="listing()">listing</h3>
 <code class="signature">public  void <strong>listing</strong>(mixed value)</code>
@@ -158,7 +165,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line48" class="location">Fabrico\modules\php\presenters\File.php at line 48</a>
+<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line51" class="location">Fabrico\modules\php\presenters\File.php at line 51</a>
 
 <h3 id="add()">add</h3>
 <code class="signature">public  void <strong>add</strong>(mixed default)</code>
@@ -167,7 +174,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line55" class="location">Fabrico\modules\php\presenters\File.php at line 55</a>
+<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line58" class="location">Fabrico\modules\php\presenters\File.php at line 58</a>
 
 <h3 id="addAction()">addAction</h3>
 <code class="signature">public  void <strong>addAction</strong>()</code>
@@ -176,7 +183,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line59" class="location">Fabrico\modules\php\presenters\File.php at line 59</a>
+<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line62" class="location">Fabrico\modules\php\presenters\File.php at line 62</a>
 
 <h3 id="edit()">edit</h3>
 <code class="signature">public  void <strong>edit</strong>(mixed value)</code>
@@ -185,7 +192,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line66" class="location">Fabrico\modules\php\presenters\File.php at line 66</a>
+<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line69" class="location">Fabrico\modules\php\presenters\File.php at line 69</a>
 
 <h3 id="editAction()">editAction</h3>
 <code class="signature">public  void <strong>editAction</strong>(mixed value)</code>
@@ -194,7 +201,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line76" class="location">Fabrico\modules\php\presenters\File.php at line 76</a>
+<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line79" class="location">Fabrico\modules\php\presenters\File.php at line 79</a>
 
 <h3 id="deleteAction()">deleteAction</h3>
 <code class="signature">public  void <strong>deleteAction</strong>(mixed value)</code>
@@ -203,7 +210,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line90" class="location">Fabrico\modules\php\presenters\File.php at line 90</a>
+<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line93" class="location">Fabrico\modules\php\presenters\File.php at line 93</a>
 
 <h3 id="upload()">upload</h3>
 <code class="signature">protected  void <strong>upload</strong>(mixed field)</code>
@@ -212,7 +219,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line104" class="location">Fabrico\modules\php\presenters\File.php at line 104</a>
+<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line107" class="location">Fabrico\modules\php\presenters\File.php at line 107</a>
 
 <h3 id="getAbsolutePathHttp()">getAbsolutePathHttp</h3>
 <code class="signature">protected  void <strong>getAbsolutePathHttp</strong>(mixed value)</code>
@@ -221,7 +228,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line108" class="location">Fabrico\modules\php\presenters\File.php at line 108</a>
+<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line111" class="location">Fabrico\modules\php\presenters\File.php at line 111</a>
 
 <h3 id="getAbsolutePathFiles()">getAbsolutePathFiles</h3>
 <code class="signature">protected  void <strong>getAbsolutePathFiles</strong>(mixed value)</code>
@@ -230,7 +237,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line112" class="location">Fabrico\modules\php\presenters\File.php at line 112</a>
+<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line115" class="location">Fabrico\modules\php\presenters\File.php at line 115</a>
 
 <h3 id="getFileName()">getFileName</h3>
 <code class="signature">protected  void <strong>getFileName</strong>(mixed value)</code>
@@ -239,7 +246,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line116" class="location">Fabrico\modules\php\presenters\File.php at line 116</a>
+<a href="../../../source/fabrico/modules/php/presenters/file.php.html#line119" class="location">Fabrico\modules\php\presenters\File.php at line 119</a>
 
 <h3 id="getExtension()">getExtension</h3>
 <code class="signature">protected  void <strong>getExtension</strong>(mixed value)</code>

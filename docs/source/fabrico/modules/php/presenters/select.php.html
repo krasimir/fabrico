@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:13 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -58,74 +58,79 @@
 <a name="line14"></a>                \t\t\t{"key": "no", "label": "answer No"},
 <a name="line15"></a>                \t\t\t{"key": "maybe", "label": "answer Maybe"}
 <a name="line16"></a>            \t\t]
-<a name="line17"></a>        \t}
-<a name="line18"></a>    }
-<a name="line19"></a>    </pre>
-<a name="line20"></a>    * @package Fabrico\Modules\Presenters
-<a name="line21"></a>    */
-<a name="line22"></a>    class Select extends Presenter {
-<a name="line23"></a>        
-<a name="line24"></a>        public function __construct($properties = array()) {
-<a name="line25"></a>            parent::__construct($properties);
-<a name="line26"></a>            if(!isset($this->config)) {
-<a name="line27"></a>                throw new Exception($this.": missing config. Please check '".$this->name."'.");
-<a name="line28"></a>            }
-<a name="line29"></a>        }
-<a name="line30"></a>        public function __toString() {
-<a name="line31"></a>            return "Select";
-<a name="line32"></a>        }
-<a name="line33"></a>        public function listing($value) {
-<a name="line34"></a>            $found = false;
-<a name="line35"></a>            foreach($this->config->options as $option) {
-<a name="line36"></a>                if($option->key == $value) {
-<a name="line37"></a>                    $found = true;
-<a name="line38"></a>                    $this->response = $option->label;
-<a name="line39"></a>                }
-<a name="line40"></a>            }
-<a name="line41"></a>            if(!$found) {
-<a name="line42"></a>                $this->response = $value;
-<a name="line43"></a>            }
-<a name="line44"></a>            return $this;
-<a name="line45"></a>        }
-<a name="line46"></a>        public function add($default = null) {
-<a name="line47"></a>            $options = "";
-<a name="line48"></a>            foreach($this->config->options as $option) {
-<a name="line49"></a>                $options .= $this->view("option.html", array(
-<a name="line50"></a>                    "key" => $option->key,
-<a name="line51"></a>                    "label" => $option->label,
-<a name="line52"></a>                    "selected" => $default == $option->key ? 'selected="selected"' : ""
-<a name="line53"></a>                ));
-<a name="line54"></a>            }
-<a name="line55"></a>            $this->response = $this->view("adding.html", array(
-<a name="line56"></a>                "field" => $this->name,
-<a name="line57"></a>                "options" => $options
-<a name="line58"></a>            ));
-<a name="line59"></a>            return $this;
-<a name="line60"></a>        }
-<a name="line61"></a>        public function addAction() {
-<a name="line62"></a>            if(isset($this->req->body->{strtolower($this->name)})) {
-<a name="line63"></a>                $this->response = $this->req->body->{strtolower($this->name)};
-<a name="line64"></a>            } else {
-<a name="line65"></a>                $this->response = null;
-<a name="line66"></a>            }
-<a name="line67"></a>            return $this;
-<a name="line68"></a>        }
-<a name="line69"></a>        public function edit($value) {
-<a name="line70"></a>            $this->response = $this->add($value)->response->value;
-<a name="line71"></a>            return $this;
-<a name="line72"></a>        }
-<a name="line73"></a>        public function editAction($value) {
-<a name="line74"></a>            if(isset($this->req->body->{strtolower($this->name)})) {
-<a name="line75"></a>                $this->response = $this->req->body->{strtolower($this->name)};
-<a name="line76"></a>            } else {
-<a name="line77"></a>                $this->response = null;
-<a name="line78"></a>            }
-<a name="line79"></a>            return $this;
-<a name="line80"></a>        }
-<a name="line81"></a>    
-<a name="line82"></a>    }
-<a name="line83"></a>    
-<a name="line84"></a>?></pre>
+<a name="line17"></a>        \t},
+<a name="line18"></a>        \t"label": "[string]", // optional
+<a name="line19"></a>        \t"defaultValue": "[key]", // optional
+<a name="line20"></a>        \t"dependencies": [dependencies], // optional
+<a name="line21"></a>        \t"validators": [validators] // optional
+<a name="line22"></a>    }
+<a name="line23"></a>    </pre>
+<a name="line24"></a>    * @package Fabrico\Modules\Presenters
+<a name="line25"></a>    */
+<a name="line26"></a>    class Select extends Presenter {
+<a name="line27"></a>        
+<a name="line28"></a>        public function __construct($properties = array()) {
+<a name="line29"></a>            parent::__construct($properties);
+<a name="line30"></a>            if(!isset($this->config)) {
+<a name="line31"></a>                throw new Exception($this.": missing config. Please check '".$this->name."'.");
+<a name="line32"></a>            }
+<a name="line33"></a>        }
+<a name="line34"></a>        public function __toString() {
+<a name="line35"></a>            return "Select";
+<a name="line36"></a>        }
+<a name="line37"></a>        public function listing($value) {
+<a name="line38"></a>            $found = false;
+<a name="line39"></a>            foreach($this->config->options as $option) {
+<a name="line40"></a>                if($option->key == $value) {
+<a name="line41"></a>                    $found = true;
+<a name="line42"></a>                    $this->setResponse($option->label);
+<a name="line43"></a>                }
+<a name="line44"></a>            }
+<a name="line45"></a>            if(!$found) {
+<a name="line46"></a>                $this->setResponse($value);
+<a name="line47"></a>            }
+<a name="line48"></a>            return $this;
+<a name="line49"></a>        }
+<a name="line50"></a>        public function add($default = null) {
+<a name="line51"></a>            $options = "";
+<a name="line52"></a>            $default = $default == null ? (isset($this->defaultValue) ? $this->defaultValue : null) : $default;
+<a name="line53"></a>            foreach($this->config->options as $option) {
+<a name="line54"></a>                $options .= $this->view("option.html", array(
+<a name="line55"></a>                    "key" => $option->key,
+<a name="line56"></a>                    "label" => $option->label,
+<a name="line57"></a>                    "selected" => $default == $option->key ? 'selected="selected"' : ""
+<a name="line58"></a>                ));
+<a name="line59"></a>            }
+<a name="line60"></a>            $this->setResponse($this->view("adding.html", array(
+<a name="line61"></a>                "field" => $this->name,
+<a name="line62"></a>                "options" => $options
+<a name="line63"></a>            )));
+<a name="line64"></a>            return $this;
+<a name="line65"></a>        }
+<a name="line66"></a>        public function addAction() {
+<a name="line67"></a>            if(isset($this->req->body->{strtolower($this->name)})) {
+<a name="line68"></a>                $this->setResponse($this->req->body->{strtolower($this->name)});
+<a name="line69"></a>            } else {
+<a name="line70"></a>                $this->setResponse(null);
+<a name="line71"></a>            }
+<a name="line72"></a>            return $this;
+<a name="line73"></a>        }
+<a name="line74"></a>        public function edit($value) {
+<a name="line75"></a>            $this->setResponse($this->add($value)->response->value);
+<a name="line76"></a>            return $this;
+<a name="line77"></a>        }
+<a name="line78"></a>        public function editAction($value) {
+<a name="line79"></a>            if(isset($this->req->body->{strtolower($this->name)})) {
+<a name="line80"></a>                $this->setResponse($this->req->body->{strtolower($this->name)});
+<a name="line81"></a>            } else {
+<a name="line82"></a>                $this->setResponse(null);
+<a name="line83"></a>            }
+<a name="line84"></a>            return $this;
+<a name="line85"></a>        }
+<a name="line86"></a>    
+<a name="line87"></a>    }
+<a name="line88"></a>    
+<a name="line89"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

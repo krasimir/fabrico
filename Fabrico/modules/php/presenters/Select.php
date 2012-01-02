@@ -14,7 +14,11 @@
                 \t\t\t{"key": "no", "label": "answer No"},
                 \t\t\t{"key": "maybe", "label": "answer Maybe"}
             \t\t]
-        \t}
+        \t},
+        \t"label": "[string]", // optional
+        \t"defaultValue": "[key]", // optional
+        \t"dependencies": [dependencies], // optional
+        \t"validators": [validators] // optional
     }
     </pre>
     * @package Fabrico\Modules\Presenters
@@ -35,16 +39,17 @@
             foreach($this->config->options as $option) {
                 if($option->key == $value) {
                     $found = true;
-                    $this->response = $option->label;
+                    $this->setResponse($option->label);
                 }
             }
             if(!$found) {
-                $this->response = $value;
+                $this->setResponse($value);
             }
             return $this;
         }
         public function add($default = null) {
             $options = "";
+            $default = $default == null ? (isset($this->defaultValue) ? $this->defaultValue : null) : $default;
             foreach($this->config->options as $option) {
                 $options .= $this->view("option.html", array(
                     "key" => $option->key,
@@ -52,29 +57,29 @@
                     "selected" => $default == $option->key ? 'selected="selected"' : ""
                 ));
             }
-            $this->response = $this->view("adding.html", array(
+            $this->setResponse($this->view("adding.html", array(
                 "field" => $this->name,
                 "options" => $options
-            ));
+            )));
             return $this;
         }
         public function addAction() {
             if(isset($this->req->body->{strtolower($this->name)})) {
-                $this->response = $this->req->body->{strtolower($this->name)};
+                $this->setResponse($this->req->body->{strtolower($this->name)});
             } else {
-                $this->response = null;
+                $this->setResponse(null);
             }
             return $this;
         }
         public function edit($value) {
-            $this->response = $this->add($value)->response->value;
+            $this->setResponse($this->add($value)->response->value);
             return $this;
         }
         public function editAction($value) {
             if(isset($this->req->body->{strtolower($this->name)})) {
-                $this->response = $this->req->body->{strtolower($this->name)};
+                $this->setResponse($this->req->body->{strtolower($this->name)});
             } else {
-                $this->response = null;
+                $this->setResponse(null);
             }
             return $this;
         }

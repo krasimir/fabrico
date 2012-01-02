@@ -10,7 +10,11 @@
         \t"presenter": "presenters/Date.php",
         \t"config": {
             \t\t"showsTime": true
-        \t}
+        \t},
+        \t"label": "[string]", // optional
+        \t"defaultValue": "[string]", // optional,
+        \t"dependencies": [dependencies], // optional
+        \t"validators": [validators] // optional
     }
     </pre>
     * @package Fabrico\Modules\Presenters
@@ -33,17 +37,17 @@
             return "Date";
         }
         public function add($default = null) {
-            $this->response = $this->view("view.html", array(
+            $this->setResponse($this->view("view.html", array(
                 "field" => $this->name,
-                "value" => $default != null ? $default : $this->getCurrentDate(),
+                "value" => $default != null ? $default : (isset($this->defaultValue) ? $this->defaultValue : $this->getCurrentDate()),
                 "currentDate" => $this->getCurrentDate(),
                 "showsTime" => $this->config->showsTime,
                 "format" => $this->config->showsTime == "true" ? $this->config->formatWithTime : $this->config->formatWithoutTime
-            ));
+            )));
             return $this;
         }
         public function edit($value) {
-            $this->response = $this->add($value)->response->value;
+            $this->setResponse($this->add($value)->response->value);
             return $this;
         }
         private function getCurrentDate() {

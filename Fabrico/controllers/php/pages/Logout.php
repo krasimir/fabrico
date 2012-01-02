@@ -2,7 +2,7 @@
 
     inject(array(
         "pages/Page.php",
-        "tools/view.php"
+        "utils/view.php"
     ));
 
     /**

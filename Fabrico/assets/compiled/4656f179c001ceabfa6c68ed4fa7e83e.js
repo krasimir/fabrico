@@ -479,6 +479,16 @@ var global = {};
             item.replaceWith(clone);
             setItemEvents(clone);
         };
+        var setHiddenFieldValue = function(fieldName, value) {
+            var hidden = $('[name=' + fieldName + '_hidden]');
+            if(hidden.length == 0) {
+                var item = $('[name=' + fieldName + ']');
+                hidden = $('<input type="hidden" name="' + fieldName + '_hidden" value="' + value + '" />');
+                item.parent().append(hidden);
+            } else {
+                hidden.val(value);
+            }
+        };
         var onPresenterChange = function() {
             var numOfFields = fields ? fields.length : 0;
             for(var i=0; i<numOfFields; i++) {
@@ -500,13 +510,15 @@ var global = {};
                         if(presenter && presenter.dependencyShow) {
                             presenter.dependencyShow(field.name);
                         }
+                        setHiddenFieldValue(field.name, "no");
                     } else {
                         $("#" + field.name + "-row").css("display", "none");
-                        if(presenter && presenter.dependencyShow) {
+                        if(presenter && presenter.dependencyHide) {
                             presenter.dependencyHide(field.name);
                         } else {
                             dependencyHide(field.name);
                         }
+                        setHiddenFieldValue(field.name, "yes");
                     }
                 }
             }

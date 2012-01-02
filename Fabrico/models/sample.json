@@ -3,39 +3,43 @@
     "freeze": false,
     "fields": [
         {
-            "name": "userType",
-            "label": "Type:",
+            "name": "question",
             "presenter": "presenters/Select.php",
+            "defaultValue": "maybe",
             "config": {
                 "options": [
-                    {"key": "admin", "label": "Administrator"},
-                    {"key": "user", "label": "Regular user"}
+                    {"key": "yes", "label": "answer Yes"},
+                    {"key": "no", "label": "answer No"},
+                    {"key": "maybe", "label": "answer Maybe"}
                 ]
             }
         },
         {
-            "name": "userEmail",
-            "label": "Email:",
+            "name": "firstName",
             "presenter": "presenters/Text.php",
+            "label": "My first name",
+            "validators": [
+                {
+                    "class": "validators/NotEmpty.php"
+                }
+            ],
             "dependencies": [
                 {
-                    "field": "userType",
-                    "shouldMatch": "^user$"
+                    "field": "question",
+                    "shouldMatch": "^no$"
                 }
             ]
         },
         {
-            "name": "myName",
-            "label": "Name:",
+            "name": "email",
             "presenter": "presenters/Text.php",
+            "label": "your email",
             "validators": [
                 {
-                    "class": "validators/NotEmpty.php",
-                    "method": "run",
-                    "message": "Please type your name!"
+                    "class": "validators/ValidEmail.php"
                 }
             ]
-        }        
+        }
     ],
     "actions": {
         "listing": {

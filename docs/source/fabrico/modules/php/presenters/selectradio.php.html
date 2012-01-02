@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:13 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -58,36 +58,41 @@
 <a name="line14"></a>                \t\t\t{"key": "no", "label": "answer No"},
 <a name="line15"></a>                \t\t\t{"key": "maybe", "label": "answer Maybe"}
 <a name="line16"></a>            \t\t]
-<a name="line17"></a>        \t}
-<a name="line18"></a>    }
-<a name="line19"></a>    </pre>
-<a name="line20"></a>    * @package Fabrico\Modules\Presenters
-<a name="line21"></a>    */
-<a name="line22"></a>    class SelectRadio extends Select {
-<a name="line23"></a>        
-<a name="line24"></a>        public function __toString() {
-<a name="line25"></a>            return "SelectRadio";
-<a name="line26"></a>        }
-<a name="line27"></a>        public function add($default = null) {
-<a name="line28"></a>            $options = "";
-<a name="line29"></a>            foreach($this->config->options as $option) {
-<a name="line30"></a>                $options .= $this->view("option.html", array(
-<a name="line31"></a>                    "key" => $option->key,
-<a name="line32"></a>                    "label" => $option->label,
-<a name="line33"></a>                    "field" => $this->name,
-<a name="line34"></a>                    "checked" => $default == $option->key ? 'checked="checked"' : ""
-<a name="line35"></a>                ));
-<a name="line36"></a>            }
-<a name="line37"></a>            $this->response = $this->view("adding.html", array(
-<a name="line38"></a>                "field" => $this->name,
-<a name="line39"></a>                "options" => $options
-<a name="line40"></a>            ));
-<a name="line41"></a>            return $this;
-<a name="line42"></a>        }
-<a name="line43"></a>    
-<a name="line44"></a>    }
-<a name="line45"></a>    
-<a name="line46"></a>?></pre>
+<a name="line17"></a>        \t},
+<a name="line18"></a>        \t"label": "[string]", // optional
+<a name="line19"></a>        \t"defaultValue": "[key]", // optional
+<a name="line20"></a>        \t"dependencies": [dependencies], // optional
+<a name="line21"></a>        \t"validators": [validators] // optional
+<a name="line22"></a>    }
+<a name="line23"></a>    </pre>
+<a name="line24"></a>    * @package Fabrico\Modules\Presenters
+<a name="line25"></a>    */
+<a name="line26"></a>    class SelectRadio extends Select {
+<a name="line27"></a>        
+<a name="line28"></a>        public function __toString() {
+<a name="line29"></a>            return "SelectRadio";
+<a name="line30"></a>        }
+<a name="line31"></a>        public function add($default = null) {
+<a name="line32"></a>            $options = "";
+<a name="line33"></a>            $default = $default == null ? (isset($this->defaultValue) ? $this->defaultValue : null) : $default;
+<a name="line34"></a>            foreach($this->config->options as $option) {
+<a name="line35"></a>                $options .= $this->view("option.html", array(
+<a name="line36"></a>                    "key" => $option->key,
+<a name="line37"></a>                    "label" => $option->label,
+<a name="line38"></a>                    "field" => $this->name,
+<a name="line39"></a>                    "checked" => $default == $option->key ? 'checked="checked"' : ""
+<a name="line40"></a>                ));
+<a name="line41"></a>            }
+<a name="line42"></a>            $this->setResponse($this->view("adding.html", array(
+<a name="line43"></a>                "field" => $this->name,
+<a name="line44"></a>                "options" => $options
+<a name="line45"></a>            )));
+<a name="line46"></a>            return $this;
+<a name="line47"></a>        }
+<a name="line48"></a>    
+<a name="line49"></a>    }
+<a name="line50"></a>    
+<a name="line51"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:13 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -52,97 +52,91 @@
 <a name="line8"></a>    */
 <a name="line9"></a>    class Presenter {
 <a name="line10"></a>    
-<a name="line11"></a>        private $responseValue = "...";
-<a name="line12"></a>        private $responseFailedValidator;
-<a name="line13"></a>        
-<a name="line14"></a>        public function __construct($properties = array()) {
-<a name="line15"></a>            foreach($properties as $prop => $value) {
-<a name="line16"></a>                $this->$prop = $value;
-<a name="line17"></a>            }
-<a name="line18"></a>        }
-<a name="line19"></a>        public function __toString() {
-<a name="line20"></a>            return "Presenter";
-<a name="line21"></a>        }
-<a name="line22"></a>        public function __set($key, $value) {
-<a name="line23"></a>            switch($key) {
-<a name="line24"></a>                case "response":
-<a name="line25"></a>                    // setting the response
-<a name="line26"></a>                    $this->responseValue = $value;
-<a name="line27"></a>                    // validation
-<a name="line28"></a>                    if(isset($this->validators)) {
-<a name="line29"></a>                        if(!is_array($this->validators)) {
-<a name="line30"></a>                            $this->validators = array($this->validators);
-<a name="line31"></a>                        }
-<a name="line32"></a>                        $valid = true;
-<a name="line33"></a>                        $this->responseFailedValidator = null;
-<a name="line34"></a>                        foreach($this->validators as $validator) {
-<a name="line35"></a>                            if($valid) {
-<a name="line36"></a>                                $validatorResponse = ValidatorFactory::get($validator, $value);
-<a name="line37"></a>                                if($validatorResponse->validator !== null) {
-<a name="line38"></a>                                    $valid = false;
-<a name="line39"></a>                                    $this->responseFailedValidator = $validatorResponse;
-<a name="line40"></a>                                }
-<a name="line41"></a>                            }
-<a name="line42"></a>                        }
-<a name="line43"></a>                    }
-<a name="line44"></a>                break;
-<a name="line45"></a>                default:
-<a name="line46"></a>                    $this->$key = $value;
-<a name="line47"></a>                break;
-<a name="line48"></a>            }
-<a name="line49"></a>        }
-<a name="line50"></a>        public function __get($key) {
-<a name="line51"></a>            switch($key) {
-<a name="line52"></a>                case "response":
-<a name="line53"></a>                    return (object) array(
-<a name="line54"></a>                        "value" => $this->responseValue,
-<a name="line55"></a>                        "valid" => isset($this->validators) ? $this->responseFailedValidator === null : true,
-<a name="line56"></a>                        "validator" => $this->responseFailedValidator !== null ? $this->responseFailedValidator->validator :  null,
-<a name="line57"></a>                        "message" => $this->responseFailedValidator !== null ? $this->responseFailedValidator->message :  null
-<a name="line58"></a>                    );
-<a name="line59"></a>                break;
-<a name="line60"></a>            }
-<a name="line61"></a>        }
-<a name="line62"></a>        /**
-<a name="line63"></a>        After the call of this method $presenter->response->value will contain html formated code. A visual presentation of value.
-<a name="line64"></a>        @param $value The current value from the database.
-<a name="line65"></a>        */
-<a name="line66"></a>        public function listing($value) {
-<a name="line67"></a>            $this->response = $value;
-<a name="line68"></a>            return $this;
-<a name="line69"></a>        }
-<a name="line70"></a>        public function add($default = null) {
-<a name="line71"></a>            $this->response = $value;
-<a name="line72"></a>            return $this;
-<a name="line73"></a>        }
-<a name="line74"></a>        public function addAction() {
-<a name="line75"></a>            $this->response = $value;
-<a name="line76"></a>            return $this;
-<a name="line77"></a>        }
-<a name="line78"></a>        public function edit($value) {
-<a name="line79"></a>            $this->response = $value;
-<a name="line80"></a>            return $this;
-<a name="line81"></a>        }
-<a name="line82"></a>        public function editAction($value) {
-<a name="line83"></a>            $this->response = $value;
-<a name="line84"></a>            return $this;
-<a name="line85"></a>        }
-<a name="line86"></a>        public function deleteAction($value) {
-<a name="line87"></a>            $this->response = $value;
-<a name="line88"></a>            return $this;
-<a name="line89"></a>        }
-<a name="line90"></a>        public function view($template, $data) {
-<a name="line91"></a>            $searchIn = array();
-<a name="line92"></a>            $searchIn []= $this->model->name."/".$this->name;
-<a name="line93"></a>            $searchIn []= $this->controller."/".$this->model->name."/".$this->name;
-<a name="line94"></a>            $searchIn []= $this->controller."/".$this."/".$this->name;
-<a name="line95"></a>            $searchIn []= $this->controller."/".$this;
-<a name="line96"></a>            $searchIn []= ViewConfig::$searchIn[count(ViewConfig::$searchIn)-1]."/".$this;
-<a name="line97"></a>            return view($template, $data, $searchIn);
-<a name="line98"></a>        }        
-<a name="line99"></a>    }
-<a name="line100"></a>
-<a name="line101"></a>?></pre>
+<a name="line11"></a>        public $validators;
+<a name="line12"></a>        public $response;
+<a name="line13"></a>        public $model;
+<a name="line14"></a>        public $controller;
+<a name="line15"></a>        public $name;
+<a name="line16"></a>    
+<a name="line17"></a>        private $responseValue = "...";
+<a name="line18"></a>        private $responseFailedValidator;
+<a name="line19"></a>        
+<a name="line20"></a>        public function __construct($properties = array()) {
+<a name="line21"></a>            foreach($properties as $prop => $value) {
+<a name="line22"></a>                $this->$prop = $value;
+<a name="line23"></a>            }
+<a name="line24"></a>        }
+<a name="line25"></a>        public function __toString() {
+<a name="line26"></a>            return "Presenter";
+<a name="line27"></a>        }
+<a name="line28"></a>        /**
+<a name="line29"></a>        After the call of this method $presenter->response->value will contain html formated code. A visual presentation of value.
+<a name="line30"></a>        @param $value The current value from the database.
+<a name="line31"></a>        */
+<a name="line32"></a>        public function listing($value) {
+<a name="line33"></a>            $this->setResponse($value);
+<a name="line34"></a>            return $this;
+<a name="line35"></a>        }
+<a name="line36"></a>        public function add($default = null) {
+<a name="line37"></a>            $this->setResponse($value);
+<a name="line38"></a>            return $this;
+<a name="line39"></a>        }
+<a name="line40"></a>        public function addAction() {
+<a name="line41"></a>            $this->setResponse($value);
+<a name="line42"></a>            return $this;
+<a name="line43"></a>        }
+<a name="line44"></a>        public function edit($value) {
+<a name="line45"></a>            $this->setResponse($value);
+<a name="line46"></a>            return $this;
+<a name="line47"></a>        }
+<a name="line48"></a>        public function editAction($value) {
+<a name="line49"></a>            $this->setResponse($value);
+<a name="line50"></a>            return $this;
+<a name="line51"></a>        }
+<a name="line52"></a>        public function deleteAction($value) {
+<a name="line53"></a>            $this->setResponse($value);
+<a name="line54"></a>            return $this;
+<a name="line55"></a>        }
+<a name="line56"></a>        public function view($template, $data) {
+<a name="line57"></a>            $searchIn = array();
+<a name="line58"></a>            $searchIn []= $this->model->name."/".$this->name;
+<a name="line59"></a>            $searchIn []= $this->controller."/".$this->model->name."/".$this->name;
+<a name="line60"></a>            $searchIn []= $this->controller."/".$this."/".$this->name;
+<a name="line61"></a>            $searchIn []= $this->controller."/".$this;
+<a name="line62"></a>            $searchIn []= ViewConfig::$searchIn[count(ViewConfig::$searchIn)-1]."/".$this;
+<a name="line63"></a>            return view($template, $data, $searchIn);
+<a name="line64"></a>        }       
+<a name="line65"></a>        protected function setResponse($value) {
+<a name="line66"></a>            // setting the response
+<a name="line67"></a>            $this->responseValue = $value;
+<a name="line68"></a>            // validation
+<a name="line69"></a>            if(isset($this->validators)) {
+<a name="line70"></a>                if(!is_array($this->validators)) {
+<a name="line71"></a>                    $this->validators = array($this->validators);
+<a name="line72"></a>                }
+<a name="line73"></a>                $valid = true;
+<a name="line74"></a>                $this->responseFailedValidator = null;
+<a name="line75"></a>                foreach($this->validators as $validator) {
+<a name="line76"></a>                    if($valid) {
+<a name="line77"></a>                        $validatorResponse = ValidatorFactory::get($validator, $value);
+<a name="line78"></a>                        if($validatorResponse->validator !== null) {
+<a name="line79"></a>                            $valid = false;
+<a name="line80"></a>                            $this->responseFailedValidator = $validatorResponse;
+<a name="line81"></a>                        }
+<a name="line82"></a>                    }
+<a name="line83"></a>                }
+<a name="line84"></a>            }
+<a name="line85"></a>            // composing response
+<a name="line86"></a>            $this->response = (object) array(
+<a name="line87"></a>                "value" => $this->responseValue,
+<a name="line88"></a>                "valid" => isset($this->validators) ? $this->responseFailedValidator === null : true,
+<a name="line89"></a>                "validator" => $this->responseFailedValidator !== null ? $this->responseFailedValidator->validator :  null,
+<a name="line90"></a>                "message" => $this->responseFailedValidator !== null ? $this->responseFailedValidator->message :  null
+<a name="line91"></a>            );
+<a name="line92"></a>        }
+<a name="line93"></a>    }
+<a name="line94"></a>
+<a name="line95"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

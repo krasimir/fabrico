@@ -23,8 +23,8 @@
     }
     
     inject(array(
-        "tools/ErrorHandler.php",
-        "tools/view.php",
+        "utils/ErrorHandler.php",
+        "utils/view.php",
         "Middleware.php",
         "Request.php",
         "Response.php",
@@ -60,7 +60,7 @@
                 // it stores the configurations and also setup redbean
                 "benchmark" => "middleware/Benchmark.php",
                 // it stores the configurations and also setup redbean
-                "config" => "tools/JSONConfig.php",
+                "config" => "utils/JSONConfig.php",
                 // read and construct the current application's models
                 "models" => "middleware/ModelsManager.php",
                 // $request->body will be parsed to object if incoming request is POST or PUT
@@ -128,9 +128,11 @@
         * Called if ?debug=1. Displays information Benchmark and ModelsManager information.
         */
         public function onExit() {
+            global $fabricoInjector;
             foreach($this->models->models as $model) {
                 $model->report();
             }
+            $fabricoInjector->report("#E9E9E9");
             $this->log("Benchmark: ".$this->benchmark->elpasedTime(), "#D5D5FF");
         }
         

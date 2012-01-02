@@ -1,7 +1,7 @@
 <?php
 
     inject(array(
-        "tools/view.php",
+        "utils/view.php",
         "presenters/PresenterFactory.php"
     ));
 

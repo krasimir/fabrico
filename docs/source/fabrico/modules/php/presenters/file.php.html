@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:13 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -46,7 +46,7 @@
 <a name="line2"></a>
 <a name="line3"></a>    inject(array(
 <a name="line4"></a>        "presenters/Presenter.php",
-<a name="line5"></a>        "tools/view.php"
+<a name="line5"></a>        "utils/view.php"
 <a name="line6"></a>    ));
 <a name="line7"></a>    
 <a name="line8"></a>    /**
@@ -57,114 +57,117 @@
 <a name="line13"></a>        \t"presenter": "presenters/File.php",
 <a name="line14"></a>        \t"config": {
 <a name="line15"></a>            \t\t"destination": "/assets/uploads"
-<a name="line16"></a>        \t}
-<a name="line17"></a>    }
-<a name="line18"></a>    </pre>
-<a name="line19"></a>    * @package Fabrico\Modules\Presenters
-<a name="line20"></a>    */
-<a name="line21"></a>    class File extends Presenter {
-<a name="line22"></a>        
-<a name="line23"></a>        public function __construct($properties = array()) {
-<a name="line24"></a>            parent::__construct($properties);
-<a name="line25"></a>            if(!isset($this->config)) {
-<a name="line26"></a>                $this->config = (object) array(
-<a name="line27"></a>                    "destination" => "/assets/uploads"
-<a name="line28"></a>                );
-<a name="line29"></a>            } else {
-<a name="line30"></a>                $this->config->destination = isset($this->config->destination) ? $this->config->destination : "/assets/uploads";
-<a name="line31"></a>            }
-<a name="line32"></a>        }
-<a name="line33"></a>        public function __toString() {
-<a name="line34"></a>            return "File";
+<a name="line16"></a>        \t},
+<a name="line17"></a>        \t"label": "[string]", // optional
+<a name="line18"></a>        \t"dependencies": [dependencies], // optional
+<a name="line19"></a>        \t"validators": [validators] // optional
+<a name="line20"></a>    }
+<a name="line21"></a>    </pre>
+<a name="line22"></a>    * @package Fabrico\Modules\Presenters
+<a name="line23"></a>    */
+<a name="line24"></a>    class File extends Presenter {
+<a name="line25"></a>        
+<a name="line26"></a>        public function __construct($properties = array()) {
+<a name="line27"></a>            parent::__construct($properties);
+<a name="line28"></a>            if(!isset($this->config)) {
+<a name="line29"></a>                $this->config = (object) array(
+<a name="line30"></a>                    "destination" => "/assets/uploads"
+<a name="line31"></a>                );
+<a name="line32"></a>            } else {
+<a name="line33"></a>                $this->config->destination = isset($this->config->destination) ? $this->config->destination : "/assets/uploads";
+<a name="line34"></a>            }
 <a name="line35"></a>        }
-<a name="line36"></a>        public function listing($value) {
-<a name="line37"></a>            if($value != "") {
-<a name="line38"></a>                $this->response = $this->view("listing.html", array(
-<a name="line39"></a>                    "filepath" => $this->getAbsolutePathHttp($value),
-<a name="line40"></a>                    "filename" => $this->getFileName($value),
-<a name="line41"></a>                    "ext" => $this->getExtension($value)
-<a name="line42"></a>                ));
-<a name="line43"></a>            } else {
-<a name="line44"></a>                $this->response = "";
-<a name="line45"></a>            }
-<a name="line46"></a>            return $this;
-<a name="line47"></a>        }
-<a name="line48"></a>        public function add($default = null) {            
-<a name="line49"></a>            $this->response = $this->view("adding.html", array(
-<a name="line50"></a>                "field" => $this->name,
-<a name="line51"></a>                "value" => $default != null ? $default : "",
-<a name="line52"></a>            ));
-<a name="line53"></a>            return $this;
-<a name="line54"></a>        }
-<a name="line55"></a>        public function addAction() {
-<a name="line56"></a>            $this->response = $this->upload($this->name);
-<a name="line57"></a>            return $this;
-<a name="line58"></a>        }
-<a name="line59"></a>        public function edit($value) {
-<a name="line60"></a>            $this->response = $this->view("editing.html", array(
-<a name="line61"></a>                "field" => $this->name,
-<a name="line62"></a>                "listing" => $this->listing($value)->response->value
-<a name="line63"></a>            ));
-<a name="line64"></a>            return $this;
-<a name="line65"></a>        }
-<a name="line66"></a>        public function editAction($value) {
-<a name="line67"></a>            $result = $this->upload($this->name);
-<a name="line68"></a>            if($result != "") {
-<a name="line69"></a>                $this->deleteAction($value);
-<a name="line70"></a>                $this->response = $result;
-<a name="line71"></a>            } else {
-<a name="line72"></a>                $this->response = $value;
-<a name="line73"></a>            }
-<a name="line74"></a>            return $this;
-<a name="line75"></a>        }
-<a name="line76"></a>        public function deleteAction($value) {
-<a name="line77"></a>            if($value != "") {
-<a name="line78"></a>                $root = $this->req->fabrico->root->files;
-<a name="line79"></a>                $file = $this->getAbsolutePathFiles($value);
-<a name="line80"></a>                $fileParts = explode("/", $value);
-<a name="line81"></a>                $hash = $fileParts[0];
-<a name="line82"></a>                if(file_exists($file)) {
-<a name="line83"></a>                    @unlink($file);
-<a name="line84"></a>                }
-<a name="line85"></a>                if(file_exists($root.$this->config->destination."/".$hash)) {
-<a name="line86"></a>                    @rmdir($root.$this->config->destination."/".$hash);
+<a name="line36"></a>        public function __toString() {
+<a name="line37"></a>            return "File";
+<a name="line38"></a>        }
+<a name="line39"></a>        public function listing($value) {
+<a name="line40"></a>            if($value != "") {
+<a name="line41"></a>                $this->setResponse($this->view("listing.html", array(
+<a name="line42"></a>                    "filepath" => $this->getAbsolutePathHttp($value),
+<a name="line43"></a>                    "filename" => $this->getFileName($value),
+<a name="line44"></a>                    "ext" => $this->getExtension($value)
+<a name="line45"></a>                )));
+<a name="line46"></a>            } else {
+<a name="line47"></a>                $this->setResponse("");
+<a name="line48"></a>            }
+<a name="line49"></a>            return $this;
+<a name="line50"></a>        }
+<a name="line51"></a>        public function add($default = null) {            
+<a name="line52"></a>            $this->setResponse($this->view("adding.html", array(
+<a name="line53"></a>                "field" => $this->name,
+<a name="line54"></a>                "value" => $default != null ? $default : "",
+<a name="line55"></a>            )));
+<a name="line56"></a>            return $this;
+<a name="line57"></a>        }
+<a name="line58"></a>        public function addAction() {
+<a name="line59"></a>            $this->setResponse($this->upload($this->name));
+<a name="line60"></a>            return $this;
+<a name="line61"></a>        }
+<a name="line62"></a>        public function edit($value) {
+<a name="line63"></a>            $this->setResponse($this->view("editing.html", array(
+<a name="line64"></a>                "field" => $this->name,
+<a name="line65"></a>                "listing" => $this->listing($value)->response->value
+<a name="line66"></a>            )));
+<a name="line67"></a>            return $this;
+<a name="line68"></a>        }
+<a name="line69"></a>        public function editAction($value) {
+<a name="line70"></a>            $result = $this->upload($this->name);
+<a name="line71"></a>            if($result != "") {
+<a name="line72"></a>                $this->deleteAction($value);
+<a name="line73"></a>                $this->setResponse($result);
+<a name="line74"></a>            } else {
+<a name="line75"></a>                $this->setResponse($value);
+<a name="line76"></a>            }
+<a name="line77"></a>            return $this;
+<a name="line78"></a>        }
+<a name="line79"></a>        public function deleteAction($value) {
+<a name="line80"></a>            if($value != "") {
+<a name="line81"></a>                $root = $this->req->fabrico->root->files;
+<a name="line82"></a>                $file = $this->getAbsolutePathFiles($value);
+<a name="line83"></a>                $fileParts = explode("/", $value);
+<a name="line84"></a>                $hash = $fileParts[0];
+<a name="line85"></a>                if(file_exists($file)) {
+<a name="line86"></a>                    @unlink($file);
 <a name="line87"></a>                }
-<a name="line88"></a>            }
-<a name="line89"></a>        }
-<a name="line90"></a>        protected function upload($field) {
-<a name="line91"></a>            $root = $this->req->fabrico->root->files;
-<a name="line92"></a>            $hash = md5($field."_".time());
-<a name="line93"></a>            $fileDir = $root.$this->config->destination."/".$hash;
-<a name="line94"></a>            if(isset($_FILES) && isset($_FILES[$field]) && $_FILES[$field]["tmp_name"] != "") {
-<a name="line95"></a>                $file = $_FILES[$field]["name"];
-<a name="line96"></a>                if(mkdir($fileDir, 0777)) {
-<a name="line97"></a>                    if(move_uploaded_file($_FILES[$field]["tmp_name"], $fileDir."/".$file)) {
-<a name="line98"></a>                        return $hash."/".$file;
-<a name="line99"></a>                    }
-<a name="line100"></a>                }
-<a name="line101"></a>            }
-<a name="line102"></a>            return "";
-<a name="line103"></a>        }
-<a name="line104"></a>        protected function getAbsolutePathHttp($value) {
-<a name="line105"></a>            $root = $this->req->fabrico->root->http;
-<a name="line106"></a>            return $root.$this->config->destination."/".$value;
-<a name="line107"></a>        }
-<a name="line108"></a>        protected function getAbsolutePathFiles($value) {
-<a name="line109"></a>            $root = $this->req->fabrico->root->files;
-<a name="line110"></a>            return $root.$this->config->destination."/".$value;
-<a name="line111"></a>        }
-<a name="line112"></a>        protected function getFileName($value) {
-<a name="line113"></a>            $parts = explode("/", $value);
-<a name="line114"></a>            return array_pop($parts);
-<a name="line115"></a>        }
-<a name="line116"></a>        protected function getExtension($value) {
-<a name="line117"></a>            $expParts = explode(".", $value);
-<a name="line118"></a>            return strtolower(array_pop($expParts));
-<a name="line119"></a>        }
-<a name="line120"></a>    
-<a name="line121"></a>    }
-<a name="line122"></a>    
-<a name="line123"></a>?></pre>
+<a name="line88"></a>                if(file_exists($root.$this->config->destination."/".$hash)) {
+<a name="line89"></a>                    @rmdir($root.$this->config->destination."/".$hash);
+<a name="line90"></a>                }
+<a name="line91"></a>            }
+<a name="line92"></a>        }
+<a name="line93"></a>        protected function upload($field) {
+<a name="line94"></a>            $root = $this->req->fabrico->root->files;
+<a name="line95"></a>            $hash = md5($field."_".time());
+<a name="line96"></a>            $fileDir = $root.$this->config->destination."/".$hash;
+<a name="line97"></a>            if(isset($_FILES) && isset($_FILES[$field]) && $_FILES[$field]["tmp_name"] != "") {
+<a name="line98"></a>                $file = $_FILES[$field]["name"];
+<a name="line99"></a>                if(mkdir($fileDir, 0777)) {
+<a name="line100"></a>                    if(move_uploaded_file($_FILES[$field]["tmp_name"], $fileDir."/".$file)) {
+<a name="line101"></a>                        return $hash."/".$file;
+<a name="line102"></a>                    }
+<a name="line103"></a>                }
+<a name="line104"></a>            }
+<a name="line105"></a>            return "";
+<a name="line106"></a>        }
+<a name="line107"></a>        protected function getAbsolutePathHttp($value) {
+<a name="line108"></a>            $root = $this->req->fabrico->root->http;
+<a name="line109"></a>            return $root.$this->config->destination."/".$value;
+<a name="line110"></a>        }
+<a name="line111"></a>        protected function getAbsolutePathFiles($value) {
+<a name="line112"></a>            $root = $this->req->fabrico->root->files;
+<a name="line113"></a>            return $root.$this->config->destination."/".$value;
+<a name="line114"></a>        }
+<a name="line115"></a>        protected function getFileName($value) {
+<a name="line116"></a>            $parts = explode("/", $value);
+<a name="line117"></a>            return array_pop($parts);
+<a name="line118"></a>        }
+<a name="line119"></a>        protected function getExtension($value) {
+<a name="line120"></a>            $expParts = explode(".", $value);
+<a name="line121"></a>            return strtolower(array_pop($expParts));
+<a name="line122"></a>        }
+<a name="line123"></a>    
+<a name="line124"></a>    }
+<a name="line125"></a>    
+<a name="line126"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

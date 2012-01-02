@@ -2,7 +2,7 @@
 
     inject(array(
         "presenters/Presenter.php",
-        "tools/view.php"
+        "utils/view.php"
     ));
     
     /**
@@ -13,7 +13,10 @@
         \t"presenter": "presenters/File.php",
         \t"config": {
             \t\t"destination": "/assets/uploads"
-        \t}
+        \t},
+        \t"label": "[string]", // optional
+        \t"dependencies": [dependencies], // optional
+        \t"validators": [validators] // optional
     }
     </pre>
     * @package Fabrico\Modules\Presenters
@@ -35,41 +38,41 @@
         }
         public function listing($value) {
             if($value != "") {
-                $this->response = $this->view("listing.html", array(
+                $this->setResponse($this->view("listing.html", array(
                     "filepath" => $this->getAbsolutePathHttp($value),
                     "filename" => $this->getFileName($value),
                     "ext" => $this->getExtension($value)
-                ));
+                )));
             } else {
-                $this->response = "";
+                $this->setResponse("");
             }
             return $this;
         }
         public function add($default = null) {            
-            $this->response = $this->view("adding.html", array(
+            $this->setResponse($this->view("adding.html", array(
                 "field" => $this->name,
                 "value" => $default != null ? $default : "",
-            ));
+            )));
             return $this;
         }
         public function addAction() {
-            $this->response = $this->upload($this->name);
+            $this->setResponse($this->upload($this->name));
             return $this;
         }
         public function edit($value) {
-            $this->response = $this->view("editing.html", array(
+            $this->setResponse($this->view("editing.html", array(
                 "field" => $this->name,
                 "listing" => $this->listing($value)->response->value
-            ));
+            )));
             return $this;
         }
         public function editAction($value) {
             $result = $this->upload($this->name);
             if($result != "") {
                 $this->deleteAction($value);
-                $this->response = $result;
+                $this->setResponse($result);
             } else {
-                $this->response = $value;
+                $this->setResponse($value);
             }
             return $this;
         }

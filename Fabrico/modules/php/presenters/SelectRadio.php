@@ -14,7 +14,11 @@
                 \t\t\t{"key": "no", "label": "answer No"},
                 \t\t\t{"key": "maybe", "label": "answer Maybe"}
             \t\t]
-        \t}
+        \t},
+        \t"label": "[string]", // optional
+        \t"defaultValue": "[key]", // optional
+        \t"dependencies": [dependencies], // optional
+        \t"validators": [validators] // optional
     }
     </pre>
     * @package Fabrico\Modules\Presenters
@@ -26,6 +30,7 @@
         }
         public function add($default = null) {
             $options = "";
+            $default = $default == null ? (isset($this->defaultValue) ? $this->defaultValue : null) : $default;
             foreach($this->config->options as $option) {
                 $options .= $this->view("option.html", array(
                     "key" => $option->key,
@@ -34,10 +39,10 @@
                     "checked" => $default == $option->key ? 'checked="checked"' : ""
                 ));
             }
-            $this->response = $this->view("adding.html", array(
+            $this->setResponse($this->view("adding.html", array(
                 "field" => $this->name,
                 "options" => $options
-            ));
+            )));
             return $this;
         }
     

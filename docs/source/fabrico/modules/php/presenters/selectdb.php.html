@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:13 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -55,80 +55,83 @@
 <a name="line11"></a>        \t"config": {
 <a name="line12"></a>            \t\t"model": "models/categories.json",
 <a name="line13"></a>            \t\t"field": "categoryLabel"
-<a name="line14"></a>        \t}
-<a name="line15"></a>    }
-<a name="line16"></a>    </pre>
-<a name="line17"></a>    * @package Fabrico\Modules\Presenters
-<a name="line18"></a>    */
-<a name="line19"></a>    class SelectDb extends Presenter {
-<a name="line20"></a>        
-<a name="line21"></a>        public function __toString() {
-<a name="line22"></a>            return "SelectDb";
-<a name="line23"></a>        }
-<a name="line24"></a>        public function listing($value) {
-<a name="line25"></a>            $model = $this->req->fabrico->models->get($this->config->model);
-<a name="line26"></a>            if($model) {
-<a name="line27"></a>                $items = $model->get()->order("position")->desc()->flush();
-<a name="line28"></a>                $found = false;
-<a name="line29"></a>                if($items) {
-<a name="line30"></a>                    foreach($items as $item) {
-<a name="line31"></a>                        if($item->id == $value) {
-<a name="line32"></a>                            $found = true;
-<a name="line33"></a>                            $this->response = $item->{$this->config->field};
-<a name="line34"></a>                        }
-<a name="line35"></a>                    }
-<a name="line36"></a>                }
-<a name="line37"></a>                if(!$found) {
-<a name="line38"></a>                    $this->response = "";
+<a name="line14"></a>        \t},
+<a name="line15"></a>        \t"label": "[string]", // optional
+<a name="line16"></a>        \t"dependencies": [dependencies], // optional
+<a name="line17"></a>        \t"validators": [validators] // optional
+<a name="line18"></a>    }
+<a name="line19"></a>    </pre>
+<a name="line20"></a>    * @package Fabrico\Modules\Presenters
+<a name="line21"></a>    */
+<a name="line22"></a>    class SelectDb extends Presenter {
+<a name="line23"></a>        
+<a name="line24"></a>        public function __toString() {
+<a name="line25"></a>            return "SelectDb";
+<a name="line26"></a>        }
+<a name="line27"></a>        public function listing($value) {
+<a name="line28"></a>            $model = $this->req->fabrico->models->get($this->config->model);
+<a name="line29"></a>            if($model) {
+<a name="line30"></a>                $items = $model->get()->order("position")->desc()->flush();
+<a name="line31"></a>                $found = false;
+<a name="line32"></a>                if($items) {
+<a name="line33"></a>                    foreach($items as $item) {
+<a name="line34"></a>                        if($item->id == $value) {
+<a name="line35"></a>                            $found = true;
+<a name="line36"></a>                            $this->setResponse($item->{$this->config->field});
+<a name="line37"></a>                        }
+<a name="line38"></a>                    }
 <a name="line39"></a>                }
-<a name="line40"></a>            } else {
-<a name="line41"></a>                throw new Exception($this.": model '".$this->config->model."' could not be found.");
-<a name="line42"></a>            }
-<a name="line43"></a>            return $this;
-<a name="line44"></a>        }
-<a name="line45"></a>        public function add($default = null) {
-<a name="line46"></a>            $options = "";
-<a name="line47"></a>            $model = $this->req->fabrico->models->get($this->config->model);
-<a name="line48"></a>            if($model) {
-<a name="line49"></a>                $items = $model->get()->order("position")->desc()->flush();
-<a name="line50"></a>                if($items) {
-<a name="line51"></a>                    foreach($items as $item) {
-<a name="line52"></a>                        $options .= $this->view("option.html", array(
-<a name="line53"></a>                            "key" => $item->id,
-<a name="line54"></a>                            "label" => $item->{$this->config->field},
-<a name="line55"></a>                            "selected" => $default == $item->id ? 'selected="selected"' : ""
-<a name="line56"></a>                        ));
-<a name="line57"></a>                    }
-<a name="line58"></a>                }
-<a name="line59"></a>                $this->response = $this->view("adding.html", array(
-<a name="line60"></a>                    "field" => $this->name,
-<a name="line61"></a>                    "options" => $options
-<a name="line62"></a>                ));
-<a name="line63"></a>            } else {
-<a name="line64"></a>                throw new Exception($this.": model '".$this->config->model."' could not be found.");
-<a name="line65"></a>            }
-<a name="line66"></a>            return $this;
-<a name="line67"></a>        }
-<a name="line68"></a>        public function addAction() {
-<a name="line69"></a>            if(isset($this->req->body->{strtolower($this->name)})) {
-<a name="line70"></a>                $this->response = $this->req->body->{strtolower($this->name)};
-<a name="line71"></a>            } else {
-<a name="line72"></a>                $this->response = null;
-<a name="line73"></a>            }
-<a name="line74"></a>            return $this;
-<a name="line75"></a>        }
-<a name="line76"></a>        public function edit($value) {
-<a name="line77"></a>            $this->response = $this->add($value)->response->value;
-<a name="line78"></a>            return $this;
-<a name="line79"></a>        }
-<a name="line80"></a>        public function editAction($value) {
-<a name="line81"></a>            $this->response = $this->addAction()->response->value;
-<a name="line82"></a>            return $this;
-<a name="line83"></a>        }
-<a name="line84"></a>    
-<a name="line85"></a>    }
-<a name="line86"></a>    
-<a name="line87"></a>?></pre>
+<a name="line40"></a>                if(!$found) {
+<a name="line41"></a>                    $this->setResponse("");
+<a name="line42"></a>                }
+<a name="line43"></a>            } else {
+<a name="line44"></a>                throw new Exception($this.": model '".$this->config->model."' could not be found.");
+<a name="line45"></a>            }
+<a name="line46"></a>            return $this;
+<a name="line47"></a>        }
+<a name="line48"></a>        public function add($default = null) {
+<a name="line49"></a>            $options = "";
+<a name="line50"></a>            $model = $this->req->fabrico->models->get($this->config->model);
+<a name="line51"></a>            if($model) {
+<a name="line52"></a>                $items = $model->get()->order("position")->desc()->flush();
+<a name="line53"></a>                if($items) {
+<a name="line54"></a>                    foreach($items as $item) {
+<a name="line55"></a>                        $options .= $this->view("option.html", array(
+<a name="line56"></a>                            "key" => $item->id,
+<a name="line57"></a>                            "label" => $item->{$this->config->field},
+<a name="line58"></a>                            "selected" => $default == $item->id ? 'selected="selected"' : ""
+<a name="line59"></a>                        ));
+<a name="line60"></a>                    }
+<a name="line61"></a>                }
+<a name="line62"></a>                $this->setResponse($this->view("adding.html", array(
+<a name="line63"></a>                    "field" => $this->name,
+<a name="line64"></a>                    "options" => $options
+<a name="line65"></a>                )));
+<a name="line66"></a>            } else {
+<a name="line67"></a>                throw new Exception($this.": model '".$this->config->model."' could not be found.");
+<a name="line68"></a>            }
+<a name="line69"></a>            return $this;
+<a name="line70"></a>        }
+<a name="line71"></a>        public function addAction() {
+<a name="line72"></a>            if(isset($this->req->body->{strtolower($this->name)})) {
+<a name="line73"></a>                $this->setResponse($this->req->body->{strtolower($this->name)});
+<a name="line74"></a>            } else {
+<a name="line75"></a>                $this->setResponse(null);
+<a name="line76"></a>            }
+<a name="line77"></a>            return $this;
+<a name="line78"></a>        }
+<a name="line79"></a>        public function edit($value) {
+<a name="line80"></a>            $this->setResponse($this->add($value)->response->value);
+<a name="line81"></a>            return $this;
+<a name="line82"></a>        }
+<a name="line83"></a>        public function editAction($value) {
+<a name="line84"></a>            $this->setResponse($this->addAction()->response->value);
+<a name="line85"></a>            return $this;
+<a name="line86"></a>        }
+<a name="line87"></a>    
+<a name="line88"></a>    }
+<a name="line89"></a>    
+<a name="line90"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

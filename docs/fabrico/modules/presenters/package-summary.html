@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 01 Jan 2012 22:56:12 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
 <link rel="start" href="../../../overview-summary.html">
@@ -49,7 +49,11 @@
 
 {
 \t"name": "colorField",
-\t"presenter": "presenters/Color.php"
+\t"presenter": "presenters/Color.php",
+\t"label": "[string]", // optional
+\t"defaultValue": "[string]", // optional
+\t"dependencies": [dependencies], // optional
+\t"validators": [validators] // optional
 }
 </td></tr>
 <tr><td class="name"><a href="../../../fabrico/modules/presenters/date.html">Date</a></td><td class="description">Definition:
@@ -59,7 +63,11 @@
 \t"presenter": "presenters/Date.php",
 \t"config": {
 \t\t"showsTime": true
-\t}
+\t},
+\t"label": "[string]", // optional
+\t"defaultValue": "[string]", // optional,
+\t"dependencies": [dependencies], // optional
+\t"validators": [validators] // optional
 }
 </td></tr>
 <tr><td class="name"><a href="../../../fabrico/modules/presenters/file.html">File</a></td><td class="description">Definition:
@@ -69,7 +77,10 @@
 \t"presenter": "presenters/File.php",
 \t"config": {
 \t\t"destination": "/assets/uploads"
-\t}
+\t},
+\t"label": "[string]", // optional
+\t"dependencies": [dependencies], // optional
+\t"validators": [validators] // optional
 }
 </td></tr>
 <tr><td class="name"><a href="../../../fabrico/modules/presenters/files.html">Files</a></td><td class="description">Definition:
@@ -79,7 +90,10 @@
 \t"presenter": "presenters/File.php",
 \t"config": {
 \t\t"destination": "/assets/uploads"
-\t}
+\t},
+\t"label": "[string]", // optional
+\t"dependencies": [dependencies], // optional
+\t"validators": [validators] // optional
 }
 </td></tr>
 <tr><td class="name"><a href="../../../fabrico/modules/presenters/presenter.html">Presenter</a></td><td class="description">The presenter is responsible for the database field's operations. </td></tr>
@@ -95,7 +109,11 @@
 \t\t\t{"key": "no", "label": "answer No"},
 \t\t\t{"key": "maybe", "label": "answer Maybe"}
 \t\t]
-\t}
+\t},
+\t"label": "[string]", // optional
+\t"defaultValue": "[key]", // optional
+\t"dependencies": [dependencies], // optional
+\t"validators": [validators] // optional
 }
 </td></tr>
 <tr><td class="name"><a href="../../../fabrico/modules/presenters/selectcheck.html">SelectCheck</a></td><td class="description">Definition:
@@ -109,7 +127,11 @@
 \t\t\t{"key": "no", "label": "answer No"},
 \t\t\t{"key": "maybe", "label": "answer Maybe"}
 \t\t]
-\t}
+\t},
+\t"label": "[string]", // optional
+\t"defaultValue": "[key|key|...]", // optional
+\t"dependencies": [dependencies], // optional
+\t"validators": [validators] // optional
 }
 </td></tr>
 <tr><td class="name"><a href="../../../fabrico/modules/presenters/selectdb.html">SelectDb</a></td><td class="description">Definition:
@@ -120,7 +142,10 @@
 \t"config": {
 \t\t"model": "models/categories.json",
 \t\t"field": "categoryLabel"
-\t}
+\t},
+\t"label": "[string]", // optional
+\t"dependencies": [dependencies], // optional
+\t"validators": [validators] // optional
 }
 </td></tr>
 <tr><td class="name"><a href="../../../fabrico/modules/presenters/selectradio.html">SelectRadio</a></td><td class="description">Definition:
@@ -134,21 +159,33 @@
 \t\t\t{"key": "no", "label": "answer No"},
 \t\t\t{"key": "maybe", "label": "answer Maybe"}
 \t\t]
-\t}
+\t},
+\t"label": "[string]", // optional
+\t"defaultValue": "[key]", // optional
+\t"dependencies": [dependencies], // optional
+\t"validators": [validators] // optional
 }
 </td></tr>
 <tr><td class="name"><a href="../../../fabrico/modules/presenters/text.html">Text</a></td><td class="description">Definition:
 
 {
 \t"name": "nameField",
-\t"presenter": "presenters/Text.php"
+\t"presenter": "presenters/Text.php",
+\t"label": "[string]", // optional
+\t"defaultValue": "[string]", // optional
+\t"dependencies": [dependencies], // optional
+\t"validators": [validators] // optiona
 }
 </td></tr>
 <tr><td class="name"><a href="../../../fabrico/modules/presenters/textlong.html">TextLong</a></td><td class="description">Definition:
 
 {
 \t"name": "descriptionField",
-\t"presenter": "presenters/TextLong.php"
+\t"presenter": "presenters/TextLong.php",
+\t"label": "[string]", // optional
+\t"defaultValue": "[string]", // optional
+\t"dependencies": [dependencies], // optional
+\t"validators": [validators] // optiona
 }
 </td></tr>
 <tr><td class="name"><a href="../../../fabrico/modules/presenters/textrich.html">TextRich</a></td><td class="description">Definition:
@@ -167,7 +204,11 @@
 \t\t"bold": "yes",
 \t\t"italic": "yes",
 \t\t"underline": "yes"
-\t}
+\t},
+\t"label": "[string]", // optional
+\t"defaultValue": "[string]", // optional
+\t"dependencies": [dependencies], // optional
+\t"validators": [validators] // optiona
 }
 </td></tr>
 </table>
