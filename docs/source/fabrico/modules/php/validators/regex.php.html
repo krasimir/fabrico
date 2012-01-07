@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Mon, 02 Jan 2012 21:38:23 +0000">
+<meta name="when" content="Mon, 02 Jan 2012 21:55:02 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -65,8 +65,8 @@
 <a name="line21"></a>    * @package Fabrico\Modules\Validators
 <a name="line22"></a>    */
 <a name="line23"></a>    class RegEx {
-<a name="line24"></a>        public function run($value, $parameters) {
-<a name="line25"></a>            if(!isset($parameters) || !isset($parameters->match)) {
+<a name="line24"></a>        public function run($value, $parameters = null) {
+<a name="line25"></a>            if(!isset($parameters) || !isset($parameters->match) || $parameters == null) {
 <a name="line26"></a>                throw new Exception("RegEx validator requires 'parameters': { 'match': '[your regular expression here]' }");
 <a name="line27"></a>            }
 <a name="line28"></a>            $result = preg_match($parameters->match, $value);

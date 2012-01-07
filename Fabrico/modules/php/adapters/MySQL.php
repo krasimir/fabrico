@@ -13,7 +13,7 @@
         private $tableName = "";
         private $query;
         
-        public function __construct($configs) {
+        public function __construct(MySQLConfig $configs) {
             $this->configs = $configs;
             $this->query = (object) array();
         }
