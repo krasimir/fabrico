@@ -1,12 +1,12 @@
 (function() {
     global.fabrico.modules.presenters.Color = function() {
         
-        var dependencyHide = function(fieldName) {
+        var dependencyHide = function(field) {
             
         };
-        var dependencyShow = function(fieldName) {
-            var item = $('[name=' + fieldName + ']');
-            $(".color-" + fieldName).val("FFFFFF");
+        var dependencyShow = function(field) {
+            var item = $('[name=' + field.name + ']');
+            $(".color-" + field.name).val("FFFFFF");
             jscolor.bind();
         };
         

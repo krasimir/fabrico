@@ -20,36 +20,47 @@
                 hidden.val(value);
             }
         };
+        var evaluate = function(dependency) {
+            var result = null;
+            if($.isArray(dependency)) {
+                var numOfDependencies = dependency.length;
+                for(var i=0; i<numOfDependencies; i++) {
+                    var res = evaluate(dependency[i]);
+                    var isArray = $.isArray(dependency[i]);
+                    if(result === null) {
+                        result = res;
+                    } else {
+                        result = isArray ? result || res : result && res;
+                    }
+                }
+            } else {
+                var item = $('[name=' + dependency.field + ']');
+                var regexp = new RegExp(dependency.shouldMatch, "gi");
+                var value = item.val();
+                if(item.attr("type") == "radio") {
+                    value = $('input:radio[name=' + dependency.field + ']:checked').val();
+                }
+                result = regexp.test(value);
+            }
+            return result;
+        };
         var onPresenterChange = function() {
             var numOfFields = fields ? fields.length : 0;
             for(var i=0; i<numOfFields; i++) {
                 var field = fields[i];
                 if(field.dependencies) {
-                    var numOfDependencies = field.dependencies.length;
-                    var passDependencies = true;
-                    for(var j=0; j<numOfDependencies; j++) {
-                        var item = $('[name=' + field.dependencies[j].field + ']');
-                        var regexp = new RegExp(field.dependencies[j].shouldMatch, "gi");
-                        var value = item.val();
-                        if(item.attr("type") == "radio") {
-                            value = $('input:radio[name=' + field.dependencies[j].field + ']:checked').val();
-                        }
-                        var pass = regexp.test(value);
-                        if(!pass) {
-                            passDependencies = false; 
-                        }
-                    }
+                    var passDependencies = evaluate(field.dependencies);
                     var presenter = global.fabrico.modules.presenters.get(field.presenter);
                     if(passDependencies) {
                         $("#" + field.name + "-row").css("display", "table-row");
                         if(presenter && presenter.dependencyShow) {
-                            presenter.dependencyShow(field.name);
+                            presenter.dependencyShow(field);
                         }
                         setHiddenFieldValue(field.name, "no");
                     } else {
                         $("#" + field.name + "-row").css("display", "none");
                         if(presenter && presenter.dependencyHide) {
-                            presenter.dependencyHide(field.name);
+                            presenter.dependencyHide(field);
                         } else {
                             dependencyHide(field.name);
                         }

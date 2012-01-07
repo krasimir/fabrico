@@ -33,16 +33,16 @@
                $('input[name*="' + field + '_filesToRemove"]').val(value + "|" + linkId)
             });
         };
-        var dependencyHide = function(fieldName) {
-            var numOfFieldsInput = $('[name=' + fieldName + '_numOfFields]');
+        var dependencyHide = function(field) {
+            var numOfFieldsInput = $('[name=' + field.name + '_numOfFields]');
             if(numOfFieldsInput.length > 0) {
                 var numOfFields = numOfFieldsInput.val();
                 for(var i=0; i<numOfFields; i++) {
-                    $("." + fieldName + "_" + i + "_row").remove();
+                    $("." + field.name + "_" + i + "_row").remove();
                 }
             }
         };
-        var dependencyShow = function(fieldName) {
+        var dependencyShow = function(field) {
             
         };
         

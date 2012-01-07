@@ -1,12 +1,12 @@
 (function() {
     global.fabrico.modules.presenters.Date = function() {
         
-        var dependencyHide = function(fieldName) {
+        var dependencyHide = function(field) {
         };
-        var dependencyShow = function(fieldName) {
-            if(global.fabrico.modules.presenters.Date["init" + fieldName]) {
-                var item = $('[name=' + fieldName + ']');
-                global.fabrico.modules.presenters.Date["init" + fieldName]();
+        var dependencyShow = function(field) {
+            if(global.fabrico.modules.presenters.Date["init" + field.name]) {
+                var item = $('[name=' + field.name + ']');
+                global.fabrico.modules.presenters.Date["init" + field.name]();
                 item.val(global.fabrico.modules.presenters.currentDate);                
             }
         };

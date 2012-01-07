@@ -3,7 +3,7 @@
     "freeze": false,
     "fields": [
         {
-            "name": "questio22n",
+            "name": "question",
             "presenter": "presenters/SelectRadio.php",
             "defaultValue": "maybe",
             "config": {
@@ -11,6 +11,30 @@
                     {"key": "yes", "label": "answer Yes"},
                     {"key": "no", "label": "answer No"},
                     {"key": "maybe", "label": "answer Maybe"}
+                ]
+            }
+        },
+        {
+            "name": "SelectRadio",
+            "presenter": "presenters/SelectRadio.php",
+            "defaultValue": "option3",
+            "config": {
+                "options": [
+                    {"key": "option1", "label": "option 1"},
+                    {"key": "option2", "label": "option 2"},
+                    {"key": "option3", "label": "option 3"}
+                ]
+            }
+        },
+        {
+            "name": "SelectRadio2",
+            "presenter": "presenters/SelectRadio.php",
+            "defaultValue": "option3",
+            "config": {
+                "options": [
+                    {"key": "option1", "label": "option 1"},
+                    {"key": "option2", "label": "option 2"},
+                    {"key": "option3", "label": "option 3"}
                 ]
             }
         },
@@ -24,9 +48,21 @@
                 }
             ],
             "dependencies": [
+                [
+                    {
+                        "field": "SelectRadio",
+                        "shouldMatch": "^option1$"
+                    },
+                    [
+                        {
+                            "field": "SelectRadio2",
+                            "shouldMatch": "^option1$"
+                        }
+                    ]
+                ],
                 {
-                    "field": "questio22n",
-                    "shouldMatch": "^no$"
+                    "field": "question",
+                    "shouldMatch": "^yes$"
                 }
             ]
         },

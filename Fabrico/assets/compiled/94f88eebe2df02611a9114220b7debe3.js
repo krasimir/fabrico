@@ -431,12 +431,12 @@ var global = {};
 (function() {
     global.fabrico.modules.presenters.Color = function() {
         
-        var dependencyHide = function(fieldName) {
+        var dependencyHide = function(field) {
             
         };
-        var dependencyShow = function(fieldName) {
-            var item = $('[name=' + fieldName + ']');
-            $(".color-" + fieldName).val("FFFFFF");
+        var dependencyShow = function(field) {
+            var item = $('[name=' + field.name + ']');
+            $(".color-" + field.name).val("FFFFFF");
             jscolor.bind();
         };
         
@@ -450,12 +450,12 @@ var global = {};
 (function() {
     global.fabrico.modules.presenters.Date = function() {
         
-        var dependencyHide = function(fieldName) {
+        var dependencyHide = function(field) {
         };
-        var dependencyShow = function(fieldName) {
-            if(global.fabrico.modules.presenters.Date["init" + fieldName]) {
-                var item = $('[name=' + fieldName + ']');
-                global.fabrico.modules.presenters.Date["init" + fieldName]();
+        var dependencyShow = function(field) {
+            if(global.fabrico.modules.presenters.Date["init" + field.name]) {
+                var item = $('[name=' + field.name + ']');
+                global.fabrico.modules.presenters.Date["init" + field.name]();
                 item.val(global.fabrico.modules.presenters.currentDate);                
             }
         };
@@ -489,36 +489,47 @@ var global = {};
                 hidden.val(value);
             }
         };
+        var evaluate = function(dependency) {
+            var result = null;
+            if($.isArray(dependency)) {
+                var numOfDependencies = dependency.length;
+                for(var i=0; i<numOfDependencies; i++) {
+                    var res = evaluate(dependency[i]);
+                    var isArray = $.isArray(dependency[i]);
+                    if(result === null) {
+                        result = res;
+                    } else {
+                        result = isArray ? result || res : result && res;
+                    }
+                }
+            } else {
+                var item = $('[name=' + dependency.field + ']');
+                var regexp = new RegExp(dependency.shouldMatch, "gi");
+                var value = item.val();
+                if(item.attr("type") == "radio") {
+                    value = $('input:radio[name=' + dependency.field + ']:checked').val();
+                }
+                result = regexp.test(value);
+            }
+            return result;
+        };
         var onPresenterChange = function() {
             var numOfFields = fields ? fields.length : 0;
             for(var i=0; i<numOfFields; i++) {
                 var field = fields[i];
                 if(field.dependencies) {
-                    var numOfDependencies = field.dependencies.length;
-                    var passDependencies = true;
-                    for(var j=0; j<numOfDependencies; j++) {
-                        var item = $('[name=' + field.dependencies[j].field + ']');
-                        var regexp = new RegExp(field.dependencies[j].shouldMatch, "gi");
-                        var value = item.val();
-                        if(item.attr("type") == "radio") {
-                            value = $('input:radio[name=' + field.dependencies[j].field + ']:checked').val();
-                        }
-                        var pass = regexp.test(value);
-                        if(!pass) {
-                            passDependencies = false; 
-                        }
-                    }
+                    var passDependencies = evaluate(field.dependencies);
                     var presenter = global.fabrico.modules.presenters.get(field.presenter);
                     if(passDependencies) {
                         $("#" + field.name + "-row").css("display", "table-row");
                         if(presenter && presenter.dependencyShow) {
-                            presenter.dependencyShow(field.name);
+                            presenter.dependencyShow(field);
                         }
                         setHiddenFieldValue(field.name, "no");
                     } else {
                         $("#" + field.name + "-row").css("display", "none");
                         if(presenter && presenter.dependencyHide) {
-                            presenter.dependencyHide(field.name);
+                            presenter.dependencyHide(field);
                         } else {
                             dependencyHide(field.name);
                         }
@@ -591,16 +602,16 @@ var global = {};
                $('input[name*="' + field + '_filesToRemove"]').val(value + "|" + linkId)
             });
         };
-        var dependencyHide = function(fieldName) {
-            var numOfFieldsInput = $('[name=' + fieldName + '_numOfFields]');
+        var dependencyHide = function(field) {
+            var numOfFieldsInput = $('[name=' + field.name + '_numOfFields]');
             if(numOfFieldsInput.length > 0) {
                 var numOfFields = numOfFieldsInput.val();
                 for(var i=0; i<numOfFields; i++) {
-                    $("." + fieldName + "_" + i + "_row").remove();
+                    $("." + field.name + "_" + i + "_row").remove();
                 }
             }
         };
-        var dependencyShow = function(fieldName) {
+        var dependencyShow = function(field) {
             
         };
         
@@ -617,19 +628,37 @@ var global = {};
 (function() {
     global.fabrico.modules.presenters.SelectCheck = function() {
         
-        var dependencyHide = function(fieldName) {
-            var selector = 'input[name^="' + fieldName + '_"]';
+        var hidden = false;
+        
+        var dependencyHide = function(field) {
+            var selector = 'input[name^="' + field.name + '_"]';
             var inputs = $(selector);
             if(inputs.length > 0) {
                 var numOfInputs = inputs.length;
                 for(var i=0; i<numOfInputs; i++) {
                     var input = inputs.eq(i);
+                    input.checked = false;
                     input.attr("checked", false);
                 }
             }
+            hidden = true;
         };
-        var dependencyShow = function(fieldName) {
-            
+        var dependencyShow = function(field) {
+            var selector = 'input[name^="' + field.name + '_"]';
+            var inputs = $(selector);
+            var numOfInputs = inputs.length;
+            if(numOfInputs > 0) {
+                for(var i=0; i<numOfInputs; i++) {
+                    var input = inputs.eq(i);
+                    (function(input) {
+                        if(field.defaultValue == input.val() && hidden) {
+                            input.checked = true;
+                            input.attr('checked', 'checked');
+                        }
+                    })(input);
+                }
+            }
+            hidden = false;
         };
         
         return {
@@ -642,8 +671,10 @@ var global = {};
 (function() {
     global.fabrico.modules.presenters.SelectRadio = function() {
         
-        var dependencyHide = function(fieldName) {
-            var selector = 'input[name="' + fieldName + '"]';
+        var hidden = false;
+        
+        var dependencyHide = function(field) {
+            var selector = 'input[name="' + field.name + '"]';
             var inputs = $(selector);
             var numOfInputs = inputs.length;
             if(numOfInputs > 0) {
@@ -653,9 +684,24 @@ var global = {};
                     input.removeAttr('checked');
                 }
             }
+            hidden = true;
         };
-        var dependencyShow = function(fieldName) {
-            
+        var dependencyShow = function(field) {
+            var selector = 'input[name="' + field.name + '"]';
+            var inputs = $(selector);
+            var numOfInputs = inputs.length;
+            if(numOfInputs > 0) {
+                for(var i=0; i<numOfInputs; i++) {
+                    var input = inputs.eq(i);
+                    (function(input) {
+                        if(field.defaultValue == input.val() && hidden) {
+                            input.checked = true;
+                            input.attr('checked', 'checked');
+                        }
+                    })(input);
+                }
+            }
+            hidden = false;
         };
         
         return {
