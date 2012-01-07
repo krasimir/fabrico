@@ -12,6 +12,7 @@
     
         public $model;
         public $url;
+        public $title;
     
         protected $router;
         protected $defaultRoutes = array();

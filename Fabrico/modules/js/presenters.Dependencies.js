@@ -30,7 +30,11 @@
                     for(var j=0; j<numOfDependencies; j++) {
                         var item = $('[name=' + field.dependencies[j].field + ']');
                         var regexp = new RegExp(field.dependencies[j].shouldMatch, "gi");
-                        var pass = regexp.test(item.val());
+                        var value = item.val();
+                        if(item.attr("type") == "radio") {
+                            value = $('input:radio[name=' + field.dependencies[j].field + ']:checked').val();
+                        }
+                        var pass = regexp.test(value);
                         if(!pass) {
                             passDependencies = false; 
                         }

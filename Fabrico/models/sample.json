@@ -3,8 +3,8 @@
     "freeze": false,
     "fields": [
         {
-            "name": "question",
-            "presenter": "presenters/Select.php",
+            "name": "questio22n",
+            "presenter": "presenters/SelectRadio.php",
             "defaultValue": "maybe",
             "config": {
                 "options": [
@@ -25,7 +25,7 @@
             ],
             "dependencies": [
                 {
-                    "field": "question",
+                    "field": "questio22n",
                     "shouldMatch": "^no$"
                 }
             ]
