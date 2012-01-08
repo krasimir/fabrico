@@ -3,78 +3,13 @@
     "freeze": false,
     "fields": [
         {
-            "name": "question",
-            "presenter": "presenters/SelectRadio.php",
-            "defaultValue": "maybe",
+            "name": "types",
+            "presenter": "presenters/SelectDbCheck.php",
+            "defaultValue": "33",
             "config": {
-                "options": [
-                    {"key": "yes", "label": "answer Yes"},
-                    {"key": "no", "label": "answer No"},
-                    {"key": "maybe", "label": "answer Maybe"}
-                ]
+                "model": "models/types.json",
+                "field": "name"
             }
-        },
-        {
-            "name": "SelectRadio",
-            "presenter": "presenters/SelectRadio.php",
-            "defaultValue": "option3",
-            "config": {
-                "options": [
-                    {"key": "option1", "label": "option 1"},
-                    {"key": "option2", "label": "option 2"},
-                    {"key": "option3", "label": "option 3"}
-                ]
-            }
-        },
-        {
-            "name": "SelectRadio2",
-            "presenter": "presenters/SelectRadio.php",
-            "defaultValue": "option3",
-            "config": {
-                "options": [
-                    {"key": "option1", "label": "option 1"},
-                    {"key": "option2", "label": "option 2"},
-                    {"key": "option3", "label": "option 3"}
-                ]
-            }
-        },
-        {
-            "name": "firstName",
-            "presenter": "presenters/Text.php",
-            "label": "My first name",
-            "validators": [
-                {
-                    "class": "validators/NotEmpty.php"
-                }
-            ],
-            "dependencies": [
-                [
-                    {
-                        "field": "SelectRadio",
-                        "shouldMatch": "^option1$"
-                    },
-                    [
-                        {
-                            "field": "SelectRadio2",
-                            "shouldMatch": "^option1$"
-                        }
-                    ]
-                ],
-                {
-                    "field": "question",
-                    "shouldMatch": "^yes$"
-                }
-            ]
-        },
-        {
-            "name": "email",
-            "presenter": "presenters/Text.php",
-            "label": "your email",
-            "validators": [
-                {
-                    "class": "validators/ValidEmail.php"
-                }
-            ]
         }
     ],
     "actions": {

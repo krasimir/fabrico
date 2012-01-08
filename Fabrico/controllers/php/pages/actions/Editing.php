@@ -49,7 +49,8 @@
                     }
                     if($valid) {
                         $content = $this->view("subnav.html", array(
-                            "http" => $req->fabrico->root->http.$this->controller->url
+                            "http" => $req->fabrico->root->http.$this->controller->url,
+                            "httpRoot" => $req->fabrico->root->http
                         ));
                         $content .= $this->view("result.html", array(
                             "id" => $this->model->store($record),
@@ -114,7 +115,8 @@
                     "fields" => json_encode($this->model->fields)
                 ));
                 $content = $this->view("subnav.html", array(
-                    "http" => $req->fabrico->root->http.$this->controller->url
+                    "http" => $req->fabrico->root->http.$this->controller->url,
+                    "httpRoot" => $req->fabrico->root->http
                 )).$content;
             } else {
                 $content = $this->view("error.html", array("text" => "Missing record with id = '".$id."'."));

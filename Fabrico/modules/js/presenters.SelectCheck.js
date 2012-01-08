@@ -1,8 +1,6 @@
 (function() {
     global.fabrico.modules.presenters.SelectCheck = function() {
         
-        var hidden = false;
-        
         var dependencyHide = function(field) {
             var selector = 'input[name^="' + field.name + '_"]';
             var inputs = $(selector);
@@ -14,7 +12,7 @@
                     input.attr("checked", false);
                 }
             }
-            hidden = true;
+            field.hidden = true;
         };
         var dependencyShow = function(field) {
             var selector = 'input[name^="' + field.name + '_"]';
@@ -24,14 +22,14 @@
                 for(var i=0; i<numOfInputs; i++) {
                     var input = inputs.eq(i);
                     (function(input) {
-                        if(field.defaultValue == input.val() && hidden) {
+                        if(field.defaultValue == input.val() && field.hidden) {
                             input.checked = true;
                             input.attr('checked', 'checked');
                         }
                     })(input);
                 }
             }
-            hidden = false;
+            field.hidden = false;
         };
         
         return {

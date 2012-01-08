@@ -628,8 +628,6 @@ var global = {};
 (function() {
     global.fabrico.modules.presenters.SelectCheck = function() {
         
-        var hidden = false;
-        
         var dependencyHide = function(field) {
             var selector = 'input[name^="' + field.name + '_"]';
             var inputs = $(selector);
@@ -641,7 +639,7 @@ var global = {};
                     input.attr("checked", false);
                 }
             }
-            hidden = true;
+            field.hidden = true;
         };
         var dependencyShow = function(field) {
             var selector = 'input[name^="' + field.name + '_"]';
@@ -651,14 +649,14 @@ var global = {};
                 for(var i=0; i<numOfInputs; i++) {
                     var input = inputs.eq(i);
                     (function(input) {
-                        if(field.defaultValue == input.val() && hidden) {
+                        if(field.defaultValue == input.val() && field.hidden) {
                             input.checked = true;
                             input.attr('checked', 'checked');
                         }
                     })(input);
                 }
             }
-            hidden = false;
+            field.hidden = false;
         };
         
         return {
@@ -671,8 +669,6 @@ var global = {};
 (function() {
     global.fabrico.modules.presenters.SelectRadio = function() {
         
-        var hidden = false;
-        
         var dependencyHide = function(field) {
             var selector = 'input[name="' + field.name + '"]';
             var inputs = $(selector);
@@ -684,7 +680,7 @@ var global = {};
                     input.removeAttr('checked');
                 }
             }
-            hidden = true;
+            field.hidden = true;
         };
         var dependencyShow = function(field) {
             var selector = 'input[name="' + field.name + '"]';
@@ -694,14 +690,14 @@ var global = {};
                 for(var i=0; i<numOfInputs; i++) {
                     var input = inputs.eq(i);
                     (function(input) {
-                        if(field.defaultValue == input.val() && hidden) {
+                        if(field.defaultValue == input.val() && field.hidden) {
                             input.checked = true;
                             input.attr('checked', 'checked');
                         }
                     })(input);
                 }
             }
-            hidden = false;
+            field.hidden = false;
         };
         
         return {

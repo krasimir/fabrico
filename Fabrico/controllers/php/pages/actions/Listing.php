@@ -70,7 +70,8 @@
                 // wrapping everything
                 $content = "";
                 $content .= $this->view("subnav.html", array(
-                    "http" => $req->fabrico->root->http.$this->controller->url
+                    "http" => $req->fabrico->root->http.$this->controller->url,
+                    "httpRoot" => $req->fabrico->root->http
                 ));
                 $content .= $this->view("table.html", array(
                     "rows" => $fieldsRow.$tableRows
@@ -81,7 +82,8 @@
             } else {
                 $content = "";
                 $content .= $this->view("subnav.html", array(
-                    "http" => $req->fabrico->root->http.$this->controller->url
+                    "http" => $req->fabrico->root->http.$this->controller->url,
+                    "httpRoot" => $req->fabrico->root->http
                 ));
                 $content .= $this->view("norecords.html");
                 $this->controller->response($content, $req, $res);

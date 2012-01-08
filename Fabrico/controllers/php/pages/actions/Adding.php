@@ -47,7 +47,8 @@
                 if($valid) {
                     $id = $this->model->store($record);
                     $content = $this->view("subnav.html", array(
-                        "http" => $req->fabrico->root->http.$this->controller->url
+                        "http" => $req->fabrico->root->http.$this->controller->url,
+                        "httpRoot" => $req->fabrico->root->http
                     ));
                     $content .= $this->view("result.html", array(
                         "id" => $id,
@@ -105,7 +106,8 @@
                 "fields" => json_encode($this->model->fields)
             ));
             $content = $this->view("subnav.html", array(
-                "http" => $req->fabrico->root->http.$this->controller->url
+                "http" => $req->fabrico->root->http.$this->controller->url,
+                "httpRoot" => $req->fabrico->root->http
             )).$content;
             return $content;
         }

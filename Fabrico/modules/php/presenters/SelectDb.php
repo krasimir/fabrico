@@ -12,6 +12,7 @@
             \t\t"model": "models/categories.json",
             \t\t"field": "categoryLabel"
         \t},
+        \t"defaultValue": "[id|id|id|...]", // optional
         \t"label": "[string]", // optional
         \t"dependencies": [dependencies], // optional
         \t"validators": [validators] // optional
