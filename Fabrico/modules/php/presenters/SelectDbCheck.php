@@ -46,13 +46,15 @@
             $boxes = "";
             $default = $default == null ? isset($this->defaultValue) ? $this->defaultValue : array() : $default;
             $defaultArr = $default != null ? explode("|", $default) : array();
-            foreach($items as $item) {
-                $boxes .= $this->view("box.html", array(
-                    "key" => $item->id,
-                    "label" => $item->{$this->config->field},
-                    "name" => $this->name."_".$item->id,
-                    "checked" => in_array($item->id, $defaultArr) ? 'checked="checked"' : ""
-                ));
+            if($items) {
+                foreach($items as $item) {
+                    $boxes .= $this->view("box.html", array(
+                        "key" => $item->id,
+                        "label" => $item->{$this->config->field},
+                        "name" => $this->name."_".$item->id,
+                        "checked" => in_array($item->id, $defaultArr) ? 'checked="checked"' : ""
+                    ));
+                }
             }
             $this->setResponse($this->view("adding.html", array(
                 "boxes" => $boxes

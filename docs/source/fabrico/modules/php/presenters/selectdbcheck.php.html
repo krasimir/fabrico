@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 08 Jan 2012 10:49:04 +0000">
+<meta name="when" content="Sun, 08 Jan 2012 21:38:22 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -90,52 +90,54 @@
 <a name="line46"></a>            $boxes = "";
 <a name="line47"></a>            $default = $default == null ? isset($this->defaultValue) ? $this->defaultValue : array() : $default;
 <a name="line48"></a>            $defaultArr = $default != null ? explode("|", $default) : array();
-<a name="line49"></a>            foreach($items as $item) {
-<a name="line50"></a>                $boxes .= $this->view("box.html", array(
-<a name="line51"></a>                    "key" => $item->id,
-<a name="line52"></a>                    "label" => $item->{$this->config->field},
-<a name="line53"></a>                    "name" => $this->name."_".$item->id,
-<a name="line54"></a>                    "checked" => in_array($item->id, $defaultArr) ? 'checked="checked"' : ""
-<a name="line55"></a>                ));
-<a name="line56"></a>            }
-<a name="line57"></a>            $this->setResponse($this->view("adding.html", array(
-<a name="line58"></a>                "boxes" => $boxes
-<a name="line59"></a>            )));
-<a name="line60"></a>            return $this;
-<a name="line61"></a>        }
-<a name="line62"></a>        public function addAction() {
-<a name="line63"></a>            $items = $this->getModelItems();
-<a name="line64"></a>            $result = "";
-<a name="line65"></a>            foreach($items as $item) {
-<a name="line66"></a>               if(isset($this->req->body->{strtolower($this->name."_".$item->id)})) {
-<a name="line67"></a>                    $result .= $this->req->body->{strtolower($this->name."_".$item->id)}."|";
-<a name="line68"></a>                }
-<a name="line69"></a>            }
-<a name="line70"></a>            $this->setResponse($result);
-<a name="line71"></a>            return $this;
-<a name="line72"></a>        }
-<a name="line73"></a>        public function edit($value) {
-<a name="line74"></a>            $this->setResponse($this->add($value)->response->value);
-<a name="line75"></a>            return $this;
-<a name="line76"></a>        }
-<a name="line77"></a>        public function editAction($value) {
-<a name="line78"></a>            $this->setResponse($this->addAction()->response->value);
-<a name="line79"></a>            return $this;
-<a name="line80"></a>        }
-<a name="line81"></a>        private function getModelItems() {
-<a name="line82"></a>            $model = $this->req->fabrico->models->get($this->config->model);
-<a name="line83"></a>            $items = array();
-<a name="line84"></a>            if($model) {
-<a name="line85"></a>                $items = $model->get()->order("position")->desc()->flush();
-<a name="line86"></a>            } else {
-<a name="line87"></a>                throw new Exception($this.": model '".$this->config->model."' could not be found.");
-<a name="line88"></a>            }
-<a name="line89"></a>            return $items;
-<a name="line90"></a>        }
-<a name="line91"></a>    
-<a name="line92"></a>    }
+<a name="line49"></a>            if($items) {
+<a name="line50"></a>                foreach($items as $item) {
+<a name="line51"></a>                    $boxes .= $this->view("box.html", array(
+<a name="line52"></a>                        "key" => $item->id,
+<a name="line53"></a>                        "label" => $item->{$this->config->field},
+<a name="line54"></a>                        "name" => $this->name."_".$item->id,
+<a name="line55"></a>                        "checked" => in_array($item->id, $defaultArr) ? 'checked="checked"' : ""
+<a name="line56"></a>                    ));
+<a name="line57"></a>                }
+<a name="line58"></a>            }
+<a name="line59"></a>            $this->setResponse($this->view("adding.html", array(
+<a name="line60"></a>                "boxes" => $boxes
+<a name="line61"></a>            )));
+<a name="line62"></a>            return $this;
+<a name="line63"></a>        }
+<a name="line64"></a>        public function addAction() {
+<a name="line65"></a>            $items = $this->getModelItems();
+<a name="line66"></a>            $result = "";
+<a name="line67"></a>            foreach($items as $item) {
+<a name="line68"></a>               if(isset($this->req->body->{strtolower($this->name."_".$item->id)})) {
+<a name="line69"></a>                    $result .= $this->req->body->{strtolower($this->name."_".$item->id)}."|";
+<a name="line70"></a>                }
+<a name="line71"></a>            }
+<a name="line72"></a>            $this->setResponse($result);
+<a name="line73"></a>            return $this;
+<a name="line74"></a>        }
+<a name="line75"></a>        public function edit($value) {
+<a name="line76"></a>            $this->setResponse($this->add($value)->response->value);
+<a name="line77"></a>            return $this;
+<a name="line78"></a>        }
+<a name="line79"></a>        public function editAction($value) {
+<a name="line80"></a>            $this->setResponse($this->addAction()->response->value);
+<a name="line81"></a>            return $this;
+<a name="line82"></a>        }
+<a name="line83"></a>        private function getModelItems() {
+<a name="line84"></a>            $model = $this->req->fabrico->models->get($this->config->model);
+<a name="line85"></a>            $items = array();
+<a name="line86"></a>            if($model) {
+<a name="line87"></a>                $items = $model->get()->order("position")->desc()->flush();
+<a name="line88"></a>            } else {
+<a name="line89"></a>                throw new Exception($this.": model '".$this->config->model."' could not be found.");
+<a name="line90"></a>            }
+<a name="line91"></a>            return $items;
+<a name="line92"></a>        }
 <a name="line93"></a>    
-<a name="line94"></a>?></pre>
+<a name="line94"></a>    }
+<a name="line95"></a>    
+<a name="line96"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

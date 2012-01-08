@@ -1,6 +1,7 @@
 {    
     "adapter": "tools/adapters/MySQL.php",
     "freeze": false,
+    "title": "Sample administration",
     "fields": [
         {
             "name": "types",

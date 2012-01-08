@@ -30,6 +30,7 @@
             if(isset($this->matchedRouterRule->model) && $this->model = $req->fabrico->models->get($this->matchedRouterRule->model)) {
             
                 $this->url = $this->filterRoutePattern($this->matchedRouterRule->pattern);
+                $this->title = $this->model->title !== null ? $this->model->title : "fabrico";
                 
                 // routes
                 $pattern = $this->matchedRouterRule->pattern;
