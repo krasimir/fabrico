@@ -40,9 +40,21 @@
                             ));
                         }
                     }
-                    $tableColumns .= $this->view("columnOptions.html", array(
+                    $optionsView = "columnOptionsPositionUpDown.html";
+                    if($this->model->actions !== null && isset($this->model->actions->listing) && isset($this->model->actions->listing->positionEditing)) {
+                        switch($this->model->actions->listing->positionEditing) {
+                            case "direct":
+                                $optionsView = "columnOptionsPositionDirect.html";
+                            break;
+                            default: 
+                                $optionsView = "columnOptionsPositionUpDown.html";
+                            break;
+                        }
+                    }
+                    $tableColumns .= $this->view($optionsView, array(
                         "id" => $item->id,
-                        "http" => $req->fabrico->root->http.$this->controller->url
+                        "http" => $req->fabrico->root->http.$this->controller->url,
+                        "position" => $item->position
                     ));
                     $tableRows .= $this->view("row.html", array(
                         "columns" => $tableColumns

@@ -4,18 +4,50 @@
     "title": "Sample administration",
     "fields": [
         {
+            "name": "myText",
+            "presenter": "presenters/Text.php",
+            "validators": [
+                {
+                    "class": "validators/NotEmpty.php"
+                }
+            ]
+        },
+        {
+            "name": "category",
+            "presenter": "presenters/Select.php",
+            "config": {
+                "options": [
+                    {"key": "yes", "label": "answer Yes"},
+                    {"key": "no", "label": "answer No"},
+                    {"key": "maybe", "label": "answer Maybe"}
+                ]
+            }
+        },
+        {
             "name": "types",
             "presenter": "presenters/SelectDbCheck.php",
             "defaultValue": "33",
             "config": {
                 "model": "models/types.json",
                 "field": "name"
-            }
+            },
+            "validators": [
+                {
+                    "class": "validators/NotEmpty.php"
+                }
+            ],
+            "dependencies": [
+                {
+                    "field": "category",
+                    "shouldMatch": "^no$"
+                }
+            ]
         }
     ],
     "actions": {
         "listing": {
-            "fieldsToHide": ["myName"]
+            "fieldsToHide": ["myName"],
+            "positionEditing": "direct"
         }
     }
 }

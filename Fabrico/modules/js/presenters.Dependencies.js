@@ -13,9 +13,9 @@
         var setHiddenFieldValue = function(fieldName, value) {
             var hidden = $('[name=' + fieldName + '_hidden]');
             if(hidden.length == 0) {
-                var item = $('[name=' + fieldName + ']');
+                var form = $('form');
                 hidden = $('<input type="hidden" name="' + fieldName + '_hidden" value="' + value + '" />');
-                item.parent().append(hidden);
+                form.append(hidden);
             } else {
                 hidden.val(value);
             }

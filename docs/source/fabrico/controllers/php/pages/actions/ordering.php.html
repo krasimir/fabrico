@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 08 Jan 2012 21:38:22 +0000">
+<meta name="when" content="Sat, 14 Jan 2012 21:26:27 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -62,54 +62,64 @@
 <a name="line18"></a>            
 <a name="line19"></a>            $type = $req->params["type"];
 <a name="line20"></a>            $id = $req->params["id"];
-<a name="line21"></a>            $items = $this->model->get()->order("position")->desc()->flush();
+<a name="line21"></a>            $position = isset($req->body->position) ? $req->body->position : null;
 <a name="line22"></a>            
-<a name="line23"></a>            if($items && isset($type) && isset($id)) {
-<a name="line24"></a>                $previous = null;
-<a name="line25"></a>                $next = null;
-<a name="line26"></a>                $found = false;
-<a name="line27"></a>                $currentRecord = null;
-<a name="line28"></a>                foreach($items as $item){
-<a name="line29"></a>                    if($found && $previous == null) {
-<a name="line30"></a>                        $previous = $item;
-<a name="line31"></a>                    }
-<a name="line32"></a>                    if($item->id == $id) {
-<a name="line33"></a>                        $found = true;
-<a name="line34"></a>                        $currentRecord = $item;
-<a name="line35"></a>                    }
-<a name="line36"></a>                    if($found == false) {
-<a name="line37"></a>                        $next = $item;
-<a name="line38"></a>                    }
-<a name="line39"></a>                }
-<a name="line40"></a>                switch($type) {
-<a name="line41"></a>                    case "up":
-<a name="line42"></a>                        if($next && $currentRecord) {
-<a name="line43"></a>                            $position = $currentRecord->position;
-<a name="line44"></a>                            $currentRecord->position = $next->position;
-<a name="line45"></a>                            $next->position = $position;
-<a name="line46"></a>                            $this->model->store($currentRecord);
-<a name="line47"></a>                            $this->model->store($next);
-<a name="line48"></a>                        }
-<a name="line49"></a>                    break;
-<a name="line50"></a>                    case "down":
-<a name="line51"></a>                        if($previous && $currentRecord) {
-<a name="line52"></a>                            $position = $currentRecord->position;
-<a name="line53"></a>                            $currentRecord->position = $previous->position;
-<a name="line54"></a>                            $previous->position = $position;
-<a name="line55"></a>                            $this->model->store($currentRecord);
-<a name="line56"></a>                            $this->model->store($previous);
-<a name="line57"></a>                        }
-<a name="line58"></a>                    break;
-<a name="line59"></a>                }
-<a name="line60"></a>            }
-<a name="line61"></a>            
-<a name="line62"></a>            header("Location: ".$req->fabrico->root->http.$this->controller->url);
-<a name="line63"></a>            
-<a name="line64"></a>        }
-<a name="line65"></a>    
-<a name="line66"></a>    }
-<a name="line67"></a>
-<a name="line68"></a>?></pre>
+<a name="line23"></a>            if($type == "direct" && $position !== null) {
+<a name="line24"></a>                $item = $this->model->get()->where("id=".$id)->flush();
+<a name="line25"></a>                $item = isset($item[0]) ? $item[0] : null;
+<a name="line26"></a>                if($item !== null) {
+<a name="line27"></a>                    $item->position = $position;
+<a name="line28"></a>                    $this->model->store($item);
+<a name="line29"></a>                }
+<a name="line30"></a>            } else {
+<a name="line31"></a>                $items = $this->model->get()->order("position")->desc()->flush();
+<a name="line32"></a>                if($items && isset($type) && isset($id)) {
+<a name="line33"></a>                    $previous = null;
+<a name="line34"></a>                    $next = null;
+<a name="line35"></a>                    $found = false;
+<a name="line36"></a>                    $currentRecord = null;
+<a name="line37"></a>                    foreach($items as $item){
+<a name="line38"></a>                        if($found && $previous == null) {
+<a name="line39"></a>                            $previous = $item;
+<a name="line40"></a>                        }
+<a name="line41"></a>                        if($item->id == $id) {
+<a name="line42"></a>                            $found = true;
+<a name="line43"></a>                            $currentRecord = $item;
+<a name="line44"></a>                        }
+<a name="line45"></a>                        if($found == false) {
+<a name="line46"></a>                            $next = $item;
+<a name="line47"></a>                        }
+<a name="line48"></a>                    }
+<a name="line49"></a>                    switch($type) {
+<a name="line50"></a>                        case "up":
+<a name="line51"></a>                            if($next && $currentRecord) {
+<a name="line52"></a>                                $position = $currentRecord->position;
+<a name="line53"></a>                                $currentRecord->position = $next->position;
+<a name="line54"></a>                                $next->position = $position;
+<a name="line55"></a>                                $this->model->store($currentRecord);
+<a name="line56"></a>                                $this->model->store($next);
+<a name="line57"></a>                            }
+<a name="line58"></a>                        break;
+<a name="line59"></a>                        case "down":
+<a name="line60"></a>                            if($previous && $currentRecord) {
+<a name="line61"></a>                                $position = $currentRecord->position;
+<a name="line62"></a>                                $currentRecord->position = $previous->position;
+<a name="line63"></a>                                $previous->position = $position;
+<a name="line64"></a>                                $this->model->store($currentRecord);
+<a name="line65"></a>                                $this->model->store($previous);
+<a name="line66"></a>                            }
+<a name="line67"></a>                        break;
+<a name="line68"></a>                    }
+<a name="line69"></a>                }
+<a name="line70"></a>            }
+<a name="line71"></a>            
+<a name="line72"></a>            header("Location: ".$req->fabrico->root->http.$this->controller->url);
+<a name="line73"></a>            
+<a name="line74"></a>        }
+<a name="line75"></a>    
+<a name="line76"></a>    }
+<a name="line77"></a>
+<a name="line78"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

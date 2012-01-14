@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 08 Jan 2012 21:38:22 +0000">
+<meta name="when" content="Sat, 14 Jan 2012 21:26:27 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -84,59 +84,71 @@
 <a name="line40"></a>                            ));
 <a name="line41"></a>                        }
 <a name="line42"></a>                    }
-<a name="line43"></a>                    $tableColumns .= $this->view("columnOptions.html", array(
-<a name="line44"></a>                        "id" => $item->id,
-<a name="line45"></a>                        "http" => $req->fabrico->root->http.$this->controller->url
-<a name="line46"></a>                    ));
-<a name="line47"></a>                    $tableRows .= $this->view("row.html", array(
-<a name="line48"></a>                        "columns" => $tableColumns
-<a name="line49"></a>                    ));
-<a name="line50"></a>                }
-<a name="line51"></a>                
-<a name="line52"></a>                $fieldsRow = '';
-<a name="line53"></a>                $fieldsColumns = '';
-<a name="line54"></a>                
-<a name="line55"></a>                // adding table headers
-<a name="line56"></a>                foreach($fields as $field) {
-<a name="line57"></a>                    if(!in_array($field->name, $fieldsToHide)) {
-<a name="line58"></a>                        $fieldsColumns .= $this->view("column.html", array(
-<a name="line59"></a>                            "data" => isset($field->label) ? $field->label : $field->name
-<a name="line60"></a>                        ));
-<a name="line61"></a>                    }
+<a name="line43"></a>                    $optionsView = "columnOptionsPositionUpDown.html";
+<a name="line44"></a>                    if($this->model->actions !== null && isset($this->model->actions->listing) && isset($this->model->actions->listing->positionEditing)) {
+<a name="line45"></a>                        switch($this->model->actions->listing->positionEditing) {
+<a name="line46"></a>                            case "direct":
+<a name="line47"></a>                                $optionsView = "columnOptionsPositionDirect.html";
+<a name="line48"></a>                            break;
+<a name="line49"></a>                            default: 
+<a name="line50"></a>                                $optionsView = "columnOptionsPositionUpDown.html";
+<a name="line51"></a>                            break;
+<a name="line52"></a>                        }
+<a name="line53"></a>                    }
+<a name="line54"></a>                    $tableColumns .= $this->view($optionsView, array(
+<a name="line55"></a>                        "id" => $item->id,
+<a name="line56"></a>                        "http" => $req->fabrico->root->http.$this->controller->url,
+<a name="line57"></a>                        "position" => $item->position
+<a name="line58"></a>                    ));
+<a name="line59"></a>                    $tableRows .= $this->view("row.html", array(
+<a name="line60"></a>                        "columns" => $tableColumns
+<a name="line61"></a>                    ));
 <a name="line62"></a>                }
-<a name="line63"></a>                $fieldsColumns .= $this->view("column.html", array(
-<a name="line64"></a>                    "data" => "Actions"
-<a name="line65"></a>                ));
-<a name="line66"></a>                $fieldsRow .= $this->view("rowHeader.html", array(
-<a name="line67"></a>                    "columns" => $fieldsColumns
-<a name="line68"></a>                ));
-<a name="line69"></a>                
-<a name="line70"></a>                // wrapping everything
-<a name="line71"></a>                $content = "";
-<a name="line72"></a>                $content .= $this->view("subnav.html", array(
-<a name="line73"></a>                    "http" => $req->fabrico->root->http.$this->controller->url,
-<a name="line74"></a>                    "httpRoot" => $req->fabrico->root->http
-<a name="line75"></a>                ));
-<a name="line76"></a>                $content .= $this->view("table.html", array(
-<a name="line77"></a>                    "rows" => $fieldsRow.$tableRows
-<a name="line78"></a>                ));
-<a name="line79"></a>                
-<a name="line80"></a>                $this->controller->response($content, $req, $res);
+<a name="line63"></a>                
+<a name="line64"></a>                $fieldsRow = '';
+<a name="line65"></a>                $fieldsColumns = '';
+<a name="line66"></a>                
+<a name="line67"></a>                // adding table headers
+<a name="line68"></a>                foreach($fields as $field) {
+<a name="line69"></a>                    if(!in_array($field->name, $fieldsToHide)) {
+<a name="line70"></a>                        $fieldsColumns .= $this->view("column.html", array(
+<a name="line71"></a>                            "data" => isset($field->label) ? $field->label : $field->name
+<a name="line72"></a>                        ));
+<a name="line73"></a>                    }
+<a name="line74"></a>                }
+<a name="line75"></a>                $fieldsColumns .= $this->view("column.html", array(
+<a name="line76"></a>                    "data" => "Actions"
+<a name="line77"></a>                ));
+<a name="line78"></a>                $fieldsRow .= $this->view("rowHeader.html", array(
+<a name="line79"></a>                    "columns" => $fieldsColumns
+<a name="line80"></a>                ));
 <a name="line81"></a>                
-<a name="line82"></a>            } else {
+<a name="line82"></a>                // wrapping everything
 <a name="line83"></a>                $content = "";
 <a name="line84"></a>                $content .= $this->view("subnav.html", array(
 <a name="line85"></a>                    "http" => $req->fabrico->root->http.$this->controller->url,
 <a name="line86"></a>                    "httpRoot" => $req->fabrico->root->http
 <a name="line87"></a>                ));
-<a name="line88"></a>                $content .= $this->view("norecords.html");
-<a name="line89"></a>                $this->controller->response($content, $req, $res);
-<a name="line90"></a>            }
-<a name="line91"></a>        }
-<a name="line92"></a>    
-<a name="line93"></a>    }
-<a name="line94"></a>
-<a name="line95"></a>?></pre>
+<a name="line88"></a>                $content .= $this->view("table.html", array(
+<a name="line89"></a>                    "rows" => $fieldsRow.$tableRows
+<a name="line90"></a>                ));
+<a name="line91"></a>                
+<a name="line92"></a>                $this->controller->response($content, $req, $res);
+<a name="line93"></a>                
+<a name="line94"></a>            } else {
+<a name="line95"></a>                $content = "";
+<a name="line96"></a>                $content .= $this->view("subnav.html", array(
+<a name="line97"></a>                    "http" => $req->fabrico->root->http.$this->controller->url,
+<a name="line98"></a>                    "httpRoot" => $req->fabrico->root->http
+<a name="line99"></a>                ));
+<a name="line100"></a>                $content .= $this->view("norecords.html");
+<a name="line101"></a>                $this->controller->response($content, $req, $res);
+<a name="line102"></a>            }
+<a name="line103"></a>        }
+<a name="line104"></a>    
+<a name="line105"></a>    }
+<a name="line106"></a>
+<a name="line107"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

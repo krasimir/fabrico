@@ -44,6 +44,8 @@
                     // deleting data from the database
                     $pattern."/deleting/@id" => "actions/Deleting.php",
                     // ordering
+                    $pattern."/ordering/@type/@id/@position" => "actions/Ordering.php",
+                    // ordering
                     $pattern."/ordering/@type/@id" => "actions/Ordering.php",
                     // default route
                     $pattern => $this->defaultController
