@@ -13,9 +13,10 @@
             $config = $req->fabrico->config;
         
             // if the user is not logged in show the login page
-            if(!$access->logged) {
+            if(!$access->isLogged()) {
+                $paths = $config->get("fabrico.paths");
                 $router->removeAllRoutes();
-                $router->all(new RouterRule(array("pattern" => "(.*)?", "handler" => "pages/Login.php")));
+                $router->all(new RouterRule(array("pattern" => $paths->http."(.*)?", "handler" => "pages/Login.php")));
                 
             // setting routes from the config.json
             } else {

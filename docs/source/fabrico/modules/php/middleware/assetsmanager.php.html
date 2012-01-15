@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 15 Jan 2012 09:40:18 +0000">
+<meta name="when" content="Sun, 15 Jan 2012 10:39:59 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -55,7 +55,7 @@
 <a name="line11"></a>    */
 <a name="line12"></a>    class AssetsManager extends Middleware {
 <a name="line13"></a>        
-<a name="line14"></a>        public $DEBUG = TRUE;
+<a name="line14"></a>        public $debug = false;
 <a name="line15"></a>        public $root = "/";
 <a name="line16"></a>
 <a name="line17"></a>        private $dirs = array();
@@ -99,7 +99,7 @@
 <a name="line55"></a>        
 <a name="line56"></a>            $asset = $this->getAsset($name);
 <a name="line57"></a>            
-<a name="line58"></a>            if($this->DEBUG == FALSE) {
+<a name="line58"></a>            if($this->debug === FALSE) {
 <a name="line59"></a>                // check is there compiled version and use it directly, otherwise compile and use.
 <a name="line60"></a>                if($asset->hash == "") {
 <a name="line61"></a>                    $this->compile($name);

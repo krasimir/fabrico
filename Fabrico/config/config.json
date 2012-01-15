@@ -8,11 +8,11 @@
         "http": "/admin"
     },
     "routes": [
-        {"url": "/sample(.*)?", "controller": "pages/Page.php", "model": "models/sample.json"},
-        {"url": "/types(.*)?", "controller": "pages/Page.php", "model": "models/types.json"},
-        {"url": "/logout(.*)?", "controller": "pages/Logout.php"},
-        {"url": "/login(.*)?", "controller": "pages/Login.php"},
-        {"url": "(.*)?", "controller": "pages/Home.php"}
+        {"url": "/admin/sample(.*)?", "controller": "pages/Page.php", "model": "models/sample.json"},
+        {"url": "/admin/types(.*)?", "controller": "pages/Page.php", "model": "models/types.json"},
+        {"url": "/admin/logout(.*)?", "controller": "pages/Logout.php"},
+        {"url": "/admin/login(.*)?", "controller": "pages/Login.php"},
+        {"url": "/admin(.*)?", "controller": "pages/Home.php"}
     ],
     "adapters": {
         "MySQL": {

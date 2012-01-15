@@ -15,7 +15,7 @@
             
         }
         public function run($req, $res) {
-            if($req->fabrico->access->logged) {
+            if($req->fabrico->access->isLogged()) {
                 header("Location: ".$req->fabrico->root->http);
                 exit();
             }

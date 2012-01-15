@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 15 Jan 2012 09:40:18 +0000">
+<meta name="when" content="Sun, 15 Jan 2012 10:39:59 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -57,7 +57,7 @@
 <a name="line11"></a>    * @see Injector
 <a name="line12"></a>    */
 <a name="line13"></a>    $fabricoInjector = new Injector();
-<a name="line14"></a>    $fabricoInjector->setRoot(FABRICO_ROOT);
+<a name="line14"></a>    $fabricoInjector->setRoot(FABRICO_ROOT."/../");
 <a name="line15"></a>    
 <a name="line16"></a>    /**
 <a name="line17"></a>    * Global function for injecting files. Replacement of php's require.
@@ -160,35 +160,36 @@
 <a name="line114"></a>                PresenterFactory::debug(true);
 <a name="line115"></a>                $res->beforeExitHandler = array((object) array("obj" => $this, "method" => "onExit"));
 <a name="line116"></a>                $this->router->debug = true;
-<a name="line117"></a>            }
-<a name="line118"></a>            
-<a name="line119"></a>             // setting a pointer to the fabrico
-<a name="line120"></a>            $req->fabrico = $this;
-<a name="line121"></a>            
-<a name="line122"></a>            // running middleware
-<a name="line123"></a>            parent::run($req, $res);
-<a name="line124"></a>            
-<a name="line125"></a>        }
-<a name="line126"></a>        
-<a name="line127"></a>        /**
-<a name="line128"></a>        * Called if ?debug=1. Displays information Benchmark and ModelsManager information.
-<a name="line129"></a>        */
-<a name="line130"></a>        public function onExit() {
-<a name="line131"></a>            global $fabricoInjector;
-<a name="line132"></a>            foreach($this->models->models as $model) {
-<a name="line133"></a>                $model->report();
-<a name="line134"></a>            }
-<a name="line135"></a>            $fabricoInjector->report("#E9E9E9");
-<a name="line136"></a>            $this->log("Benchmark: ".$this->benchmark->elpasedTime(), "#D5D5FF");
-<a name="line137"></a>        }
-<a name="line138"></a>        
-<a name="line139"></a>        private function log($str, $color) {
-<a name="line140"></a>            echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
-<a name="line141"></a>        }
-<a name="line142"></a>    
-<a name="line143"></a>    }
-<a name="line144"></a>
-<a name="line145"></a>?></pre>
+<a name="line117"></a>                $this->assets->debug = true;
+<a name="line118"></a>            }
+<a name="line119"></a>            
+<a name="line120"></a>             // setting a pointer to the fabrico
+<a name="line121"></a>            $req->fabrico = $this;
+<a name="line122"></a>            
+<a name="line123"></a>            // running middleware
+<a name="line124"></a>            parent::run($req, $res);
+<a name="line125"></a>            
+<a name="line126"></a>        }
+<a name="line127"></a>        
+<a name="line128"></a>        /**
+<a name="line129"></a>        * Called if ?debug=1. Displays information Benchmark and ModelsManager information.
+<a name="line130"></a>        */
+<a name="line131"></a>        public function onExit() {
+<a name="line132"></a>            global $fabricoInjector;
+<a name="line133"></a>            foreach($this->models->models as $model) {
+<a name="line134"></a>                $model->report();
+<a name="line135"></a>            }
+<a name="line136"></a>            $fabricoInjector->report("#E9E9E9");
+<a name="line137"></a>            $this->log("Benchmark: ".$this->benchmark->elpasedTime(), "#D5D5FF");
+<a name="line138"></a>        }
+<a name="line139"></a>        
+<a name="line140"></a>        private function log($str, $color) {
+<a name="line141"></a>            echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
+<a name="line142"></a>        }
+<a name="line143"></a>    
+<a name="line144"></a>    }
+<a name="line145"></a>
+<a name="line146"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

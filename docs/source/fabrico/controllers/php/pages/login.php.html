@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 15 Jan 2012 09:40:18 +0000">
+<meta name="when" content="Sun, 15 Jan 2012 10:39:59 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -59,7 +59,7 @@
 <a name="line15"></a>            
 <a name="line16"></a>        }
 <a name="line17"></a>        public function run($req, $res) {
-<a name="line18"></a>            if($req->fabrico->access->logged) {
+<a name="line18"></a>            if($req->fabrico->access->isLogged()) {
 <a name="line19"></a>                header("Location: ".$req->fabrico->root->http);
 <a name="line20"></a>                exit();
 <a name="line21"></a>            }

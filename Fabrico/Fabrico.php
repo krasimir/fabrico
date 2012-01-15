@@ -11,7 +11,7 @@
     * @see Injector
     */
     $fabricoInjector = new Injector();
-    $fabricoInjector->setRoot(FABRICO_ROOT);
+    $fabricoInjector->setRoot(FABRICO_ROOT."/../");
     
     /**
     * Global function for injecting files. Replacement of php's require.
@@ -114,6 +114,7 @@
                 PresenterFactory::debug(true);
                 $res->beforeExitHandler = array((object) array("obj" => $this, "method" => "onExit"));
                 $this->router->debug = true;
+                $this->assets->debug = true;
             }
             
              // setting a pointer to the fabrico

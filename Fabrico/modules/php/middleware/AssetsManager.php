@@ -11,7 +11,7 @@
     */
     class AssetsManager extends Middleware {
         
-        public $DEBUG = TRUE;
+        public $debug = false;
         public $root = "/";
 
         private $dirs = array();
@@ -55,7 +55,7 @@
         
             $asset = $this->getAsset($name);
             
-            if($this->DEBUG == FALSE) {
+            if($this->debug === FALSE) {
                 // check is there compiled version and use it directly, otherwise compile and use.
                 if($asset->hash == "") {
                     $this->compile($name);

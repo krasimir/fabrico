@@ -46,11 +46,10 @@
         }
         public function run($req, $res) {
             $numOfRules = count($this->_rules);
-            $fabricoPathHTTP = isset($req->fabrico) ? $req->fabrico->config->get("fabrico.paths.http") : "";
             for($i=0; $i<$numOfRules; $i++) {
                 $rule = $this->_rules[$i];
                 $handler = $rule->handler;
-                $pattern = $fabricoPathHTTP.$rule->pattern;
+                $pattern = $rule->pattern;
                 if($rule->method == $req->method) {
                     $match = $this->match($pattern, $req->url, $req->params);
                     /*var_dump("('".$pattern."' == '".$req->url."') ('".$req->method."' == '".$rule->method."') (handler=".$handler.") (match=".($match ? "true" : "false").")");

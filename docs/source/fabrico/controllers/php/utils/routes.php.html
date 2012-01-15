@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 15 Jan 2012 09:40:18 +0000">
+<meta name="when" content="Sun, 15 Jan 2012 10:39:59 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -57,32 +57,33 @@
 <a name="line13"></a>            $config = $req->fabrico->config;
 <a name="line14"></a>        
 <a name="line15"></a>            // if the user is not logged in show the login page
-<a name="line16"></a>            if(!$access->logged) {
-<a name="line17"></a>                $router->removeAllRoutes();
-<a name="line18"></a>                $router->all(new RouterRule(array("pattern" => "(.*)?", "handler" => "pages/Login.php")));
-<a name="line19"></a>                
-<a name="line20"></a>            // setting routes from the config.json
-<a name="line21"></a>            } else {
-<a name="line22"></a>                $routes = $config->get("fabrico.routes");
-<a name="line23"></a>                foreach($routes as $route) {
-<a name="line24"></a>                    $rule = new RouterRule(array(
-<a name="line25"></a>                        "pattern" => $route->url,
-<a name="line26"></a>                        "handler" => $route->controller,
-<a name="line27"></a>                        "action" => isset($route->action) ? $route->action : "run",
-<a name="line28"></a>                        "priority" => isset($route->priority) ? $route->priority : false,
-<a name="line29"></a>                        "model" => isset($route->model) ? $route->model : null,
-<a name="line30"></a>                    ));
-<a name="line31"></a>                    $router->all($rule);
-<a name="line32"></a>                }
-<a name="line33"></a>            }
-<a name="line34"></a>            
-<a name="line35"></a>            //var_dump($router->getAllRules());
-<a name="line36"></a>            
-<a name="line37"></a>        }
-<a name="line38"></a>    
-<a name="line39"></a>    }
-<a name="line40"></a>
-<a name="line41"></a>?></pre>
+<a name="line16"></a>            if(!$access->isLogged()) {
+<a name="line17"></a>                $paths = $config->get("fabrico.paths");
+<a name="line18"></a>                $router->removeAllRoutes();
+<a name="line19"></a>                $router->all(new RouterRule(array("pattern" => $paths->http."(.*)?", "handler" => "pages/Login.php")));
+<a name="line20"></a>                
+<a name="line21"></a>            // setting routes from the config.json
+<a name="line22"></a>            } else {
+<a name="line23"></a>                $routes = $config->get("fabrico.routes");
+<a name="line24"></a>                foreach($routes as $route) {
+<a name="line25"></a>                    $rule = new RouterRule(array(
+<a name="line26"></a>                        "pattern" => $route->url,
+<a name="line27"></a>                        "handler" => $route->controller,
+<a name="line28"></a>                        "action" => isset($route->action) ? $route->action : "run",
+<a name="line29"></a>                        "priority" => isset($route->priority) ? $route->priority : false,
+<a name="line30"></a>                        "model" => isset($route->model) ? $route->model : null,
+<a name="line31"></a>                    ));
+<a name="line32"></a>                    $router->all($rule);
+<a name="line33"></a>                }
+<a name="line34"></a>            }
+<a name="line35"></a>            
+<a name="line36"></a>            //var_dump($router->getAllRules());
+<a name="line37"></a>            
+<a name="line38"></a>        }
+<a name="line39"></a>    
+<a name="line40"></a>    }
+<a name="line41"></a>
+<a name="line42"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>
