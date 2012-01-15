@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 15 Jan 2012 09:28:38 +0000">
+<meta name="when" content="Sun, 15 Jan 2012 09:40:18 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -57,7 +57,7 @@
 <a name="line13"></a>        public function __construct(){
 <a name="line14"></a>            
 <a name="line15"></a>        }
-<a name="line16"></a>        public function addRule($rule) {
+<a name="line16"></a>        public function addRule(RouterRule $rule) {
 <a name="line17"></a>            $rule = $this->validateRule($rule);
 <a name="line18"></a>            if($rule->priority) {
 <a name="line19"></a>                $arr = array($rule);
@@ -66,25 +66,25 @@
 <a name="line22"></a>                $this->_rules []= $rule;
 <a name="line23"></a>            }
 <a name="line24"></a>        }
-<a name="line25"></a>        public function all($rule) {
+<a name="line25"></a>        public function all(RouterRule $rule) {
 <a name="line26"></a>            $this->get(clone $rule);
 <a name="line27"></a>            $this->post(clone $rule);
 <a name="line28"></a>            $this->delete(clone $rule);
 <a name="line29"></a>            $this->put(clone $rule);
 <a name="line30"></a>        }
-<a name="line31"></a>        public function get($rule) {
+<a name="line31"></a>        public function get(RouterRule $rule) {
 <a name="line32"></a>            $rule->method = "GET";
 <a name="line33"></a>            $this->addRule($rule);
 <a name="line34"></a>        }
-<a name="line35"></a>        public function post($rule) {
+<a name="line35"></a>        public function post(RouterRule $rule) {
 <a name="line36"></a>            $rule->method = "POST";
 <a name="line37"></a>            $this->addRule($rule);
 <a name="line38"></a>        }
-<a name="line39"></a>        public function delete($rule) {
+<a name="line39"></a>        public function delete(RouterRule $rule) {
 <a name="line40"></a>            $rule->method = "DELETE";
 <a name="line41"></a>            $this->addRule($rule);
 <a name="line42"></a>        }
-<a name="line43"></a>        public function put($rule) {
+<a name="line43"></a>        public function put(RouterRule $rule) {
 <a name="line44"></a>            $rule->method = "PUT";
 <a name="line45"></a>            $this->addRule($rule);
 <a name="line46"></a>        }

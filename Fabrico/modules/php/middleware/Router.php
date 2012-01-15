@@ -46,7 +46,7 @@
         }
         public function run($req, $res) {
             $numOfRules = count($this->_rules);
-            $fabricoPathHTTP = $req->fabrico->config->get("fabrico.paths.http");
+            $fabricoPathHTTP = isset($req->fabrico) ? $req->fabrico->config->get("fabrico.paths.http") : "";
             for($i=0; $i<$numOfRules; $i++) {
                 $rule = $this->_rules[$i];
                 $handler = $rule->handler;
