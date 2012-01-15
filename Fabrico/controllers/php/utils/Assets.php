@@ -4,27 +4,11 @@
     * @package Fabrico\Controllers\Utils
     */
     class Assets {
-        
-        public function __construct($assetsManager){
-        
-            // set javascript
-            $assetsManager->add(array(
-                "name" => "javascript", 
-                "source" => "/modules/js/*.js", 
-                "destination" => "/assets/compiled/",
-                "extension" => "js"
-            ));
-        
-            // set css
-            $assetsManager->add(array(
-                "name" => "css", 
-                "source" => "/assets/css/*.css", 
-                "destination" => "/assets/compiled/",
-                "extension" => "css"
-            ));
-            
+        public function run($req, $res) {
+            $assets = $req->fabrico->config->get("fabrico.assets");
+            foreach($assets as $asset) {
+                $req->fabrico->assets->add($asset);
+            }
         }
-
-        public function run($req, $res) {}
     }
 ?>

@@ -39,7 +39,12 @@
     ],
     "adapters": {
         "[adapter_name]": <a href="#adapter_object">[adapter_object]</a>
-    }
+    },
+    "assets": [
+        <a href="#asset_object">[asset_object]</a>, 
+        <a href="#asset_object">[asset_object]</a>,
+        ...
+    ]
 }
 </pre>
 </p>
@@ -69,6 +74,27 @@
     "url": "[regular_expression]", 
     "controller": "[path_to_controller_php]", 
     "model": "[path_to_model_json]" // optional
+}
+</pre>
+
+<a name="asset_object"></a>
+<h3>Asset object</h3>
+<pre class="code">
+{
+    "name": "css", 
+    "source": "/assets/css/*.css", 
+    "destination": "/assets/compiled/",
+    "extension": "css",
+    "build": true
+}
+</pre>
+<pre class="code">
+{
+    "name": "javascript", 
+    "source": "/modules/js/*.js", 
+    "destination": "/assets/compiled/",
+    "extension": "js",
+    "build": true
 }
 </pre>
 

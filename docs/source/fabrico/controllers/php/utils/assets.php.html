@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 15 Jan 2012 10:39:59 +0000">
+<meta name="when" content="Sun, 15 Jan 2012 12:28:47 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -48,30 +48,14 @@
 <a name="line4"></a>    * @package Fabrico\Controllers\Utils
 <a name="line5"></a>    */
 <a name="line6"></a>    class Assets {
-<a name="line7"></a>        
-<a name="line8"></a>        public function __construct($assetsManager){
-<a name="line9"></a>        
-<a name="line10"></a>            // set javascript
-<a name="line11"></a>            $assetsManager->add(array(
-<a name="line12"></a>                "name" => "javascript", 
-<a name="line13"></a>                "source" => "/modules/js/*.js", 
-<a name="line14"></a>                "destination" => "/assets/compiled/",
-<a name="line15"></a>                "extension" => "js"
-<a name="line16"></a>            ));
-<a name="line17"></a>        
-<a name="line18"></a>            // set css
-<a name="line19"></a>            $assetsManager->add(array(
-<a name="line20"></a>                "name" => "css", 
-<a name="line21"></a>                "source" => "/assets/css/*.css", 
-<a name="line22"></a>                "destination" => "/assets/compiled/",
-<a name="line23"></a>                "extension" => "css"
-<a name="line24"></a>            ));
-<a name="line25"></a>            
-<a name="line26"></a>        }
-<a name="line27"></a>
-<a name="line28"></a>        public function run($req, $res) {}
-<a name="line29"></a>    }
-<a name="line30"></a>?></pre>
+<a name="line7"></a>        public function run($req, $res) {
+<a name="line8"></a>            $assets = $req->fabrico->config->get("fabrico.assets");
+<a name="line9"></a>            foreach($assets as $asset) {
+<a name="line10"></a>                $req->fabrico->assets->add($asset);
+<a name="line11"></a>            }
+<a name="line12"></a>        }
+<a name="line13"></a>    }
+<a name="line14"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

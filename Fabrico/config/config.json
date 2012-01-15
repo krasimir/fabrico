@@ -21,5 +21,21 @@
             "pass": "",
             "dbname": "fabrico_test"
         }
-    }
+    },
+    "assets": [
+        {
+            "name": "javascript", 
+            "source": "/modules/js/*.js", 
+            "destination": "/assets/compiled/",
+            "extension": "js",
+            "build": true
+        },
+        {
+            "name": "css", 
+            "source": "/assets/css/*.css", 
+            "destination": "/assets/compiled/",
+            "extension": "css",
+            "build": true
+        }
+    ]
 }

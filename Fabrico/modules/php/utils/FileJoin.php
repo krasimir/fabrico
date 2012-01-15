@@ -13,6 +13,9 @@
 
         public function run($dirs) {
             $result = "";
+            if(!is_array($dirs)) {
+                $dirs = array($dirs);
+            }
             foreach($dirs as $dir) {
                 $result .= $this->join(rglob($this->root.$dir))."\n";
             }

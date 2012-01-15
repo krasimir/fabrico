@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 15 Jan 2012 10:39:59 +0000">
+<meta name="when" content="Sun, 15 Jan 2012 12:28:47 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -57,29 +57,32 @@
 <a name="line13"></a>
 <a name="line14"></a>        public function run($dirs) {
 <a name="line15"></a>            $result = "";
-<a name="line16"></a>            foreach($dirs as $dir) {
-<a name="line17"></a>                $result .= $this->join(rglob($this->root.$dir))."\n";
+<a name="line16"></a>            if(!is_array($dirs)) {
+<a name="line17"></a>                $dirs = array($dirs);
 <a name="line18"></a>            }
-<a name="line19"></a>            return $result;
-<a name="line20"></a>        }
-<a name="line21"></a>
-<a name="line22"></a>        public function join($files) {
-<a name="line23"></a>            $numOfFiles = count($files);
-<a name="line24"></a>            $str = "";
-<a name="line25"></a>            for($i=0; $i<$numOfFiles; $i++) {
-<a name="line26"></a>                $file = $files[$i];
-<a name="line27"></a>                $fh = @fopen($file, "r");
-<a name="line28"></a>                if(!$fh){
-<a name="line29"></a>                    throw new Exception("error reading file '".$file."'");
-<a name="line30"></a>                } else {
-<a name="line31"></a>                    $str .= fread($fh, filesize($file))."\n";
-<a name="line32"></a>                    fclose($fh);
-<a name="line33"></a>                }
-<a name="line34"></a>            }
-<a name="line35"></a>            return $str;
-<a name="line36"></a>        }
-<a name="line37"></a>    }
-<a name="line38"></a>?></pre>
+<a name="line19"></a>            foreach($dirs as $dir) {
+<a name="line20"></a>                $result .= $this->join(rglob($this->root.$dir))."\n";
+<a name="line21"></a>            }
+<a name="line22"></a>            return $result;
+<a name="line23"></a>        }
+<a name="line24"></a>
+<a name="line25"></a>        public function join($files) {
+<a name="line26"></a>            $numOfFiles = count($files);
+<a name="line27"></a>            $str = "";
+<a name="line28"></a>            for($i=0; $i<$numOfFiles; $i++) {
+<a name="line29"></a>                $file = $files[$i];
+<a name="line30"></a>                $fh = @fopen($file, "r");
+<a name="line31"></a>                if(!$fh){
+<a name="line32"></a>                    throw new Exception("error reading file '".$file."'");
+<a name="line33"></a>                } else {
+<a name="line34"></a>                    $str .= fread($fh, filesize($file))."\n";
+<a name="line35"></a>                    fclose($fh);
+<a name="line36"></a>                }
+<a name="line37"></a>            }
+<a name="line38"></a>            return $str;
+<a name="line39"></a>        }
+<a name="line40"></a>    }
+<a name="line41"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>
