@@ -13,6 +13,13 @@
             ]
         },
         {
+            "name": "avatar",
+            "presenter": "presenters/File.php",
+            "config": {
+                "destination": "/assets/uploads"
+            }
+        },
+        {
             "name": "category",
             "presenter": "presenters/Select.php",
             "config": {

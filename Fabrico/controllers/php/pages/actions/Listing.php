@@ -17,8 +17,8 @@
             parent::run($req, $res);
             
             $items = $this->model->get()->order("position")->desc()->flush();
-            
             $fields = $this->model->fields;
+            forEachView(array("controllerURL" => $this->controller->url));
             
             if($items) {
                 
@@ -53,7 +53,6 @@
                     }
                     $tableColumns .= $this->view($optionsView, array(
                         "id" => $item->id,
-                        "http" => $req->fabrico->root->http.$this->controller->url,
                         "position" => $item->position
                     ));
                     $tableRows .= $this->view("row.html", array(
@@ -81,10 +80,7 @@
                 
                 // wrapping everything
                 $content = "";
-                $content .= $this->view("subnav.html", array(
-                    "http" => $req->fabrico->root->http.$this->controller->url,
-                    "httpRoot" => $req->fabrico->root->http
-                ));
+                $content .= $this->view("subnav.html");
                 $content .= $this->view("table.html", array(
                     "rows" => $fieldsRow.$tableRows
                 ));
@@ -93,10 +89,7 @@
                 
             } else {
                 $content = "";
-                $content .= $this->view("subnav.html", array(
-                    "http" => $req->fabrico->root->http.$this->controller->url,
-                    "httpRoot" => $req->fabrico->root->http
-                ));
+                $content .= $this->view("subnav.html");
                 $content .= $this->view("norecords.html");
                 $this->controller->response($content, $req, $res);
             }

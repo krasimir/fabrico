@@ -25,6 +25,7 @@ class ViewConfig {
     public static $root = "";
     public static $searchIn = array();
     public static $debug = false;
+    public static $globalData;
     public static function config($configs) {
         foreach($configs as $key => $value) {
             if($key == "searchIn") {
@@ -34,6 +35,12 @@ class ViewConfig {
             }
             self::$$key = $value;
         }
+    }
+    public static function addGlobalData($arr) {
+        if(!isset(self::$globalData)) {
+            self::$globalData = array();
+        }
+        self::$globalData = array_merge(self::$globalData, (array) $arr);
     }
 }
 /**
@@ -99,12 +106,21 @@ class View {
 		$this->vars = $data;
 	}
 
-	public function __toString() {		
+	public function __toString() {	
+	
 		// adding assigned variabls
 		$output = $this->tplFileContent; // TODO is this by copy or reference?
 		foreach($this->vars as $key => $value) {
 			$output = str_replace("{".$key."}", $value, $output);
 		}
+        
+        // adding default assigned variabls
+        $globalData = ViewConfig::$globalData;
+        if(isset($globalData)) {
+            foreach($globalData as $key => $value) {
+                $output = str_replace("{".$key."}", $value, $output);
+            }
+        }
 
 		return $output;
 	}
@@ -115,10 +131,18 @@ class View {
 }
 
 /**
-*	helper global function
+*	helper function
 *	@returns View
 */
 function view($path, $data = array(), $searchIn = null) {
 	return new View($path, $data, $searchIn);
+}
+
+/**
+*	helper function
+*	@returns View
+*/
+function forEachView($arr) {    
+	ViewConfig::addGlobalData($arr);
 }
 ?>

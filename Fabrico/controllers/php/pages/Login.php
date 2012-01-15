@@ -16,7 +16,7 @@
         }
         public function run($req, $res) {
             if($req->fabrico->access->isLogged()) {
-                header("Location: ".$req->fabrico->root->http);
+                header("Location: ".$req->fabrico->paths->httpFabrico);
                 exit();
             }
             $res->send(view("layout.html", array(
@@ -25,10 +25,7 @@
                 "pageTitle" => "fabrico / login",
                 "title" => "fabrico / login",
                 "mainNav" => "",
-                "httpFiles" => $req->fabrico->root->httpFiles,
-                "data" => view("login.html", array(
-                    "http" => $req->fabrico->root->http
-                )),
+                "data" => view("login.html"),
                 "error" => $req->fabrico->access->loginError != "" ? view("errormessage.html", array("text" => $req->fabrico->access->loginError), $this) : ""
             )));
         }

@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 15 Jan 2012 12:28:46 +0000">
+<meta name="when" content="Sun, 15 Jan 2012 21:47:10 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -130,28 +130,25 @@
 <a name="line86"></a>                "stylesheet" => $req->fabrico->assets->get("css"),
 <a name="line87"></a>                "pageTitle" => isset($this->title) ? $this->title : "fabrico",
 <a name="line88"></a>                "title" => isset($this->title) ? $this->title : "fabrico",
-<a name="line89"></a>                "httpFiles" => $req->fabrico->root->httpFiles,
-<a name="line90"></a>                "mainNav" => view("mainnav.html", array(
-<a name="line91"></a>                    "http" => $req->fabrico->root->http
-<a name="line92"></a>                ), $this),
-<a name="line93"></a>                "data" => $content
-<a name="line94"></a>            ), $this));
-<a name="line95"></a>        }
-<a name="line96"></a>        // other
-<a name="line97"></a>        public function __toString() {
-<a name="line98"></a>            return "Default";
-<a name="line99"></a>        }
-<a name="line100"></a>        private function filterRoutePattern($pattern) {
-<a name="line101"></a>            $charsToRemove = array("(", ")", ".", "?", "*");
-<a name="line102"></a>            foreach($charsToRemove as $char) {
-<a name="line103"></a>                $pattern = str_replace($char, "", $pattern);
-<a name="line104"></a>            }
-<a name="line105"></a>            return $pattern;
-<a name="line106"></a>        }
-<a name="line107"></a>    
-<a name="line108"></a>    }
-<a name="line109"></a>
-<a name="line110"></a>?></pre>
+<a name="line89"></a>                "mainNav" => view("mainnav.html", array(), $this),
+<a name="line90"></a>                "data" => $content
+<a name="line91"></a>            ), $this));
+<a name="line92"></a>        }
+<a name="line93"></a>        // other
+<a name="line94"></a>        public function __toString() {
+<a name="line95"></a>            return "Default";
+<a name="line96"></a>        }
+<a name="line97"></a>        private function filterRoutePattern($pattern) {
+<a name="line98"></a>            $charsToRemove = array("(", ")", ".", "?", "*");
+<a name="line99"></a>            foreach($charsToRemove as $char) {
+<a name="line100"></a>                $pattern = str_replace($char, "", $pattern);
+<a name="line101"></a>            }
+<a name="line102"></a>            return $pattern;
+<a name="line103"></a>        }
+<a name="line104"></a>    
+<a name="line105"></a>    }
+<a name="line106"></a>
+<a name="line107"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

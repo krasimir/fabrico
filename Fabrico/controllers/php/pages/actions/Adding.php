@@ -23,6 +23,8 @@
             $content = "";
             $fields = $this->model->fields;
             
+            forEachView(array("controllerURL" => $this->controller->url));
+            
             // storing
             if(isset($req->body) && isset($req->body->action) && $req->body->action == "add") {
                 $record = (object) array();
@@ -47,14 +49,9 @@
                 if($valid) {
                     $id = $this->model->store($record);
                     $content = $this->view("subnav.html", array(
-                        "http" => $req->fabrico->root->http.$this->controller->url,
-                        "httpRoot" => $req->fabrico->root->http
+                        "controllerURL" => $this->controller->url
                     ));
-                    $content .= $this->view("result.html", array(
-                        "id" => $id,
-                        "addNewURL" => $req->fabrico->root->http.$this->controller->url."/adding",
-                        "editURL" => $req->fabrico->root->http.$this->controller->url."/editing/".$id
-                    ));
+                    $content .= $this->view("result.html", array("id" => $id));
                     $this->events->saved->dispatch(true);
                     $this->controller->response($content, $req, $res);
                 } else {
@@ -102,13 +99,9 @@
                 "presentersContent" => $this->view("table.html", array(
                     "rows" => $content
                 )),
-                "actionURL" => $req->fabrico->root->http.$this->controller->url."/adding",
                 "fields" => json_encode($this->model->fields)
             ));
-            $content = $this->view("subnav.html", array(
-                "http" => $req->fabrico->root->http.$this->controller->url,
-                "httpRoot" => $req->fabrico->root->http
-            )).$content;
+            $content = $this->view("subnav.html").$content;
             return $content;
         }
     

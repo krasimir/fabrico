@@ -52,6 +52,16 @@
      * @package Fabrico
      */
     class Fabrico extends Middleware {
+    
+        public $paths;
+        public $benchmark;
+        public $config;
+        public $models;
+        public $bodyParser;
+        public $assets;
+        public $access;
+        public $routes;
+        public $router;
         
         public function __construct($configFile = "/config/config.json", $req = null, $res = null) {
         
@@ -59,7 +69,7 @@
             $this->using(array(
                 // it stores the configurations and also setup redbean
                 "benchmark" => "middleware/Benchmark.php",
-                // it stores the configurations and also setup redbean
+                // it stores the configurations
                 "config" => "utils/JSONConfig.php",
                 // read and construct the current application's models
                 "models" => "middleware/ModelsManager.php",
@@ -102,22 +112,26 @@
             if($req == null) { $req = new Request(); }
             if($res == null) { $res = new Response(); }
             
-            $this->root = (object) array(
-                "http" => $req->host.($req->base == "/" ? "" : $req->base).$this->config->get("fabrico.paths.http"),
-                "httpFiles" => $req->host.($req->base == "/" ? "" : $req->base).$this->config->get("fabrico.paths.files"),
-                "files" => FABRICO_ROOT
-            );
-            
             // showing benchmark information if fabrico is in debug mode
             if(DEBUG_MODE) {
-                ViewConfig::config(array("debug" => true));
+                ViewConfig::config(array(
+                    "debug" => true
+                ));
                 PresenterFactory::debug(true);
                 $res->beforeExitHandler = array((object) array("obj" => $this, "method" => "onExit"));
                 $this->router->debug = true;
                 $this->assets->debug = true;
             }
             
-             // setting a pointer to the fabrico
+            forEachView($this->paths = (object) array(
+                "httpRoot" =>$req->host.($req->base == "/" ? "" : $req->base),
+                "httpFabrico" =>$req->host.($req->base == "/" ? "" : $req->base).$this->config->get("fabrico.paths.http"),
+                "httpFabricoFiles" =>$req->host.($req->base == "/" ? "" : $req->base).$this->config->get("fabrico.paths.files"),
+                "filesRoot" =>FABRICO_ROOT."/../",
+                "filesFabrico" => FABRICO_ROOT
+            ));
+            
+            // setting a pointer to the fabrico
             $req->fabrico = $this;
             
             // running middleware

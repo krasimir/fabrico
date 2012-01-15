@@ -86,10 +86,7 @@
                 "stylesheet" => $req->fabrico->assets->get("css"),
                 "pageTitle" => isset($this->title) ? $this->title : "fabrico",
                 "title" => isset($this->title) ? $this->title : "fabrico",
-                "httpFiles" => $req->fabrico->root->httpFiles,
-                "mainNav" => view("mainnav.html", array(
-                    "http" => $req->fabrico->root->http
-                ), $this),
+                "mainNav" => view("mainnav.html", array(), $this),
                 "data" => $content
             ), $this));
         }

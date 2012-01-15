@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 15 Jan 2012 12:28:47 +0000">
+<meta name="when" content="Sun, 15 Jan 2012 21:47:10 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -122,7 +122,7 @@
 <a name="line78"></a>        }
 <a name="line79"></a>        public function deleteAction($value) {
 <a name="line80"></a>            if($value != "") {
-<a name="line81"></a>                $root = $this->req->fabrico->root->files;
+<a name="line81"></a>                $root = $this->req->fabrico->paths->filesFabrico;
 <a name="line82"></a>                $file = $this->getAbsolutePathFiles($value);
 <a name="line83"></a>                $fileParts = explode("/", $value);
 <a name="line84"></a>                $hash = $fileParts[0];
@@ -135,7 +135,7 @@
 <a name="line91"></a>            }
 <a name="line92"></a>        }
 <a name="line93"></a>        protected function upload($field) {
-<a name="line94"></a>            $root = $this->req->fabrico->root->files;
+<a name="line94"></a>            $root = $this->req->fabrico->paths->filesFabrico;
 <a name="line95"></a>            $hash = md5($field."_".time());
 <a name="line96"></a>            $fileDir = $root.$this->config->destination."/".$hash;
 <a name="line97"></a>            if(isset($_FILES) && isset($_FILES[$field]) && $_FILES[$field]["tmp_name"] != "") {
@@ -149,11 +149,11 @@
 <a name="line105"></a>            return "";
 <a name="line106"></a>        }
 <a name="line107"></a>        protected function getAbsolutePathHttp($value) {
-<a name="line108"></a>            $root = $this->req->fabrico->root->http;
+<a name="line108"></a>            $root = $this->req->fabrico->paths->httpFabricoFiles;
 <a name="line109"></a>            return $root.$this->config->destination."/".$value;
 <a name="line110"></a>        }
 <a name="line111"></a>        protected function getAbsolutePathFiles($value) {
-<a name="line112"></a>            $root = $this->req->fabrico->root->files;
+<a name="line112"></a>            $root = $this->req->fabrico->paths->filesFabrico;
 <a name="line113"></a>            return $root.$this->config->destination."/".$value;
 <a name="line114"></a>        }
 <a name="line115"></a>        protected function getFileName($value) {

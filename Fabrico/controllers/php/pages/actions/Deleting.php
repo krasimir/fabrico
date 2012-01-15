@@ -28,7 +28,7 @@
                     }
                 }
                 $this->model->trash($record);
-                header("Location: ".$req->fabrico->root->http.$this->controller->url);
+                header("Location: ".$req->fabrico->paths->httpFabrico.$this->controller->url);
             }
             
         }

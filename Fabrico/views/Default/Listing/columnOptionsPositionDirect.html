@@ -1,9 +1,7 @@
 <td class="data data-icons">
-    <a href="{http}/editing/{id}" title="edit" class="data-icon-edit"></a>
-    <a href="javascript:global.fabrico.modules.areYouSure.forward('{http}/deleting/{id}');" title="delete" class="data-icon-delete"></a>
-    <!--<a href="{http}/ordering/up/{id}" title="up" class="data-icon-up"></a>
-    <a href="{http}/ordering/down/{id}" title="down" class="data-icon-down"></a>-->
-    <form method="post" class="positionEditingForm" action="{http}/ordering/direct/{id}">
+    <a href="{httpRoot}{controllerURL}/editing/{id}" title="edit" class="data-icon-edit"></a>
+    <a href="javascript:global.fabrico.modules.areYouSure.forward('{httpRoot}{controllerURL}/deleting/{id}');" title="delete" class="data-icon-delete"></a>
+    <form method="post" class="positionEditingForm" action="{httpRoot}{controllerURL}/ordering/direct/{id}">
         <input type="text" name="position" value="{position}"/>
     </form>
 </td>

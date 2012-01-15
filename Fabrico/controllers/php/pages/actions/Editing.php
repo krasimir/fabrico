@@ -23,6 +23,7 @@
             
             $content = "";
             $fields = $this->model->fields;
+            forEachView(array("controllerURL" => $this->controller->url));
             
             // storing
             if(isset($req->body) && isset($req->body->action) && $req->body->action == "edit") {
@@ -48,15 +49,8 @@
                         }
                     }
                     if($valid) {
-                        $content = $this->view("subnav.html", array(
-                            "http" => $req->fabrico->root->http.$this->controller->url,
-                            "httpRoot" => $req->fabrico->root->http
-                        ));
-                        $content .= $this->view("result.html", array(
-                            "id" => $this->model->store($record),
-                            "editURL" => $req->fabrico->root->http.$this->controller->url."/editing/".$req->body->id,
-                            "listURL" => $req->fabrico->root->http.$this->controller->url."/listing/"
-                        ));
+                        $content = $this->view("subnav.html");
+                        $content .= $this->view("result.html", array("id" => $this->model->store($record)));
                         $this->events->saved->dispatch(true);
                         $this->controller->response($content, $req, $res);
                     } else {
@@ -110,14 +104,10 @@
                     "presentersContent" => $this->view("table.html", array(
                         "rows" => $content
                     )),
-                    "actionURL" => $req->fabrico->root->http.$this->controller->url."/editing/".$id,
                     "id" => $id,
                     "fields" => json_encode($this->model->fields)
                 ));
-                $content = $this->view("subnav.html", array(
-                    "http" => $req->fabrico->root->http.$this->controller->url,
-                    "httpRoot" => $req->fabrico->root->http
-                )).$content;
+                $content = $this->view("subnav.html").$content;
             } else {
                 $content = $this->view("error.html", array("text" => "Missing record with id = '".$id."'."));
             }
