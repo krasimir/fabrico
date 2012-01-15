@@ -17,7 +17,7 @@
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
 
-<title>Fabrico\modules\php\validators\ValidEmail.php (Fabrico)</title>
+<title>fabrico.php (Fabrico)</title>
 
 </head>
 <body id="file" onload="parent.document.title=document.title;">
@@ -35,44 +35,19 @@
 
 <div class="small_links">
 <a href="../index.html" target="_top">Frames</a>
-<a href="../source\fabrico\modules\php\validators\validemail.php.html" target="_top">No frames</a>
+<a href="../source\fabrico.php.html" target="_top">No frames</a>
 </div>
 <hr>
 
-<h1>Fabrico\modules\php\validators\ValidEmail.php</h1>
+<h1>fabrico.php</h1>
 <hr>
 
 <a name="line1"></a><pre><?php
 <a name="line2"></a>
-<a name="line3"></a>    inject("validators/RegEx.php");
-<a name="line4"></a>    
-<a name="line5"></a>    /**
-<a name="line6"></a>    Definition:
-<a name="line7"></a>    <pre class="code">
-<a name="line8"></a>    {
-<a name="line9"></a>        \t"name": "firstName",
-<a name="line10"></a>        \t"presenter": "presenters/Text.php",
-<a name="line11"></a>        \t"validators": [
-<a name="line12"></a>            \t\t{
-<a name="line13"></a>            \t\t\t"class": "validators/ValidEmail.php",
-<a name="line14"></a>            \t\t\t"method": "run", // optional
-<a name="line15"></a>            \t\t\t"message": "Wrong input!" // optional
-<a name="line16"></a>            \t\t}
-<a name="line17"></a>        \t]
-<a name="line18"></a>    }
-<a name="line19"></a>    </pre>
-<a name="line20"></a>    * @package Fabrico\Modules\Validators
-<a name="line21"></a>    */
-<a name="line22"></a>    class ValidEmail extends RegEx {
-<a name="line23"></a>        public function run($value, $parameters = null) {
-<a name="line24"></a>            $parameters = (object) array(
-<a name="line25"></a>                "match" => "/^[-\w.]+@([A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}$/"
-<a name="line26"></a>            );
-<a name="line27"></a>            return parent::run($value, $parameters);
-<a name="line28"></a>        }
-<a name="line29"></a>    }
-<a name="line30"></a>
-<a name="line31"></a>?></pre>
+<a name="line3"></a>    require("Fabrico/Fabrico.php");
+<a name="line4"></a>    $fabrico = new Fabrico();
+<a name="line5"></a>    
+<a name="line6"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>
@@ -86,7 +61,7 @@
 
 <div class="small_links">
 <a href="../index.html" target="_top">Frames</a>
-<a href="../source\fabrico\modules\php\validators\validemail.php.html" target="_top">No frames</a>
+<a href="../source\fabrico.php.html" target="_top">No frames</a>
 </div>
 <hr>
 

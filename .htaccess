@@ -3,7 +3,9 @@ RewriteEngine On
 #RewriteBase /
 
 RewriteRule ^(_docs) - [L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^fabrico(.*)?$ index.php [QSA,L]
+RewriteRule ^admin(.*)?$ fabrico.php [QSA,L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ index.php [QSA,L]

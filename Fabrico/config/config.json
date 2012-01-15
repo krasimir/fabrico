@@ -5,7 +5,7 @@
     },
     "paths": {
         "files": "/Fabrico",
-        "http": "/fabrico"
+        "http": "/admin"
     },
     "routes": [
         {"url": "/sample(.*)?", "controller": "pages/Page.php", "model": "models/sample.json"},
