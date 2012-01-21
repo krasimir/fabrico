@@ -20,17 +20,12 @@
                 return $this->models[$modelJSONFile];
             }
             
-            if(!file_exists($this->root."/".$modelJSONFile)) {
+            if(!file_exists($this->root.$modelJSONFile)) {
                 throw new Exception($this.": file '".$modelJSONFile."' is missing.");
             }
             
             // reading model's json
-            $jsonConfig = new JSONConfig();
-            $jsonConfig->source(array("model" => $this->root."/".$modelJSONFile));
-            $jsonConfig = $jsonConfig->data->model;
-            if($jsonConfig === null) {
-                throw new Exception($this.": error reading '".$modelJSONFile."'");
-            }
+            $jsonConfig = readJSON($this->root."/".$modelJSONFile);
             $jsonConfig->adapter = isset($jsonConfig->adapter) ? $jsonConfig->adapter : "adapters/MySQL.php";
             
             // getting model's classes names
@@ -41,16 +36,16 @@
             inject($jsonConfig->adapter);
             
             // adding the properties from fabrico's config file
-            $fabricoAdapterConfig = $this->req->fabrico->config->get("fabrico.adapters.".$className);
-            if(!$fabricoAdapterConfig) {
+            if(!isset($this->req->fabrico->adapters->$className)) {
                 throw new Exception($this.": missing configuration for '".$className."'. Check Fabrico's configuration file.");
             }
+            $fabricoAdapterConfig = $this->req->fabrico->adapters->$className;
             foreach($fabricoAdapterConfig as $key => $value) {
                 $jsonConfig->$key = $value;
             }
             
             // setting debug flag and the name of the model
-            $jsonConfig->debug = DEBUG_MODE;
+            $jsonConfig->debug = defined("DEBUG") && DEBUG;
             $jsonConfig->name = $this->getFilename($modelJSONFile);
             
             // created the model

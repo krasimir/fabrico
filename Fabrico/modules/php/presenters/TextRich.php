@@ -73,7 +73,7 @@
             return $this;
         }
         public function add($default = null) {
-            $this->config->swfURL = $this->req->fabrico->paths->httpFabricoFiles.$this->config->swfURL;
+            $this->config->swfURL = $this->req->fabrico->paths->url.$this->config->swfURL;
             $this->setResponse($this->view("view.html", array(
                 "settings" => json_encode($this->config),
                 "field" => $this->name,

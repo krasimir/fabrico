@@ -15,8 +15,8 @@
             
         }
         public function run($req, $res) {
-            if($req->fabrico->access->isLogged()) {
-                header("Location: ".$req->fabrico->paths->httpFabrico);
+            if($req->fabrico->access->isLogged($req)) {
+                header("Location: ".$req->fabrico->paths->url);
                 exit();
             }
             $res->send(view("layout.html", array(

@@ -16,7 +16,7 @@
         }
         public function run($req, $res) {
             $req->fabrico->access->logout();
-            header("Location: ".$req->fabrico->paths->httpFabrico);
+            header("Location: ".$req->fabrico->paths->url);
             exit();
         }
     

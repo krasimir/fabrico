@@ -70,6 +70,7 @@
             $record = $this->model->get()->where("id=".$id)->flush();
             $content = "";
             $fields = $this->model->fields;
+            $fieldsJson = json_encode($fields);
             if($record) {
                 $record = $record[0];
                 foreach($fields as $field) {
@@ -105,7 +106,7 @@
                         "rows" => $content
                     )),
                     "id" => $id,
-                    "fields" => json_encode($this->model->fields)
+                    "fields" => $fieldsJson
                 ));
                 $content = $this->view("subnav.html").$content;
             } else {

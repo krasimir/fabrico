@@ -72,5 +72,20 @@
             $this->reportContent .= $file."<br />";
         }
     }
+    
+    /**
+    * Instance of Injector class.
+    * @see Injector
+    */
+    $injector = new Injector();
+    
+    /**
+    * Global function for injecting files. Replacement of php's require.
+    * @package Fabrico
+    */
+    function inject($args) {
+        global $injector;
+        return $injector->inject($args);
+    }
 
 ?>

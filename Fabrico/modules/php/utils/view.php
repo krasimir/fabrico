@@ -24,7 +24,6 @@ class ViewCache {
 class ViewConfig {
     public static $root = "";
     public static $searchIn = array();
-    public static $debug = false;
     public static $globalData;
     public static function config($configs) {
         foreach($configs as $key => $value) {
@@ -89,7 +88,7 @@ class View {
         $cache = ViewCache::get($path);
         
         if(!$cache) {
-            if(ViewConfig::$debug) {
+            if(defined("DEBUG") && DEBUG) {
                $this->log("view: ".str_replace($root, "", $path), "#BEC7B1");
             }
             $fh = @fopen($path, "r");

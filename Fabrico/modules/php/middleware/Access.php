@@ -12,13 +12,13 @@
         public $loginError = "";
         
         private $req;
-        private $res;
         private $logged = null;
         
         public function setCredentials($user, $pass) {
             $this->credentials = (object) array("username" => $user, "password" => $pass);
         }
-        public function isLogged() {
+        public function isLogged($req) {
+            $this->req = $req;
             if($this->logged !== null) {
                 return $this->logged;
             } else {
@@ -53,7 +53,6 @@
         }
         public function run($req, $res) {
             $this->req = $req;
-            $this->res = $res;
         }
         public function logout() {
             $_SESSION["username"] = "";

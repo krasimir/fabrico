@@ -1,6 +1,5 @@
 <?php
 
-    require("Fabrico/Fabrico.php");
-    $fabrico = new Fabrico();
-    
+    echo "index.php";
+
 ?>

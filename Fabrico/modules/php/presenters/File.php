@@ -78,7 +78,7 @@
         }
         public function deleteAction($value) {
             if($value != "") {
-                $root = $this->req->fabrico->paths->filesFabrico;
+                $root = $this->req->fabrico->paths->root;
                 $file = $this->getAbsolutePathFiles($value);
                 $fileParts = explode("/", $value);
                 $hash = $fileParts[0];
@@ -91,7 +91,7 @@
             }
         }
         protected function upload($field) {
-            $root = $this->req->fabrico->paths->filesFabrico;
+            $root = $this->req->fabrico->paths->root;
             $hash = md5($field."_".time());
             $fileDir = $root.$this->config->destination."/".$hash;
             if(isset($_FILES) && isset($_FILES[$field]) && $_FILES[$field]["tmp_name"] != "") {
@@ -105,11 +105,11 @@
             return "";
         }
         protected function getAbsolutePathHttp($value) {
-            $root = $this->req->fabrico->paths->httpFabricoFiles;
+            $root = $this->req->fabrico->paths->url;
             return $root.$this->config->destination."/".$value;
         }
         protected function getAbsolutePathFiles($value) {
-            $root = $this->req->fabrico->paths->filesFabrico;
+            $root = $this->req->fabrico->paths->root;
             return $root.$this->config->destination."/".$value;
         }
         protected function getFileName($value) {

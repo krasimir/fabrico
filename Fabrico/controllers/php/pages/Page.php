@@ -53,9 +53,7 @@
                 
                 // adding custom routes if any
                 foreach($this->defaultRoutes as $route => $path) {
-                    if(!isset($this->routes[$route])) {
-                        $this->routes[$route] = $path;
-                    }
+                    $this->routes[$route] = $path;
                 }
                 
                 // setup middleware

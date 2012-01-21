@@ -68,6 +68,7 @@
         private function getForm($req, $res, $sentData = null) {
             $content = "";
             $fields = $this->model->fields;
+            $fieldsJson = json_encode($fields);
             foreach($fields as $field) {
                 $default = $validatorMessage = null;
                 $dependencies = isset($field->dependencies) ? $field->dependencies : null;
@@ -99,7 +100,7 @@
                 "presentersContent" => $this->view("table.html", array(
                     "rows" => $content
                 )),
-                "fields" => json_encode($this->model->fields)
+                "fields" => $fieldsJson
             ));
             $content = $this->view("subnav.html").$content;
             return $content;

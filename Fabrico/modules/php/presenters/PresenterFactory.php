@@ -4,8 +4,6 @@
     * @package Fabrico\Modules\Presenters
     */
     class PresenterFactory {
-    
-        private static $enableDebug = false;
         
         public static function get($field, $properties = array()) {
         
@@ -19,14 +17,11 @@
             inject($field->presenter);
             $presenter = new $presenterName($field);
             
-            if(self::$enableDebug) {
+            if(defined("DEBUG") && DEBUG) {
                 PresenterFactory::log("presenter: ".$field->presenter, "#FFD9FF");
             }
             
             return $presenter;
-        }
-        public static function debug($value) {
-            self::$enableDebug = $value;
         }
         private static function log($str, $color) {
             echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';

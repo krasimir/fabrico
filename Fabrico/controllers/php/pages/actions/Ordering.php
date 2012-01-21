@@ -69,7 +69,7 @@
                 }
             }
             
-            header("Location: ".$req->fabrico->paths->httpFabrico.$this->controller->url);
+            header("Location: ".$req->fabrico->paths->url.$this->controller->url);
             
         }
     

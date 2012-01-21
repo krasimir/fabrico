@@ -12,7 +12,6 @@
     class AssetsManager extends Middleware {
         
         public $root = "/";
-        public $debug = false;
 
         private $dirs = array();
         private $assets;
@@ -49,7 +48,6 @@
         public function get($name){
         
             $asset = $this->getAsset($name);
-            
             if(isset($asset->build) && $asset->build === true) {
                 $asset->source = is_array($asset->source) ? $asset->source : array($asset->source);
                 $result = "";
@@ -74,7 +72,7 @@
         
             $asset = $this->getAsset($name);
             
-            if($this->debug) {
+            if(defined("DEBUG") && DEBUG) {
                 $this->log($name);
             }
         
@@ -102,7 +100,7 @@
             return $asset;
         }
         private function getTag($file, $ext) {
-            $file = $this->req->host.($this->req->base == "/" ? "" : $this->req->base).$this->req->fabrico->config->get("fabrico.paths.files").$file;
+            $file = $this->req->url.$file;
             switch($ext) {
                 case "js":
                     return '<script src="'.$file.'"></script>';
