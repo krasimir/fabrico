@@ -12,12 +12,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Thu, 19 Jan 2012 14:44:29 +0000">
+<meta name="when" content="Sun, 22 Jan 2012 13:32:55 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
 
-<title>Fabrico\modules\php\middleware\Access.php (Fabrico)</title>
+<title>fabrico\modules\php\middleware\Access.php (Fabrico)</title>
 
 </head>
 <body id="file" onload="parent.document.title=document.title;">
@@ -39,7 +39,7 @@
 </div>
 <hr>
 
-<h1>Fabrico\modules\php\middleware\Access.php</h1>
+<h1>fabrico\modules\php\middleware\Access.php</h1>
 <hr>
 
 <a name="line1"></a><pre><?php
@@ -56,13 +56,13 @@
 <a name="line12"></a>        public $loginError = "";
 <a name="line13"></a>        
 <a name="line14"></a>        private $req;
-<a name="line15"></a>        private $res;
-<a name="line16"></a>        private $logged = null;
-<a name="line17"></a>        
-<a name="line18"></a>        public function setCredentials($user, $pass) {
-<a name="line19"></a>            $this->credentials = (object) array("username" => $user, "password" => $pass);
-<a name="line20"></a>        }
-<a name="line21"></a>        public function isLogged() {
+<a name="line15"></a>        private $logged = null;
+<a name="line16"></a>        
+<a name="line17"></a>        public function setCredentials($user, $pass) {
+<a name="line18"></a>            $this->credentials = (object) array("username" => $user, "password" => $pass);
+<a name="line19"></a>        }
+<a name="line20"></a>        public function isLogged($req) {
+<a name="line21"></a>            $this->req = $req;
 <a name="line22"></a>            if($this->logged !== null) {
 <a name="line23"></a>                return $this->logged;
 <a name="line24"></a>            } else {
@@ -97,17 +97,16 @@
 <a name="line53"></a>        }
 <a name="line54"></a>        public function run($req, $res) {
 <a name="line55"></a>            $this->req = $req;
-<a name="line56"></a>            $this->res = $res;
-<a name="line57"></a>        }
-<a name="line58"></a>        public function logout() {
-<a name="line59"></a>            $_SESSION["username"] = "";
-<a name="line60"></a>            $_SESSION["password"] = "";
-<a name="line61"></a>        }
-<a name="line62"></a>        
-<a name="line63"></a>    }
+<a name="line56"></a>        }
+<a name="line57"></a>        public function logout() {
+<a name="line58"></a>            $_SESSION["username"] = "";
+<a name="line59"></a>            $_SESSION["password"] = "";
+<a name="line60"></a>        }
+<a name="line61"></a>        
+<a name="line62"></a>    }
+<a name="line63"></a>
 <a name="line64"></a>
-<a name="line65"></a>
-<a name="line66"></a>?></pre>
+<a name="line65"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

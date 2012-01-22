@@ -12,12 +12,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Thu, 19 Jan 2012 14:44:29 +0000">
+<meta name="when" content="Sun, 22 Jan 2012 13:32:55 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
 
-<title>Fabrico\modules\php\utils\ErrorHandler.php (Fabrico)</title>
+<title>fabrico\modules\php\utils\ErrorHandler.php (Fabrico)</title>
 
 </head>
 <body id="file" onload="parent.document.title=document.title;">
@@ -39,7 +39,7 @@
 </div>
 <hr>
 
-<h1>Fabrico\modules\php\utils\ErrorHandler.php</h1>
+<h1>fabrico\modules\php\utils\ErrorHandler.php</h1>
 <hr>
 
 <a name="line1"></a><pre><?php
@@ -55,77 +55,122 @@
 <a name="line11"></a>    
 <a name="line12"></a>    function error(Exception $e) {
 <a name="line13"></a>    
-<a name="line14"></a>        global $ERROR_HANDLER_CONTROLLER;
-<a name="line15"></a>    
-<a name="line16"></a>        // always output to log first
-<a name="line17"></a>        $output = 'Message:'.$e->getMessage().'\n\r'.' File:'.$e->getFile().' Line:'.$e->getLine().'\n\r'.' Trace: '.$e->getTraceAsString();
-<a name="line18"></a>        error_log($output);
-<a name="line19"></a>        
-<a name="line20"></a>        // show as raw response using Response.php style
-<a name="line21"></a>        if($ERROR_HANDLER_CONTROLLER != "") {
-<a name="line22"></a>            inject($ERROR_HANDLER_CONTROLLER);
-<a name="line23"></a>            $handlerClass = getFilename($ERROR_HANDLER_CONTROLLER);
-<a name="line24"></a>            new $handlerClass($e);
-<a name="line25"></a>        } else {
-<a name="line26"></a>            header((isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1').' Internal Server Error', true, 500);
-<a name="line27"></a>            exit(
-<a name="line28"></a>                '<h1>500 Internal Server Error</h1>'.
-<a name="line29"></a>                '<h3>Message:'.$e->getMessage().'</h3>'.
-<a name="line30"></a>                '<h4>File:'.$e->getFile().' Line:'.$e->getLine().'</h4>'.
-<a name="line31"></a>                '<pre>'.$e->getTraceAsString().'</pre>'
-<a name="line32"></a>            );
-<a name="line33"></a>        }
-<a name="line34"></a>        
-<a name="line35"></a>    }
-<a name="line36"></a>    /**
-<a name="line37"></a>     * shutdown
-<a name="line38"></a>     */
-<a name="line39"></a>    function shutdown() {
-<a name="line40"></a>        
-<a name="line41"></a>    }
-<a name="line42"></a>    /**
-<a name="line43"></a>     * Custom error handler.
-<a name="line44"></a>     */
-<a name="line45"></a>    function handleError($errno, $errstr, $errfile, $errline) {
-<a name="line46"></a>        try {
-<a name="line47"></a>           error(new ErrorException($errstr, 0, $errno, $errfile, $errline));
-<a name="line48"></a>        } catch (Exception $ex) {
-<a name="line49"></a>            // if error logging fails, tray again to log the error during error logging :)
-<a name="line50"></a>            $output = 'message: '.$ex->getMessage().'\n'.'trace: '.$ex->getTraceAsString().'\n';
-<a name="line51"></a>            error_log($output);
-<a name="line52"></a>            exit();
-<a name="line53"></a>        }
-<a name="line54"></a>    }
-<a name="line55"></a>    /**
-<a name="line56"></a>     * Custom exception handler.
-<a name="line57"></a>     */
-<a name="line58"></a>    function handleException(Exception $e) {
-<a name="line59"></a>        try {
-<a name="line60"></a>            error($e);
-<a name="line61"></a>        } catch (Exception $ex) {
-<a name="line62"></a>            // if error logging fails, tray again to log the error during error logging :)
-<a name="line63"></a>            $output = 'message: '.$ex->getMessage().'\n'.'trace: '.$ex->getTraceAsString().'\n';
-<a name="line64"></a>            error_log($output);
-<a name="line65"></a>
-<a name="line66"></a>            // silently exit
-<a name="line67"></a>            exit();
-<a name="line68"></a>        }
-<a name="line69"></a>    }
-<a name="line70"></a>    function getFilename($path) {
-<a name="line71"></a>        $parts = explode("/", $path);
-<a name="line72"></a>        $parts = explode(".", array_pop($parts));
-<a name="line73"></a>        return $parts[0];
-<a name="line74"></a>    }
-<a name="line75"></a>    
-<a name="line76"></a>    $ERROR_HANDLER_CONTROLLER = "";
-<a name="line77"></a>        
-<a name="line78"></a>    set_error_handler('handleError');
-<a name="line79"></a>    set_exception_handler('handleException');
-<a name="line80"></a>    register_shutdown_function('shutdown'); 
-<a name="line81"></a>    
-<a name="line82"></a>    error_reporting(E_ALL);
-<a name="line83"></a>    
-<a name="line84"></a>?></pre>
+<a name="line14"></a>        // always output to log first
+<a name="line15"></a>        $output = 'Message:'.$e->getMessage().'\n\r'.' File:'.$e->getFile().' Line:'.$e->getLine().'\n\r'.' Trace: '.$e->getTraceAsString();
+<a name="line16"></a>        error_log($output);
+<a name="line17"></a>        
+<a name="line18"></a>        // display the error
+<a name="line19"></a>        die('
+<a name="line20"></a>            <!doctype html>
+<a name="line21"></a>            <html>
+<a name="line22"></a>                <head>
+<a name="line23"></a>                    <title>{message}</title>
+<a name="line24"></a>                    <style>
+<a name="line25"></a>                        body, html {
+<a name="line26"></a>                            margin: 0;
+<a name="line27"></a>                            padding: 40px;
+<a name="line28"></a>                            font-family: Verdana, Tahoma;
+<a name="line29"></a>                            font-size: 12px;
+<a name="line30"></a>                            color: #7D7D7D;
+<a name="line31"></a>                            line-height: 24px;
+<a name="line32"></a>                            background: #FFF;
+<a name="line33"></a>                        }
+<a name="line34"></a>                        #wrapper {
+<a name="line35"></a>                            width: 100%;
+<a name="line36"></a>                        }
+<a name="line37"></a>                        h1 {
+<a name="line38"></a>                            font-family: Tahoma;
+<a name="line39"></a>                            font-size: 25px;
+<a name="line40"></a>                            font-weight: bold;
+<a name="line41"></a>                            color: #000;
+<a name="line42"></a>                            margin: 0 0 20px 0;
+<a name="line43"></a>                        }
+<a name="line44"></a>                        h2 {
+<a name="line45"></a>                            font-size: 16px;
+<a name="line46"></a>                            font-weight: bold;
+<a name="line47"></a>                            color: #000;
+<a name="line48"></a>                            margin: 0 0 20px 0;
+<a name="line49"></a>                        }
+<a name="line50"></a>                        #stacktrace {
+<a name="line51"></a>                            padding: 0;
+<a name="line52"></a>                            margin: 0;
+<a name="line53"></a>                            line-height: 18px;
+<a name="line54"></a>                            list-style-type: none;
+<a name="line55"></a>                        }
+<a name="line56"></a>                        #stacktrace li {
+<a name="line57"></a>                            margin: 0;
+<a name="line58"></a>                            padding: 0;
+<a name="line59"></a>                            font-size: 11px;
+<a name="line60"></a>                            cursor: default;
+<a name="line61"></a>                        }
+<a name="line62"></a>                        #stacktrace li:hover {
+<a name="line63"></a>                            color: #000;
+<a name="line64"></a>                        }
+<a name="line65"></a>                        a {
+<a name="line66"></a>                            color: #000;
+<a name="line67"></a>                        }
+<a name="line68"></a>                    </style>
+<a name="line69"></a>                </head>
+<a name="line70"></a>                <body>
+<a name="line71"></a>                    <div id="wrapper">
+<a name="line72"></a>                        <h1>'.$e->getMessage().'</h1>
+<a name="line73"></a>                        <h2>'.("File: ".$e->getFile()." Line: ".$e->getLine()).'</h2>
+<a name="line74"></a>                        <ul id="stacktrace">
+<a name="line75"></a>                            '.'<li>'.implode(explode("\n", $e->getTraceAsString()), '<li>').'
+<a name="line76"></a>                        </ul>
+<a name="line77"></a>                    </div>
+<a name="line78"></a>                </body>
+<a name="line79"></a>            </html>
+<a name="line80"></a>        ');
+<a name="line81"></a>        
+<a name="line82"></a>    }
+<a name="line83"></a>    /**
+<a name="line84"></a>     * shutdown
+<a name="line85"></a>     */
+<a name="line86"></a>    function shutdown() {
+<a name="line87"></a>        
+<a name="line88"></a>    }
+<a name="line89"></a>    /**
+<a name="line90"></a>     * Custom error handler.
+<a name="line91"></a>     */
+<a name="line92"></a>    function handleError($errno, $errstr, $errfile, $errline) {
+<a name="line93"></a>        try {
+<a name="line94"></a>           error(new ErrorException($errstr, 0, $errno, $errfile, $errline));
+<a name="line95"></a>        } catch (Exception $ex) {
+<a name="line96"></a>            // if error logging fails, tray again to log the error during error logging :)
+<a name="line97"></a>            $output = 'message: '.$ex->getMessage().'\n'.'trace: '.$ex->getTraceAsString().'\n';
+<a name="line98"></a>            error_log($output);
+<a name="line99"></a>            exit();
+<a name="line100"></a>        }
+<a name="line101"></a>    }
+<a name="line102"></a>    /**
+<a name="line103"></a>     * Custom exception handler.
+<a name="line104"></a>     */
+<a name="line105"></a>    function handleException(Exception $e) {
+<a name="line106"></a>        try {
+<a name="line107"></a>            error($e);
+<a name="line108"></a>        } catch (Exception $ex) {
+<a name="line109"></a>            // if error logging fails, tray again to log the error during error logging :)
+<a name="line110"></a>            $output = 'message: '.$ex->getMessage().'\n'.'trace: '.$ex->getTraceAsString().'\n';
+<a name="line111"></a>            error_log($output);
+<a name="line112"></a>
+<a name="line113"></a>            // silently exit
+<a name="line114"></a>            exit();
+<a name="line115"></a>        }
+<a name="line116"></a>    }
+<a name="line117"></a>    function getFilename($path) {
+<a name="line118"></a>        $parts = explode("/", $path);
+<a name="line119"></a>        $parts = explode(".", array_pop($parts));
+<a name="line120"></a>        return $parts[0];
+<a name="line121"></a>    }
+<a name="line122"></a>        
+<a name="line123"></a>    set_error_handler('handleError');
+<a name="line124"></a>    set_exception_handler('handleException');
+<a name="line125"></a>    register_shutdown_function('shutdown'); 
+<a name="line126"></a>    
+<a name="line127"></a>    error_reporting(E_ALL);
+<a name="line128"></a>    
+<a name="line129"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Thu, 19 Jan 2012 14:44:28 +0000">
+<meta name="when" content="Sun, 22 Jan 2012 13:32:54 +0000">
 
 <link rel="stylesheet" type="text/css" href="stylesheet.css">
 <link rel="start" href="overview-summary.html">
@@ -29,15 +29,12 @@
 <li><a href="fabrico/modules/middleware/access.html" title="Fabrico\Modules\Middleware" target="main">Access</a></li>
 <li><a href="fabrico/controllers/pages/actions/action.html" title="Fabrico\Controllers\Pages\Actions" target="main">Action</a></li>
 <li><a href="fabrico/controllers/pages/actions/adding.html" title="Fabrico\Controllers\Pages\Actions" target="main">Adding</a></li>
-<li><a href="fabrico/controllers/utils/assets.html" title="Fabrico\Controllers\Utils" target="main">Assets</a></li>
 <li><a href="fabrico/modules/middleware/assetsmanager.html" title="Fabrico\Modules\Middleware" target="main">AssetsManager</a></li>
 <li><a href="fabrico/modules/middleware/benchmark.html" title="Fabrico\Modules\Middleware" target="main">Benchmark</a></li>
-<li><a href="fabrico/modules/middleware/bodyparser.html" title="Fabrico\Modules\Middleware" target="main">BodyParser</a></li>
 <li><a href="fabrico/modules/presenters/color.html" title="Fabrico\Modules\Presenters" target="main">Color</a></li>
 <li><a href="fabrico/modules/presenters/date.html" title="Fabrico\Modules\Presenters" target="main">Date</a></li>
 <li><a href="fabrico/controllers/pages/actions/deleting.html" title="Fabrico\Controllers\Pages\Actions" target="main">Deleting</a></li>
 <li><a href="fabrico/controllers/pages/actions/editing.html" title="Fabrico\Controllers\Pages\Actions" target="main">Editing</a></li>
-<li><a href="fabrico/controllers/pages/error.html" title="Fabrico\Controllers\Pages" target="main">Error</a></li>
 <li><a href="fabrico/fabrico.html" title="Fabrico" target="main">Fabrico</a></li>
 <li><a href="fabrico/modules/presenters/file.html" title="Fabrico\Modules\Presenters" target="main">File</a></li>
 <li><a href="fabrico/modules/utils/filejoin.html" title="Fabrico\Modules\Utils" target="main">FileJoin</a></li>
@@ -45,7 +42,6 @@
 <li><a href="fabrico/controllers/pages/home.html" title="Fabrico\Controllers\Pages" target="main">Home</a></li>
 <li><a href="fabrico/modules/utils/includepath.html" title="Fabrico\Modules\Utils" target="main">IncludePath</a></li>
 <li><a href="fabrico/modules/utils/injector.html" title="Fabrico\Modules\Utils" target="main">Injector</a></li>
-<li><a href="fabrico/modules/utils/jsonconfig.html" title="Fabrico\Modules\Utils" target="main">JSONConfig</a></li>
 <li><a href="fabrico/modules/validators/lengthexact.html" title="Fabrico\Modules\Validators" target="main">LengthExact</a></li>
 <li><a href="fabrico/modules/validators/lengthmax.html" title="Fabrico\Modules\Validators" target="main">LengthMax</a></li>
 <li><a href="fabrico/modules/validators/lengthmin.html" title="Fabrico\Modules\Validators" target="main">LengthMin</a></li>
@@ -71,7 +67,6 @@
 <li><a href="fabrico/modules/utils/responsestatuscodes.html" title="Fabrico\Modules\Utils" target="main">ResponseStatusCodes</a></li>
 <li><a href="fabrico/modules/middleware/router.html" title="Fabrico\Modules\Middleware" target="main">Router</a></li>
 <li><a href="fabrico/modules/middleware/routerrule.html" title="Fabrico\Modules\Middleware" target="main">RouterRule</a></li>
-<li><a href="fabrico/controllers/utils/routes.html" title="Fabrico\Controllers\Utils" target="main">Routes</a></li>
 <li><a href="fabrico/modules/presenters/select.html" title="Fabrico\Modules\Presenters" target="main">Select</a></li>
 <li><a href="fabrico/modules/presenters/selectcheck.html" title="Fabrico\Modules\Presenters" target="main">SelectCheck</a></li>
 <li><a href="fabrico/modules/presenters/selectdb.html" title="Fabrico\Modules\Presenters" target="main">SelectDb</a></li>
@@ -100,6 +95,7 @@
 <li><a href="fabrico/package-functions.html#handleError()" title="Fabrico" target="main">handleError</a></li>
 <li><a href="fabrico/package-functions.html#handleException()" title="Fabrico" target="main">handleException</a></li>
 <li><a href="fabrico/package-functions.html#inject()" title="Fabrico" target="main">inject</a></li>
+<li><a href="fabrico/package-functions.html#readJSON()" title="Fabrico" target="main">readJSON</a></li>
 <li><a href="fabrico/package-functions.html#rglob()" title="Fabrico" target="main">rglob</a></li>
 <li><a href="fabrico/package-functions.html#shutdown()" title="Fabrico" target="main">shutdown</a></li>
 <li><a href="fabrico/package-functions.html#view()" title="Fabrico" target="main">view</a></li>
@@ -107,12 +103,12 @@
 
 <h2>Globals</h2>
 <ul>
-<li><a href="fabrico/package-globals.html#DEBUG_MODE" title="Fabrico" target="main">DEBUG_MODE</a></li>
-<li><a href="fabrico/package-globals.html#ERROR_HANDLER_CONTROLLER" title="Fabrico" target="main">ERROR_HANDLER_CONTROLLER</a></li>
-<li><a href="fabrico/package-globals.html#FABRICO_ROOT" title="Fabrico" target="main">FABRICO_ROOT</a></li>
+<li><a href="fabrico/package-globals.html#DEBUG" title="Fabrico" target="main">DEBUG</a></li>
+<li><a href="fabrico/package-globals.html#ROOT" title="Fabrico" target="main">ROOT</a></li>
 <li><a href="fabrico/package-globals.html#_GET" title="Fabrico" target="main">_GET</a></li>
+<li><a href="fabrico/package-globals.html#_SERVER" title="Fabrico" target="main">_SERVER</a></li>
 <li><a href="fabrico/package-globals.html#fabrico" title="Fabrico" target="main">fabrico</a></li>
-<li><a href="fabrico/package-globals.html#fabricoInjector" title="Fabrico" target="main">fabricoInjector</a></li>
+<li><a href="fabrico/package-globals.html#injector" title="Fabrico" target="main">injector</a></li>
 </ul>
 
 </body>

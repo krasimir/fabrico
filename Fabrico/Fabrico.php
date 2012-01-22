@@ -1,11 +1,4 @@
 <?php
-
-    inject(array(
-        "utils/view.php",
-        "Middleware.php",
-        "middleware/Router.php",
-        "presenters/PresenterFactory.php"
-    ));
     
     /**
      * Main class of Fabrico.
@@ -18,10 +11,7 @@
         public $paths;
         
         /**
-        * @param $configs Associative array
-        <pre class="code">
-        
-        </pre>
+        * @param $configs
         */
         public function __construct($configs) {
         
@@ -41,13 +31,13 @@
             
             // config
             if(isset($configs->adapters)) {
-                $this->log("Fabrico creates module 'adapters'.", "#575757");
+                $this->log("Fabrico's configuration - 'adapters'.", "#C0C0C0");
                 $this->adapters = readJSON($this->paths->root.$configs->adapters);
             }
             
             // benchmark
             if(isset($configs->benchmark)) {
-                $this->log("Fabrico creates module 'benchmark'.", "#575757");
+                $this->log("Fabrico's configuration - 'benchmark'.", "#C0C0C0");
                 $this->using(array(
                     "benchmark" => "middleware/Benchmark.php",
                 ));
@@ -55,7 +45,7 @@
             
             // models
             if(isset($configs->models)) {
-                $this->log("Fabrico creates module 'models'.", "#575757");
+                $this->log("Fabrico's configuration - 'models'.", "#C0C0C0");
                 $this->using(array(
                     "models" => "middleware/ModelsManager.php",
                 ));
@@ -64,7 +54,7 @@
             
             // assets
             if(isset($configs->assets)) {
-                $this->log("Fabrico creates module 'assets'.", "#575757");
+                $this->log("Fabrico's configuration - 'assets'.", "#C0C0C0");
                 $this->using(array(
                     "assets" => "middleware/AssetsManager.php",
                 ));
@@ -77,7 +67,7 @@
             
             // models
             if(isset($configs->access)) {
-                $this->log("Fabrico creates module 'access'.", "#575757");
+                $this->log("Fabrico's configuration - 'access'.", "#C0C0C0");
                 $this->using(array(
                     "access" => "middleware/Access.php",
                 ));
@@ -89,7 +79,7 @@
             
             // router
             if(isset($configs->router)) {
-                $this->log("Fabrico creates module 'router'.", "#575757");
+                $this->log("Fabrico's configuration - 'router'.", "#C0C0C0");
                 $this->using(array(
                     "router" => "middleware/Router.php",
                 ));
@@ -108,7 +98,7 @@
             
             // views
             if(isset($configs->views)) {
-                $this->log("Fabrico creates module 'views'.", "#575757");
+                $this->log("Fabrico's configuration - 'views'.", "#C0C0C0");
                 inject(array("utils/view.php"));
                 ViewConfig::config(array(
                     "root" => $this->paths->root,

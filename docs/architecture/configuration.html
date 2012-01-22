@@ -25,24 +25,28 @@
         <td class="description">
             
 <p>
-    The configuration of Fabrico is stored in <strong>/config/config.json</strong>. It has the following structure:
+    The Fabrico class's constructor accepts an object which have the following structure:
 </p>
 <p>
 <pre class="code">
 {
-    "access": <a href="#access_object">[access_object]</a>,
-    "paths": <a href="#path_object">[path_object]</a>,
-    "routes": [
-        <a href="#route_object">[route_object]</a>, 
-        <a href="#route_object">[route_object]</a>, 
-        ...
-    ],
-    "adapters": {
-        "[adapter_name]": <a href="#adapter_object">[adapter_object]</a>
-    },
-    "assets": [
+    "benchmark": "[yes|no]", // optional
+    "models": "[path_to_your_models_json_files]", // optional
+    "adapters": "[path_to_json_file]", // required only if you use "models"
+    "access": <a href="#access_object">[access_object]</a>, // optional
+    "assets": [ // optional
         <a href="#asset_object">[asset_object]</a>, 
         <a href="#asset_object">[asset_object]</a>,
+        ...
+    ],
+    "views": [ // optional
+        [path_to_your_views],
+        [path_to_your_views],
+        ...
+    ], 
+    "router": [ // optional
+        <a href="#route_object">[route_object]</a>, 
+        <a href="#route_object">[route_object]</a>, 
         ...
     ]
 }
@@ -58,12 +62,15 @@
 }
 </pre>
 
-<a name="path_object"></a>
-<h3>Path object</h3>
+<a name="asset_object"></a>
+<h3>Asset object</h3>
 <pre class="code">
 {
-    "files": "/Fabrico",
-    "http": "/fabrico"
+    "name": "[string]", // you will use this name later to fetch the asset
+    "source": "/assets/css/*.css", // regex
+    "destination": "/assets/compiled/", // output folder
+    "extension": "[css|js|...]",
+    "build": [true|false]
 }
 </pre>
 
@@ -74,38 +81,8 @@
     "url": "[regular_expression]", 
     "controller": "[path_to_controller_php]", 
     "model": "[path_to_model_json]" // optional
-}
-</pre>
-
-<a name="asset_object"></a>
-<h3>Asset object</h3>
-<pre class="code">
-{
-    "name": "css", 
-    "source": "/assets/css/*.css", 
-    "destination": "/assets/compiled/",
-    "extension": "css",
-    "build": true
-}
-</pre>
-<pre class="code">
-{
-    "name": "javascript", 
-    "source": "/modules/js/*.js", 
-    "destination": "/assets/compiled/",
-    "extension": "js",
-    "build": true
-}
-</pre>
-
-<a name="adapter_object"></a>
-<h3>MySQL adapter object</h3>
-<pre class="code">
-"MySQL": {
-    "host": "localhost",
-    "user": "root",
-    "pass": "",
-    "dbname": "fabrico_test"
+    "action": "[name_of_metod(default: run)]", // optional
+    "priority": [true|false(default: false)] // optional
 }
 </pre>
 
@@ -113,28 +90,69 @@
 <h3>Example:</h3>
 <pre class="code">
 {
+    "benchmark": "yes",
+    "models": "/../config/models/",
+    "adapters": "/../config/adapters.json",
+    "assets": [
+        {
+            "name": "javascript", 
+            "source": "/modules/js/*.js", 
+            "destination": "/assets/compiled/",
+            "extension": "js",
+            "build": true
+        },
+        {
+            "name": "css", 
+            "source": "/assets/css/*.css", 
+            "destination": "/assets/compiled/",
+            "extension": "css",
+            "build": true
+        }
+    ],
     "access": {
         "user": "admin",
         "pass": "admin"
     },
-    "paths": {
-        "files": "/Fabrico",
-        "http": "/fabrico"
-    },
-    "routes": [
-        {"url": "/sample(.*)?", "controller": "pages/Page.php", "model": "models/sample.json"},
-        {"url": "/logout(.*)?", "controller": "pages/Logout.php"},
-        {"url": "/login(.*)?", "controller": "pages/Login.php"},
-        {"url": "(.*)?", "controller": "pages/Home.php"}
+    "views": [
+        "/views/Default"
     ],
-    "adapters": {
-        "MySQL": {
-            "host": "localhost",
-            "user": "root",
-            "pass": "",
-            "dbname": "fabrico_test"
+    "router": [
+        {
+            "url": "/sample(.*)?", 
+            "controller": "pages/Page.php", 
+            "model": "sample.json", 
+            "action": "run", 
+            "priority": false
+        },
+        {
+            "url": "/types(.*)?", 
+            "controller": "pages/Page.php", 
+            "model": "types.json", 
+            "action": "run", 
+            "priority": false
+        },
+        {
+            "url": "/logout(.*)?", 
+            "controller": "pages/Logout.php",
+            "model": null,
+            "action": "run", 
+            "priority": false
+        },
+        {
+            "url": "/login(.*)?", 
+            "controller": "pages/Login.php",
+            "model": null,
+            "action": "run", 
+            "priority": false
+        },
+        {
+            "url": "(.*)?", 
+            "controller": "pages/Home.php",
+            "model": null,
+            "action": "run", 
+            "priority": false
         }
-    }
+    ]
 }
 </pre>
 

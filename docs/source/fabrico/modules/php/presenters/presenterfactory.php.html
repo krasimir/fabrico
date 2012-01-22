@@ -12,12 +12,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Thu, 19 Jan 2012 14:44:29 +0000">
+<meta name="when" content="Sun, 22 Jan 2012 13:32:55 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
 
-<title>Fabrico\modules\php\presenters\PresenterFactory.php (Fabrico)</title>
+<title>fabrico\modules\php\presenters\PresenterFactory.php (Fabrico)</title>
 
 </head>
 <body id="file" onload="parent.document.title=document.title;">
@@ -39,7 +39,7 @@
 </div>
 <hr>
 
-<h1>Fabrico\modules\php\presenters\PresenterFactory.php</h1>
+<h1>fabrico\modules\php\presenters\PresenterFactory.php</h1>
 <hr>
 
 <a name="line1"></a><pre><?php
@@ -48,37 +48,32 @@
 <a name="line4"></a>    * @package Fabrico\Modules\Presenters
 <a name="line5"></a>    */
 <a name="line6"></a>    class PresenterFactory {
-<a name="line7"></a>    
-<a name="line8"></a>        private static $enableDebug = false;
+<a name="line7"></a>        
+<a name="line8"></a>        public static function get($field, $properties = array()) {
 <a name="line9"></a>        
-<a name="line10"></a>        public static function get($field, $properties = array()) {
-<a name="line11"></a>        
-<a name="line12"></a>            $parts = explode("/", $field->presenter);
-<a name="line13"></a>            $presenterName = str_replace(".php", "", array_pop($parts));
-<a name="line14"></a>            
-<a name="line15"></a>            foreach($properties as $key => $value) {
-<a name="line16"></a>                $field->$key = $value;
-<a name="line17"></a>            }
-<a name="line18"></a>            
-<a name="line19"></a>            inject($field->presenter);
-<a name="line20"></a>            $presenter = new $presenterName($field);
-<a name="line21"></a>            
-<a name="line22"></a>            if(self::$enableDebug) {
-<a name="line23"></a>                PresenterFactory::log("presenter: ".$field->presenter, "#FFD9FF");
-<a name="line24"></a>            }
-<a name="line25"></a>            
-<a name="line26"></a>            return $presenter;
-<a name="line27"></a>        }
-<a name="line28"></a>        public static function debug($value) {
-<a name="line29"></a>            self::$enableDebug = $value;
-<a name="line30"></a>        }
-<a name="line31"></a>        private static function log($str, $color) {
-<a name="line32"></a>            echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
-<a name="line33"></a>        }
-<a name="line34"></a>    
-<a name="line35"></a>    }
-<a name="line36"></a>
-<a name="line37"></a>?></pre>
+<a name="line10"></a>            $parts = explode("/", $field->presenter);
+<a name="line11"></a>            $presenterName = str_replace(".php", "", array_pop($parts));
+<a name="line12"></a>            
+<a name="line13"></a>            foreach($properties as $key => $value) {
+<a name="line14"></a>                $field->$key = $value;
+<a name="line15"></a>            }
+<a name="line16"></a>            
+<a name="line17"></a>            inject($field->presenter);
+<a name="line18"></a>            $presenter = new $presenterName($field);
+<a name="line19"></a>            
+<a name="line20"></a>            if(defined("DEBUG") && DEBUG) {
+<a name="line21"></a>                PresenterFactory::log("presenter: ".$field->presenter, "#FFD9FF");
+<a name="line22"></a>            }
+<a name="line23"></a>            
+<a name="line24"></a>            return $presenter;
+<a name="line25"></a>        }
+<a name="line26"></a>        private static function log($str, $color) {
+<a name="line27"></a>            echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
+<a name="line28"></a>        }
+<a name="line29"></a>    
+<a name="line30"></a>    }
+<a name="line31"></a>
+<a name="line32"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

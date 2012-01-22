@@ -12,12 +12,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Thu, 19 Jan 2012 14:44:29 +0000">
+<meta name="when" content="Sun, 22 Jan 2012 13:32:55 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
 
-<title>Fabrico\modules\php\middleware\ModelsManager.php (Fabrico)</title>
+<title>fabrico\modules\php\middleware\ModelsManager.php (Fabrico)</title>
 
 </head>
 <body id="file" onload="parent.document.title=document.title;">
@@ -39,7 +39,7 @@
 </div>
 <hr>
 
-<h1>Fabrico\modules\php\middleware\ModelsManager.php</h1>
+<h1>fabrico\modules\php\middleware\ModelsManager.php</h1>
 <hr>
 
 <a name="line1"></a><pre><?php
@@ -64,62 +64,57 @@
 <a name="line20"></a>                return $this->models[$modelJSONFile];
 <a name="line21"></a>            }
 <a name="line22"></a>            
-<a name="line23"></a>            if(!file_exists($this->root."/".$modelJSONFile)) {
+<a name="line23"></a>            if(!file_exists($this->root.$modelJSONFile)) {
 <a name="line24"></a>                throw new Exception($this.": file '".$modelJSONFile."' is missing.");
 <a name="line25"></a>            }
 <a name="line26"></a>            
 <a name="line27"></a>            // reading model's json
-<a name="line28"></a>            $jsonConfig = new JSONConfig();
-<a name="line29"></a>            $jsonConfig->source(array("model" => $this->root."/".$modelJSONFile));
-<a name="line30"></a>            $jsonConfig = $jsonConfig->data->model;
-<a name="line31"></a>            if($jsonConfig === null) {
-<a name="line32"></a>                throw new Exception($this.": error reading '".$modelJSONFile."'");
-<a name="line33"></a>            }
-<a name="line34"></a>            $jsonConfig->adapter = isset($jsonConfig->adapter) ? $jsonConfig->adapter : "adapters/MySQL.php";
-<a name="line35"></a>            
-<a name="line36"></a>            // getting model's classes names
-<a name="line37"></a>            $className = $this->getFilename($jsonConfig->adapter);
-<a name="line38"></a>            $classNameConfig = $className."Config";
-<a name="line39"></a>            
-<a name="line40"></a>            // including model's classes 
-<a name="line41"></a>            inject($jsonConfig->adapter);
-<a name="line42"></a>            
-<a name="line43"></a>            // adding the properties from fabrico's config file
-<a name="line44"></a>            $fabricoAdapterConfig = $this->req->fabrico->config->get("fabrico.adapters.".$className);
-<a name="line45"></a>            if(!$fabricoAdapterConfig) {
-<a name="line46"></a>                throw new Exception($this.": missing configuration for '".$className."'. Check Fabrico's configuration file.");
-<a name="line47"></a>            }
-<a name="line48"></a>            foreach($fabricoAdapterConfig as $key => $value) {
-<a name="line49"></a>                $jsonConfig->$key = $value;
-<a name="line50"></a>            }
-<a name="line51"></a>            
-<a name="line52"></a>            // setting debug flag and the name of the model
-<a name="line53"></a>            $jsonConfig->debug = DEBUG_MODE;
-<a name="line54"></a>            $jsonConfig->name = $this->getFilename($modelJSONFile);
+<a name="line28"></a>            $jsonConfig = readJSON($this->root."/".$modelJSONFile);
+<a name="line29"></a>            $jsonConfig->adapter = isset($jsonConfig->adapter) ? $jsonConfig->adapter : "adapters/MySQL.php";
+<a name="line30"></a>            
+<a name="line31"></a>            // getting model's classes names
+<a name="line32"></a>            $className = $this->getFilename($jsonConfig->adapter);
+<a name="line33"></a>            $classNameConfig = $className."Config";
+<a name="line34"></a>            
+<a name="line35"></a>            // including model's classes 
+<a name="line36"></a>            inject($jsonConfig->adapter);
+<a name="line37"></a>            
+<a name="line38"></a>            // adding the properties from fabrico's config file
+<a name="line39"></a>            if(!isset($this->req->fabrico->adapters->$className)) {
+<a name="line40"></a>                throw new Exception($this.": missing configuration for '".$className."'. Check Fabrico's configuration file.");
+<a name="line41"></a>            }
+<a name="line42"></a>            $fabricoAdapterConfig = $this->req->fabrico->adapters->$className;
+<a name="line43"></a>            foreach($fabricoAdapterConfig as $key => $value) {
+<a name="line44"></a>                $jsonConfig->$key = $value;
+<a name="line45"></a>            }
+<a name="line46"></a>            
+<a name="line47"></a>            // setting debug flag and the name of the model
+<a name="line48"></a>            $jsonConfig->debug = defined("DEBUG") && DEBUG;
+<a name="line49"></a>            $jsonConfig->name = $this->getFilename($modelJSONFile);
+<a name="line50"></a>            
+<a name="line51"></a>            // created the model
+<a name="line52"></a>            $model = new $className(new $classNameConfig($jsonConfig));
+<a name="line53"></a>            $this->{$jsonConfig->name} = $model;
+<a name="line54"></a>            $this->models[$modelJSONFile] = $model;
 <a name="line55"></a>            
-<a name="line56"></a>            // created the model
-<a name="line57"></a>            $model = new $className(new $classNameConfig($jsonConfig));
-<a name="line58"></a>            $this->{$jsonConfig->name} = $model;
-<a name="line59"></a>            $this->models[$modelJSONFile] = $model;
-<a name="line60"></a>            
-<a name="line61"></a>            return $model;
-<a name="line62"></a>        
-<a name="line63"></a>        }
-<a name="line64"></a>        public function run($req, $res) {
-<a name="line65"></a>            $this->req = $req;
-<a name="line66"></a>            $this->res = $res;
+<a name="line56"></a>            return $model;
+<a name="line57"></a>        
+<a name="line58"></a>        }
+<a name="line59"></a>        public function run($req, $res) {
+<a name="line60"></a>            $this->req = $req;
+<a name="line61"></a>            $this->res = $res;
+<a name="line62"></a>        }
+<a name="line63"></a>        private function getFilename($path) {
+<a name="line64"></a>            $parts = explode("/", $path);
+<a name="line65"></a>            $parts = explode(".", array_pop($parts));
+<a name="line66"></a>            return $parts[0];
 <a name="line67"></a>        }
-<a name="line68"></a>        private function getFilename($path) {
-<a name="line69"></a>            $parts = explode("/", $path);
-<a name="line70"></a>            $parts = explode(".", array_pop($parts));
-<a name="line71"></a>            return $parts[0];
-<a name="line72"></a>        }
-<a name="line73"></a>    
-<a name="line74"></a>    }
-<a name="line75"></a>    
-<a name="line76"></a>    
-<a name="line77"></a>
-<a name="line78"></a>?></pre>
+<a name="line68"></a>    
+<a name="line69"></a>    }
+<a name="line70"></a>    
+<a name="line71"></a>    
+<a name="line72"></a>
+<a name="line73"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

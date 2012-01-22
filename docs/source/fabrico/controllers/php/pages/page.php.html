@@ -12,12 +12,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Thu, 19 Jan 2012 14:44:29 +0000">
+<meta name="when" content="Sun, 22 Jan 2012 13:32:55 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
 
-<title>Fabrico\controllers\php\pages\Page.php (Fabrico)</title>
+<title>fabrico\controllers\php\pages\Page.php (Fabrico)</title>
 
 </head>
 <body id="file" onload="parent.document.title=document.title;">
@@ -39,7 +39,7 @@
 </div>
 <hr>
 
-<h1>Fabrico\controllers\php\pages\Page.php</h1>
+<h1>fabrico\controllers\php\pages\Page.php</h1>
 <hr>
 
 <a name="line1"></a><pre><?php
@@ -97,58 +97,56 @@
 <a name="line53"></a>                
 <a name="line54"></a>                // adding custom routes if any
 <a name="line55"></a>                foreach($this->defaultRoutes as $route => $path) {
-<a name="line56"></a>                    if(!isset($this->routes[$route])) {
-<a name="line57"></a>                        $this->routes[$route] = $path;
-<a name="line58"></a>                    }
-<a name="line59"></a>                }
-<a name="line60"></a>                
-<a name="line61"></a>                // setup middleware
-<a name="line62"></a>                $this->using(array(
-<a name="line63"></a>                    "router" => "middleware/Router.php"
-<a name="line64"></a>                ));
-<a name="line65"></a>                
-<a name="line66"></a>                // setup routes
-<a name="line67"></a>                foreach($this->routes as $pattern => $action) {
-<a name="line68"></a>                    $rule = new RouterRule(array(
-<a name="line69"></a>                        "pattern" => $pattern,
-<a name="line70"></a>                        "handler" => $action,
-<a name="line71"></a>                        "controller" => $this,
-<a name="line72"></a>                        "model" => $this->model
-<a name="line73"></a>                    ));
-<a name="line74"></a>                    $this->router->all($rule);
-<a name="line75"></a>                }
-<a name="line76"></a>                
-<a name="line77"></a>                parent::run($req, $res);
+<a name="line56"></a>                    $this->routes[$route] = $path;
+<a name="line57"></a>                }
+<a name="line58"></a>                
+<a name="line59"></a>                // setup middleware
+<a name="line60"></a>                $this->using(array(
+<a name="line61"></a>                    "router" => "middleware/Router.php"
+<a name="line62"></a>                ));
+<a name="line63"></a>                
+<a name="line64"></a>                // setup routes
+<a name="line65"></a>                foreach($this->routes as $pattern => $action) {
+<a name="line66"></a>                    $rule = new RouterRule(array(
+<a name="line67"></a>                        "pattern" => $pattern,
+<a name="line68"></a>                        "handler" => $action,
+<a name="line69"></a>                        "controller" => $this,
+<a name="line70"></a>                        "model" => $this->model
+<a name="line71"></a>                    ));
+<a name="line72"></a>                    $this->router->all($rule);
+<a name="line73"></a>                }
+<a name="line74"></a>                
+<a name="line75"></a>                parent::run($req, $res);
+<a name="line76"></a>            
+<a name="line77"></a>            }
 <a name="line78"></a>            
-<a name="line79"></a>            }
-<a name="line80"></a>            
-<a name="line81"></a>        }
-<a name="line82"></a>        // output (send result to the browser)
-<a name="line83"></a>        public function response($content, $req, $res) {
-<a name="line84"></a>            $res->send(view("layout.html", array(
-<a name="line85"></a>                "javascript" => $req->fabrico->assets->get("javascript"),
-<a name="line86"></a>                "stylesheet" => $req->fabrico->assets->get("css"),
-<a name="line87"></a>                "pageTitle" => isset($this->title) ? $this->title : "fabrico",
-<a name="line88"></a>                "title" => isset($this->title) ? $this->title : "fabrico",
-<a name="line89"></a>                "mainNav" => view("mainnav.html", array(), $this),
-<a name="line90"></a>                "data" => $content
-<a name="line91"></a>            ), $this));
-<a name="line92"></a>        }
-<a name="line93"></a>        // other
-<a name="line94"></a>        public function __toString() {
-<a name="line95"></a>            return "Default";
-<a name="line96"></a>        }
-<a name="line97"></a>        private function filterRoutePattern($pattern) {
-<a name="line98"></a>            $charsToRemove = array("(", ")", ".", "?", "*");
-<a name="line99"></a>            foreach($charsToRemove as $char) {
-<a name="line100"></a>                $pattern = str_replace($char, "", $pattern);
-<a name="line101"></a>            }
-<a name="line102"></a>            return $pattern;
-<a name="line103"></a>        }
-<a name="line104"></a>    
-<a name="line105"></a>    }
-<a name="line106"></a>
-<a name="line107"></a>?></pre>
+<a name="line79"></a>        }
+<a name="line80"></a>        // output (send result to the browser)
+<a name="line81"></a>        public function response($content, $req, $res) {
+<a name="line82"></a>            $res->send(view("layout.html", array(
+<a name="line83"></a>                "javascript" => $req->fabrico->assets->get("javascript"),
+<a name="line84"></a>                "stylesheet" => $req->fabrico->assets->get("css"),
+<a name="line85"></a>                "pageTitle" => isset($this->title) ? $this->title : "fabrico",
+<a name="line86"></a>                "title" => isset($this->title) ? $this->title : "fabrico",
+<a name="line87"></a>                "mainNav" => view("mainnav.html", array(), $this),
+<a name="line88"></a>                "data" => $content
+<a name="line89"></a>            ), $this));
+<a name="line90"></a>        }
+<a name="line91"></a>        // other
+<a name="line92"></a>        public function __toString() {
+<a name="line93"></a>            return "Default";
+<a name="line94"></a>        }
+<a name="line95"></a>        private function filterRoutePattern($pattern) {
+<a name="line96"></a>            $charsToRemove = array("(", ")", ".", "?", "*");
+<a name="line97"></a>            foreach($charsToRemove as $char) {
+<a name="line98"></a>                $pattern = str_replace($char, "", $pattern);
+<a name="line99"></a>            }
+<a name="line100"></a>            return $pattern;
+<a name="line101"></a>        }
+<a name="line102"></a>    
+<a name="line103"></a>    }
+<a name="line104"></a>
+<a name="line105"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

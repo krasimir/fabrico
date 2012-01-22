@@ -34,7 +34,7 @@
                 $basename = basename($file);
                 if(!isset($this->injected->$basename)) {
                     $this->injected->$basename = str_replace(".php", "", $basename);
-                    if(!isset($this->map->$basename) && strpos($this->map->{$basename}->path, $file) !== FALSE) {
+                    if(!isset($this->map->$basename) || strpos($this->map->{$basename}->path, $file) === FALSE) {
                         throw new Exception("Injector: missing file '".$file."'.");
                     } else {
                         require($this->map->{$basename}->path);

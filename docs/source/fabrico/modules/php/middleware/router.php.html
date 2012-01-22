@@ -12,12 +12,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Thu, 19 Jan 2012 14:44:29 +0000">
+<meta name="when" content="Sun, 22 Jan 2012 13:32:55 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
 
-<title>Fabrico\modules\php\middleware\Router.php (Fabrico)</title>
+<title>fabrico\modules\php\middleware\Router.php (Fabrico)</title>
 
 </head>
 <body id="file" onload="parent.document.title=document.title;">
@@ -39,7 +39,7 @@
 </div>
 <hr>
 
-<h1>Fabrico\modules\php\middleware\Router.php</h1>
+<h1>fabrico\modules\php\middleware\Router.php</h1>
 <hr>
 
 <a name="line1"></a><pre><?php
@@ -52,173 +52,172 @@
 <a name="line8"></a>        private $_rules;
 <a name="line9"></a>        
 <a name="line10"></a>        public $matchedRule = "";
-<a name="line11"></a>        public $debug = false;
-<a name="line12"></a>
-<a name="line13"></a>        public function __construct(){
-<a name="line14"></a>            
-<a name="line15"></a>        }
-<a name="line16"></a>        public function addRule($rule) {
-<a name="line17"></a>            $rule = $this->validateRule($rule);
-<a name="line18"></a>            if($rule->priority) {
-<a name="line19"></a>                $arr = array($rule);
-<a name="line20"></a>                $this->_rules = array_merge($arr, $this->_rules);
-<a name="line21"></a>            } else {
-<a name="line22"></a>                $this->_rules []= $rule;
-<a name="line23"></a>            }
-<a name="line24"></a>        }
-<a name="line25"></a>        public function all($rule) {
-<a name="line26"></a>            $this->get(clone $rule);
-<a name="line27"></a>            $this->post(clone $rule);
-<a name="line28"></a>            $this->delete(clone $rule);
-<a name="line29"></a>            $this->put(clone $rule);
-<a name="line30"></a>        }
-<a name="line31"></a>        public function get($rule) {
-<a name="line32"></a>            $rule->method = "GET";
-<a name="line33"></a>            $this->addRule($rule);
-<a name="line34"></a>        }
-<a name="line35"></a>        public function post($rule) {
-<a name="line36"></a>            $rule->method = "POST";
-<a name="line37"></a>            $this->addRule($rule);
-<a name="line38"></a>        }
-<a name="line39"></a>        public function delete($rule) {
-<a name="line40"></a>            $rule->method = "DELETE";
-<a name="line41"></a>            $this->addRule($rule);
-<a name="line42"></a>        }
-<a name="line43"></a>        public function put($rule) {
-<a name="line44"></a>            $rule->method = "PUT";
-<a name="line45"></a>            $this->addRule($rule);
-<a name="line46"></a>        }
-<a name="line47"></a>        public function run($req, $res) {
-<a name="line48"></a>            $numOfRules = count($this->_rules);
-<a name="line49"></a>            for($i=0; $i<$numOfRules; $i++) {
-<a name="line50"></a>                $rule = $this->_rules[$i];
-<a name="line51"></a>                $handler = $rule->handler;
-<a name="line52"></a>                $pattern = $rule->pattern;
-<a name="line53"></a>                if($rule->method == $req->method) {
-<a name="line54"></a>                    $match = $this->match($pattern, $req->url, $req->params);
-<a name="line55"></a>                    /*var_dump("('".$pattern."' == '".$req->url."') ('".$req->method."' == '".$rule->method."') (handler=".$handler.") (match=".($match ? "true" : "false").")");
-<a name="line56"></a>                    var_dump($match);*/
-<a name="line57"></a>                    if($match) {
-<a name="line58"></a>                        if($this->debug) {
-<a name="line59"></a>                            $this->log("Router:<br />matched pattern: '".$pattern."'<br />Handler: '".$handler."'", "#D3D5E7");
-<a name="line60"></a>                        }
-<a name="line61"></a>                        $this->matchedRule = $rule;
-<a name="line62"></a>                        if(is_callable($handler)) {
-<a name="line63"></a>                            $handler($req, $res);
-<a name="line64"></a>                        } else if(is_string($handler)) {
-<a name="line65"></a>                            $this->createController($handler, $rule, $req, $res);
-<a name="line66"></a>                            break;
-<a name="line67"></a>                        } else {
-<a name="line68"></a>                            throw new Exception("not usable ".$handler.' for route handler');
-<a name="line69"></a>                        }
-<a name="line70"></a>                    }
-<a name="line71"></a>                }                
-<a name="line72"></a>            }
-<a name="line73"></a>        }
-<a name="line74"></a>        public function match($pattern, $url, &$params) {
-<a name="line75"></a>        
-<a name="line76"></a>            $matched = false;
-<a name="line77"></a>            $regex = "";
-<a name="line78"></a>            $vars = array();
-<a name="line79"></a>            $patternParts = preg_split("/\//", $pattern);
-<a name="line80"></a>            $numOfParts = count($patternParts);
-<a name="line81"></a>            for($i=0; $i<$numOfParts; $i++) {
-<a name="line82"></a>                $part = $patternParts[$i];
-<a name="line83"></a>                if(substr($part, 0, 1) == "@") {
-<a name="line84"></a>                    $vars []= (object) array(
-<a name="line85"></a>                        "index" => $i,
-<a name="line86"></a>                        "name" => str_replace("@", "", $part)
-<a name="line87"></a>                    );
-<a name="line88"></a>                    $regex  .= "[a-zA-Z0-9-_]+";
-<a name="line89"></a>                } else {
-<a name="line90"></a>                    $regex .= $part;
-<a name="line91"></a>                }
-<a name="line92"></a>                $regex .= $i < $numOfParts-1 ? "/" : "";
-<a name="line93"></a>            }
-<a name="line94"></a>        
-<a name="line95"></a>            $pattern = str_replace("/", "\/", $regex);
-<a name="line96"></a>            $result = preg_match("/".$pattern."/", $url);
-<a name="line97"></a>            
-<a name="line98"></a>            if($result) {
-<a name="line99"></a>                if(count($vars) > 0) {
-<a name="line100"></a>                    $urlParts = preg_split("/\//", $url);
-<a name="line101"></a>                    $numOfParts = count($urlParts);
-<a name="line102"></a>                    for($i=0; $i<$numOfParts; $i++) {
-<a name="line103"></a>                        foreach($vars as $variable) {
-<a name="line104"></a>                            if($variable->index == $i) {
-<a name="line105"></a>                                $params[$variable->name] = $urlParts[$i];
-<a name="line106"></a>                            }
-<a name="line107"></a>                        }
-<a name="line108"></a>                    }
-<a name="line109"></a>                }
-<a name="line110"></a>                $matched = true;
-<a name="line111"></a>            } else {
-<a name="line112"></a>                $matched = false;
-<a name="line113"></a>            }
-<a name="line114"></a>            
-<a name="line115"></a>            return $matched;
-<a name="line116"></a>            
-<a name="line117"></a>        }
-<a name="line118"></a>        public function removeAllRoutes() {
-<a name="line119"></a>            $this->_rules = array();
-<a name="line120"></a>        }
-<a name="line121"></a>        public function getAllRules() {
-<a name="line122"></a>            return $this->_rules;
-<a name="line123"></a>        }
-<a name="line124"></a>        private function createController($path, $rule, $req, $res) {
-<a name="line125"></a>            inject($path);
-<a name="line126"></a>            $parts = explode("/", $path);
-<a name="line127"></a>            $last =  array_pop($parts);
-<a name="line128"></a>            $className = str_replace(".php", "", $last);
-<a name="line129"></a>            $instance = new $className($this);
-<a name="line130"></a>            $action = $rule->action;
-<a name="line131"></a>            $instance->$action($req, $res);
-<a name="line132"></a>        }
-<a name="line133"></a>        private function validateRule($rule) {
-<a name="line134"></a>            if(!isset($rule->method)) {
-<a name="line135"></a>                throw new Exception("Missing 'method' in a rule.");
-<a name="line136"></a>            }
-<a name="line137"></a>            if(!isset($rule->pattern)) {
-<a name="line138"></a>                throw new Exception("Missing 'pattern' in a rule.");
-<a name="line139"></a>            }
-<a name="line140"></a>            if(!isset($rule->handler)) {
-<a name="line141"></a>                throw new Exception("Missing 'handler' in a rule.");
-<a name="line142"></a>            }
-<a name="line143"></a>            if(!isset($rule->action)) {
-<a name="line144"></a>                $rule->action = "run";
-<a name="line145"></a>            }
-<a name="line146"></a>            if(!isset($rule->priority)) {
-<a name="line147"></a>                $rule->priority = false;
-<a name="line148"></a>            }
-<a name="line149"></a>            return $rule;
-<a name="line150"></a>        }
-<a name="line151"></a>        private function log($str, $color) {
-<a name="line152"></a>            echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
-<a name="line153"></a>        }
-<a name="line154"></a>    }
-<a name="line155"></a>    
-<a name="line156"></a>    /**
-<a name="line157"></a>    * @package Fabrico\Modules\Middleware
-<a name="line158"></a>    */
-<a name="line159"></a>    class RouterRule {
-<a name="line160"></a>    
-<a name="line161"></a>        public $pattern = null;
-<a name="line162"></a>        public $handler = null;
-<a name="line163"></a>        public $action = "run";
-<a name="line164"></a>        public $priority = false;
-<a name="line165"></a>        public $model = null;
-<a name="line166"></a>        
-<a name="line167"></a>        public function __construct($props = null) {
-<a name="line168"></a>            if($props != null) {
-<a name="line169"></a>                foreach($props as $key => $value) {
-<a name="line170"></a>                    $this->$key = $value;
-<a name="line171"></a>                }
-<a name="line172"></a>            }
-<a name="line173"></a>        }
-<a name="line174"></a>        
-<a name="line175"></a>    }
-<a name="line176"></a>    
-<a name="line177"></a>?></pre>
+<a name="line11"></a>
+<a name="line12"></a>        public function __construct(){
+<a name="line13"></a>            
+<a name="line14"></a>        }
+<a name="line15"></a>        public function addRule($rule) {
+<a name="line16"></a>            $rule = $this->validateRule($rule);
+<a name="line17"></a>            if($rule->priority) {
+<a name="line18"></a>                $arr = array($rule);
+<a name="line19"></a>                $this->_rules = array_merge($arr, $this->_rules);
+<a name="line20"></a>            } else {
+<a name="line21"></a>                $this->_rules []= $rule;
+<a name="line22"></a>            }
+<a name="line23"></a>        }
+<a name="line24"></a>        public function all($rule) {
+<a name="line25"></a>            $this->get(clone $rule);
+<a name="line26"></a>            $this->post(clone $rule);
+<a name="line27"></a>            $this->delete(clone $rule);
+<a name="line28"></a>            $this->put(clone $rule);
+<a name="line29"></a>        }
+<a name="line30"></a>        public function get($rule) {
+<a name="line31"></a>            $rule->method = "GET";
+<a name="line32"></a>            $this->addRule($rule);
+<a name="line33"></a>        }
+<a name="line34"></a>        public function post($rule) {
+<a name="line35"></a>            $rule->method = "POST";
+<a name="line36"></a>            $this->addRule($rule);
+<a name="line37"></a>        }
+<a name="line38"></a>        public function delete($rule) {
+<a name="line39"></a>            $rule->method = "DELETE";
+<a name="line40"></a>            $this->addRule($rule);
+<a name="line41"></a>        }
+<a name="line42"></a>        public function put($rule) {
+<a name="line43"></a>            $rule->method = "PUT";
+<a name="line44"></a>            $this->addRule($rule);
+<a name="line45"></a>        }
+<a name="line46"></a>        public function run($req, $res) {
+<a name="line47"></a>            $numOfRules = count($this->_rules);
+<a name="line48"></a>            for($i=0; $i<$numOfRules; $i++) {
+<a name="line49"></a>                $rule = $this->_rules[$i];
+<a name="line50"></a>                $handler = $rule->handler;
+<a name="line51"></a>                $pattern = $rule->pattern;
+<a name="line52"></a>                if($rule->method == $req->method) {
+<a name="line53"></a>                    $match = $this->match($pattern, $req->slug, $req->params);
+<a name="line54"></a>                    /*var_dump("('".$pattern."' == '".$req->slug."') ('".$req->method."' == '".$rule->method."') (handler=".$handler.") (match=".($match ? "true" : "false").")");
+<a name="line55"></a>                    var_dump($match);*/
+<a name="line56"></a>                    if($match) {
+<a name="line57"></a>                        if(defined("DEBUG") && DEBUG) {
+<a name="line58"></a>                            $this->log("Router:<br />matched pattern: '".$pattern."'<br />Handler: '".$handler."'", "#D3D5E7");
+<a name="line59"></a>                        }
+<a name="line60"></a>                        $this->matchedRule = $rule;
+<a name="line61"></a>                        if(is_callable($handler)) {
+<a name="line62"></a>                            $handler($req, $res);
+<a name="line63"></a>                        } else if(is_string($handler)) {
+<a name="line64"></a>                            $this->createController($handler, $rule, $req, $res);
+<a name="line65"></a>                            break;
+<a name="line66"></a>                        } else {
+<a name="line67"></a>                            throw new Exception("not usable ".$handler.' for route handler');
+<a name="line68"></a>                        }
+<a name="line69"></a>                    }
+<a name="line70"></a>                }                
+<a name="line71"></a>            }
+<a name="line72"></a>        }
+<a name="line73"></a>        public function match($pattern, $url, &$params) {
+<a name="line74"></a>        
+<a name="line75"></a>            $matched = false;
+<a name="line76"></a>            $regex = "";
+<a name="line77"></a>            $vars = array();
+<a name="line78"></a>            $patternParts = preg_split("/\//", $pattern);
+<a name="line79"></a>            $numOfParts = count($patternParts);
+<a name="line80"></a>            for($i=0; $i<$numOfParts; $i++) {
+<a name="line81"></a>                $part = $patternParts[$i];
+<a name="line82"></a>                if(substr($part, 0, 1) == "@") {
+<a name="line83"></a>                    $vars []= (object) array(
+<a name="line84"></a>                        "index" => $i,
+<a name="line85"></a>                        "name" => str_replace("@", "", $part)
+<a name="line86"></a>                    );
+<a name="line87"></a>                    $regex  .= "[a-zA-Z0-9-_]+";
+<a name="line88"></a>                } else {
+<a name="line89"></a>                    $regex .= $part;
+<a name="line90"></a>                }
+<a name="line91"></a>                $regex .= $i < $numOfParts-1 ? "/" : "";
+<a name="line92"></a>            }
+<a name="line93"></a>        
+<a name="line94"></a>            $pattern = str_replace("/", "\/", $regex);
+<a name="line95"></a>            $result = preg_match("/".$pattern."/", $url);
+<a name="line96"></a>            
+<a name="line97"></a>            if($result) {
+<a name="line98"></a>                if(count($vars) > 0) {
+<a name="line99"></a>                    $urlParts = preg_split("/\//", $url);
+<a name="line100"></a>                    $numOfParts = count($urlParts);
+<a name="line101"></a>                    for($i=0; $i<$numOfParts; $i++) {
+<a name="line102"></a>                        foreach($vars as $variable) {
+<a name="line103"></a>                            if($variable->index == $i) {
+<a name="line104"></a>                                $params[$variable->name] = $urlParts[$i];
+<a name="line105"></a>                            }
+<a name="line106"></a>                        }
+<a name="line107"></a>                    }
+<a name="line108"></a>                }
+<a name="line109"></a>                $matched = true;
+<a name="line110"></a>            } else {
+<a name="line111"></a>                $matched = false;
+<a name="line112"></a>            }
+<a name="line113"></a>            
+<a name="line114"></a>            return $matched;
+<a name="line115"></a>            
+<a name="line116"></a>        }
+<a name="line117"></a>        public function removeAllRoutes() {
+<a name="line118"></a>            $this->_rules = array();
+<a name="line119"></a>        }
+<a name="line120"></a>        public function getAllRules() {
+<a name="line121"></a>            return $this->_rules;
+<a name="line122"></a>        }
+<a name="line123"></a>        private function createController($path, $rule, $req, $res) {
+<a name="line124"></a>            inject($path);
+<a name="line125"></a>            $parts = explode("/", $path);
+<a name="line126"></a>            $last =  array_pop($parts);
+<a name="line127"></a>            $className = str_replace(".php", "", $last);
+<a name="line128"></a>            $instance = new $className($this);
+<a name="line129"></a>            $action = $rule->action;
+<a name="line130"></a>            $instance->$action($req, $res);
+<a name="line131"></a>        }
+<a name="line132"></a>        private function validateRule($rule) {
+<a name="line133"></a>            if(!isset($rule->method)) {
+<a name="line134"></a>                throw new Exception("Missing 'method' in a rule.");
+<a name="line135"></a>            }
+<a name="line136"></a>            if(!isset($rule->pattern)) {
+<a name="line137"></a>                throw new Exception("Missing 'pattern' in a rule.");
+<a name="line138"></a>            }
+<a name="line139"></a>            if(!isset($rule->handler)) {
+<a name="line140"></a>                throw new Exception("Missing 'handler' in a rule.");
+<a name="line141"></a>            }
+<a name="line142"></a>            if(!isset($rule->action)) {
+<a name="line143"></a>                $rule->action = "run";
+<a name="line144"></a>            }
+<a name="line145"></a>            if(!isset($rule->priority)) {
+<a name="line146"></a>                $rule->priority = false;
+<a name="line147"></a>            }
+<a name="line148"></a>            return $rule;
+<a name="line149"></a>        }
+<a name="line150"></a>        private function log($str, $color) {
+<a name="line151"></a>            echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
+<a name="line152"></a>        }
+<a name="line153"></a>    }
+<a name="line154"></a>    
+<a name="line155"></a>    /**
+<a name="line156"></a>    * @package Fabrico\Modules\Middleware
+<a name="line157"></a>    */
+<a name="line158"></a>    class RouterRule {
+<a name="line159"></a>    
+<a name="line160"></a>        public $pattern = null;
+<a name="line161"></a>        public $handler = null;
+<a name="line162"></a>        public $action = "run";
+<a name="line163"></a>        public $priority = false;
+<a name="line164"></a>        public $model = null;
+<a name="line165"></a>        
+<a name="line166"></a>        public function __construct($props = null) {
+<a name="line167"></a>            if($props != null) {
+<a name="line168"></a>                foreach($props as $key => $value) {
+<a name="line169"></a>                    $this->$key = $value;
+<a name="line170"></a>                }
+<a name="line171"></a>            }
+<a name="line172"></a>        }
+<a name="line173"></a>        
+<a name="line174"></a>    }
+<a name="line175"></a>    
+<a name="line176"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

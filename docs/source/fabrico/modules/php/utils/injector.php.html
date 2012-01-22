@@ -12,12 +12,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Thu, 19 Jan 2012 14:44:29 +0000">
+<meta name="when" content="Sun, 22 Jan 2012 13:32:55 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
 
-<title>Fabrico\modules\php\utils\Injector.php (Fabrico)</title>
+<title>fabrico\modules\php\utils\Injector.php (Fabrico)</title>
 
 </head>
 <body id="file" onload="parent.document.title=document.title;">
@@ -39,7 +39,7 @@
 </div>
 <hr>
 
-<h1>Fabrico\modules\php\utils\Injector.php</h1>
+<h1>fabrico\modules\php\utils\Injector.php</h1>
 <hr>
 
 <a name="line1"></a><pre><?php
@@ -78,7 +78,7 @@
 <a name="line34"></a>                $basename = basename($file);
 <a name="line35"></a>                if(!isset($this->injected->$basename)) {
 <a name="line36"></a>                    $this->injected->$basename = str_replace(".php", "", $basename);
-<a name="line37"></a>                    if(!isset($this->map->$basename) && strpos($this->map->{$basename}->path, $file) !== FALSE) {
+<a name="line37"></a>                    if(!isset($this->map->$basename) || strpos($this->map->{$basename}->path, $file) === FALSE) {
 <a name="line38"></a>                        throw new Exception("Injector: missing file '".$file."'.");
 <a name="line39"></a>                    } else {
 <a name="line40"></a>                        require($this->map->{$basename}->path);
@@ -116,8 +116,23 @@
 <a name="line72"></a>            $this->reportContent .= $file."<br />";
 <a name="line73"></a>        }
 <a name="line74"></a>    }
-<a name="line75"></a>
-<a name="line76"></a>?></pre>
+<a name="line75"></a>    
+<a name="line76"></a>    /**
+<a name="line77"></a>    * Instance of Injector class.
+<a name="line78"></a>    * @see Injector
+<a name="line79"></a>    */
+<a name="line80"></a>    $injector = new Injector();
+<a name="line81"></a>    
+<a name="line82"></a>    /**
+<a name="line83"></a>    * Global function for injecting files. Replacement of php's require.
+<a name="line84"></a>    * @package Fabrico
+<a name="line85"></a>    */
+<a name="line86"></a>    function inject($args) {
+<a name="line87"></a>        global $injector;
+<a name="line88"></a>        return $injector->inject($args);
+<a name="line89"></a>    }
+<a name="line90"></a>
+<a name="line91"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>
