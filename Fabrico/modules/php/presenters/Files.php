@@ -10,7 +10,7 @@
     <pre class="code">
     {
         \t"name": "image",
-        \t"presenter": "presenters/File.php",
+        \t"presenter": "presenters/Files.php",
         \t"config": {
             \t\t"destination": "/assets/uploads"
         \t},

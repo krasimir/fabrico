@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 22 Jan 2012 13:32:55 +0000">
+<meta name="when" content="Sun, 22 Jan 2012 22:34:30 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -59,41 +59,43 @@
 <a name="line15"></a>        protected $fields = array();
 <a name="line16"></a>        protected $req;
 <a name="line17"></a>        protected $res;
-<a name="line18"></a>        
-<a name="line19"></a>        public $events;
-<a name="line20"></a>        
-<a name="line21"></a>        public function __construct($router) {
-<a name="line22"></a>            $this->controller = $router->matchedRule->controller;
-<a name="line23"></a>            $this->model = $router->matchedRule->model;
-<a name="line24"></a>            $this->events = (object) array();
-<a name="line25"></a>        }
-<a name="line26"></a>        public function run($req, $res) {
-<a name="line27"></a>            $this->req = $req;
-<a name="line28"></a>            $this->res = $res;
-<a name="line29"></a>        }
-<a name="line30"></a>        public function __toString() {
-<a name="line31"></a>            return "Action";
-<a name="line32"></a>        }
-<a name="line33"></a>        public function view($template, $data = array()) {
-<a name="line34"></a>            $searchIn = array();
-<a name="line35"></a>            $searchIn []= $this->model->name."/".$this;
-<a name="line36"></a>            $searchIn []= $this->controller."/".$this;
-<a name="line37"></a>            $searchIn []= ViewConfig::$searchIn[count(ViewConfig::$searchIn)-1]."/".$this;
-<a name="line38"></a>            return view($template, $data, $searchIn);
-<a name="line39"></a>        }
-<a name="line40"></a>        protected function getPresenter($field) {
-<a name="line41"></a>            $properties = array(
-<a name="line42"></a>                "controller" => $this->controller,
-<a name="line43"></a>                "model" => $this->model,
-<a name="line44"></a>                "req" => $this->req,
-<a name="line45"></a>                "res" => $this->res
-<a name="line46"></a>            );
-<a name="line47"></a>            return PresenterFactory::get($field, $properties);
-<a name="line48"></a>        }
-<a name="line49"></a>    
-<a name="line50"></a>    }
-<a name="line51"></a>
-<a name="line52"></a>?></pre>
+<a name="line18"></a>        protected $fieldsJson;
+<a name="line19"></a>        
+<a name="line20"></a>        public $events;
+<a name="line21"></a>        
+<a name="line22"></a>        public function __construct($router) {
+<a name="line23"></a>            $this->controller = $router->matchedRule->controller;
+<a name="line24"></a>            $this->model = $router->matchedRule->model;
+<a name="line25"></a>            $this->fieldsJson = json_encode($this->model->fields);
+<a name="line26"></a>            $this->events = (object) array();
+<a name="line27"></a>        }
+<a name="line28"></a>        public function run($req, $res) {
+<a name="line29"></a>            $this->req = $req;
+<a name="line30"></a>            $this->res = $res;
+<a name="line31"></a>        }
+<a name="line32"></a>        public function __toString() {
+<a name="line33"></a>            return "Action";
+<a name="line34"></a>        }
+<a name="line35"></a>        public function view($template, $data = array()) {
+<a name="line36"></a>            $searchIn = array();
+<a name="line37"></a>            $searchIn []= $this->model->name."/".$this;
+<a name="line38"></a>            $searchIn []= $this->controller."/".$this;
+<a name="line39"></a>            $searchIn []= ViewConfig::$searchIn[count(ViewConfig::$searchIn)-1]."/".$this;
+<a name="line40"></a>            return view($template, $data, $searchIn);
+<a name="line41"></a>        }
+<a name="line42"></a>        protected function getPresenter($field) {
+<a name="line43"></a>            $properties = array(
+<a name="line44"></a>                "controller" => $this->controller,
+<a name="line45"></a>                "model" => $this->model,
+<a name="line46"></a>                "req" => $this->req,
+<a name="line47"></a>                "res" => $this->res
+<a name="line48"></a>            );
+<a name="line49"></a>            return PresenterFactory::get($field, $properties);
+<a name="line50"></a>        }
+<a name="line51"></a>    
+<a name="line52"></a>    }
+<a name="line53"></a>
+<a name="line54"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

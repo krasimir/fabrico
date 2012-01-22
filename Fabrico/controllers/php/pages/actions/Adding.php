@@ -68,7 +68,6 @@
         private function getForm($req, $res, $sentData = null) {
             $content = "";
             $fields = $this->model->fields;
-            $fieldsJson = json_encode($fields);
             foreach($fields as $field) {
                 $default = $validatorMessage = null;
                 $dependencies = isset($field->dependencies) ? $field->dependencies : null;
@@ -82,25 +81,16 @@
                     "field" => $field->name,
                     "description" => (isset($field->description) ? $field->description : ""),
                     "presenter" => $presenter->add($default)->response->value,
-                    "validatorMessage" => $validatorMessage !== null ? $this->view("wrongInput.html", array(
+                    "validatorMessage" => $validatorMessage !== null ? $this->view("error.html", array(
                         "text" => $validatorMessage
                     )) : "",
                     "rowClass" => $dependencies !== null ? "has-dependencies" : "no-dependencies"
                 ));
             }
-            $content .= $this->view("row.html", array(
-                "name" => "",
-                "field" => "",
-                "description" => "",
-                "presenter" => $this->view("submit.html"),
-                "validatorMessage" => "",
-                "rowClass" => ""
-            ));
+            $content .= $this->view("submit.html");
             $content = $this->view("form.html", array(
-                "presentersContent" => $this->view("table.html", array(
-                    "rows" => $content
-                )),
-                "fields" => $fieldsJson
+                "presentersContent" => $content,
+                "fields" => $this->fieldsJson
             ));
             $content = $this->view("subnav.html").$content;
             return $content;

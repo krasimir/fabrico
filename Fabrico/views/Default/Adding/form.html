@@ -1,6 +1,8 @@
 <form method="post" action="{url}{controllerURL}/adding" enctype="multipart/form-data">
     <input type="hidden" name="action" value="add"/>
-    {presentersContent}
+    <fieldset>
+        {presentersContent}
+    </fieldset>
 </form>
 <script>
     $(document).ready(function() {

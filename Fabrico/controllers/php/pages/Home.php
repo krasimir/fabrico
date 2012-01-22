@@ -14,7 +14,7 @@
             
         }
         public function run($req, $res) {
-            $this->response("<br />Welcome to <i><strong>fabrico</strong></i>.", $req, $res);            
+            $this->response(view("home.html"), $req, $res);            
         }
     
     }

@@ -49,16 +49,17 @@
                         }
                     }
                     if($valid) {
-                        $content = $this->view("subnav.html");
+                        $content .= $this->view("subnav.html");
                         $content .= $this->view("result.html", array("id" => $this->model->store($record)));
-                        $this->events->saved->dispatch(true);
-                        $this->controller->response($content, $req, $res);
+                        $content .= $this->getForm($req, $res, $sentData);
                     } else {
+                        $content .= $this->view("subnav.html");
                         $content .= $this->getForm($req, $res, $sentData);
                     }
                 }
             // displaying the form
             } else {
+                $content .= $this->view("subnav.html");
                 $content .= $this->getForm($req, $res);
             }
             
@@ -70,7 +71,6 @@
             $record = $this->model->get()->where("id=".$id)->flush();
             $content = "";
             $fields = $this->model->fields;
-            $fieldsJson = json_encode($fields);
             if($record) {
                 $record = $record[0];
                 foreach($fields as $field) {
@@ -87,28 +87,19 @@
                         "field" => $field->name,
                         "description" => (isset($field->description) ? $field->description : ""),
                         "presenter" => $presenter->edit($default)->response->value,
-                        "validatorMessage" => $validatorMessage !== null ? $this->view("wrongInput.html", array(
+                        "validatorMessage" => $validatorMessage !== null ? $this->view("error.html", array(
                             "text" => $validatorMessage
                         )) : "",
                         "rowClass" => $dependencies !== null ? "has-dependencies" : "no-dependencies"
                     ));
                 }
-                $content .= $this->view("row.html", array(
-                    "name" => "",
-                    "field" => "",
-                    "description" => "",
-                    "presenter" => view($this."/submit.html"),
-                    "validatorMessage" => "",
-                    "rowClass" => ""
-                ));
+                $content .= view($this."/submit.html");
                 $content = $this->view("form.html", array(
-                    "presentersContent" => $this->view("table.html", array(
-                        "rows" => $content
-                    )),
+                    "presentersContent" => $content,
                     "id" => $id,
-                    "fields" => $fieldsJson
+                    "fields" => $this->fieldsJson
                 ));
-                $content = $this->view("subnav.html").$content;
+                
             } else {
                 $content = $this->view("error.html", array("text" => "Missing record with id = '".$id."'."));
             }

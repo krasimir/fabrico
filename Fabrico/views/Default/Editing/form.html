@@ -1,7 +1,9 @@
 <form method="post" action="{url}{controllerURL}/editing/{id}" enctype="multipart/form-data">
     <input type="hidden" name="action" value="edit"/>
     <input type="hidden" name="id" value="{id}"/>
-    {presentersContent}
+    <fieldset>
+        {presentersContent}
+    </fieldset>
 </form>
 <script>
     $(document).ready(function() {

@@ -1,9 +1,21 @@
-<div class="separator"></div>
-<form method="post" action="{url}/login" class="login-form">
-    {error}
-    <label>Username:</label>
-    <input type="text" name="username"/>
-    <label>Password:</label>
-    <input type="password" name="password"/>
-    <input type="submit" value="login" />
+{error}
+<form method="post" action="{url}/login">
+    <fieldset>
+        <legend>Please type your username and password.</legend>
+        <div class="clearfix">
+            <label>Username:</label>
+            <div class="input">
+                <input type="text" name="username" class="xlarge" />
+            </div>
+        </div>
+        <div class="clearfix">
+            <label>Password:</label>
+            <div class="input">
+                <input type="password" name="password" class="xlarge"/>
+            </div>
+        </div>
+        <div class="actions">
+            <input type="submit" class="btn primary" value="Login" />
+        </div>
+    </fieldset>
 </form>

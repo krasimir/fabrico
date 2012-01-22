@@ -1,4 +1,7 @@
-<tr id="{field}-row" class="{rowClass}">
-    <td class="row-name">{name}<br /><span class="fontSize11">{description}</span></td>
-    <td class="row-worker">{validatorMessage}{presenter}</td>
-</tr>
+<div class="clearfix {rowClass}" id="{field}-row">
+    <label><strong>{name}</strong><br />{description}</label>
+    <div class="input">
+        {validatorMessage}
+        {presenter}
+    </div>
+</div>

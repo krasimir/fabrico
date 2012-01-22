@@ -22,7 +22,9 @@
             
             if($items) {
                 
-                $tableRows = '';
+                $dataRows = '';
+                $dataColumns = '';
+                
                 $fieldsToHide = array();
                 if($this->model->actions !== null && isset($this->model->actions->listing) && isset($this->model->actions->listing->fieldsToHide)) {
                     $fieldsToHide = $this->model->actions->listing->fieldsToHide;
@@ -30,12 +32,12 @@
                 
                 // adding rows
                 foreach($items as $item) {
-                    $tableColumns = '';
+                    $dataColumns = '';
                     foreach($fields as $field) {
                         if(!in_array($field->name, $fieldsToHide)) {
                             $value = $item->{$field->name};
                             $presenter = $this->getPresenter($field);
-                            $tableColumns .= $this->view("column.html", array(
+                            $dataColumns .= $this->view("column.html", array(
                                 "data" => $presenter ? $presenter->listing($value)->response->value : $value
                             ));
                         }
@@ -51,12 +53,14 @@
                             break;
                         }
                     }
-                    $tableColumns .= $this->view($optionsView, array(
-                        "id" => $item->id,
-                        "position" => $item->position
+                    $dataColumns .= $this->view("column.html", array(
+                        "data" => $this->view($optionsView, array(
+                            "id" => $item->id,
+                            "position" => $item->position
+                        ))
                     ));
-                    $tableRows .= $this->view("row.html", array(
-                        "columns" => $tableColumns
+                    $dataRows .= $this->view("row.html", array(
+                        "columns" => $dataColumns
                     ));
                 }
                 
@@ -66,15 +70,15 @@
                 // adding table headers
                 foreach($fields as $field) {
                     if(!in_array($field->name, $fieldsToHide)) {
-                        $fieldsColumns .= $this->view("column.html", array(
+                        $fieldsColumns .= $this->view("columnHeader.html", array(
                             "data" => isset($field->label) ? $field->label : $field->name
                         ));
                     }
                 }
-                $fieldsColumns .= $this->view("column.html", array(
+                $fieldsColumns .= $this->view("columnHeader.html", array(
                     "data" => "Actions"
                 ));
-                $fieldsRow .= $this->view("rowHeader.html", array(
+                $fieldsRow .= $this->view("row.html", array(
                     "columns" => $fieldsColumns
                 ));
                 
@@ -82,7 +86,8 @@
                 $content = "";
                 $content .= $this->view("subnav.html");
                 $content .= $this->view("table.html", array(
-                    "rows" => $fieldsRow.$tableRows
+                    "head" => $fieldsRow,
+                    "body" => $dataRows
                 ));
                 
                 $this->controller->response($content, $req, $res);

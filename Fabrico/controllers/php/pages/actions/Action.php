@@ -15,12 +15,14 @@
         protected $fields = array();
         protected $req;
         protected $res;
+        protected $fieldsJson;
         
         public $events;
         
         public function __construct($router) {
             $this->controller = $router->matchedRule->controller;
             $this->model = $router->matchedRule->model;
+            $this->fieldsJson = json_encode($this->model->fields);
             $this->events = (object) array();
         }
         public function run($req, $res) {
