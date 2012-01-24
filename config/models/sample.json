@@ -1,0 +1,69 @@
+{    
+    "adapter": "adapters/MySQL.php",
+    "freeze": false,
+    "pageTitle": "Sample administration",
+    "title": "Sample administration",
+    "fields": [
+        {
+            "name": "myText",
+            "presenter": "presenters/Text.php",
+            "description": "bla",
+            "validators": [
+                {
+                    "class": "validators/NotEmpty.php"
+                }
+            ]
+        },
+        {
+            "name": "filesApp",
+            "presenter": "presenters/Files.php",
+            "config": {
+                "destination": "/assets/uploads"
+            }
+        },
+        {
+            "name": "avatar",
+            "presenter": "presenters/File.php",
+            "config": {
+                "destination": "/assets/uploads"
+            }
+        },
+        {
+            "name": "category",
+            "presenter": "presenters/Select.php",
+            "config": {
+                "options": [
+                    {"key": "yes", "label": "answer Yes"},
+                    {"key": "no", "label": "answer No"},
+                    {"key": "maybe", "label": "answer Maybe"}
+                ]
+            }
+        },
+        {
+            "name": "types",
+            "presenter": "presenters/SelectDbCheck.php",
+            "defaultValue": "33",
+            "config": {
+                "model": "types.json",
+                "field": "name"
+            },
+            "validators": [
+                {
+                    "class": "validators/NotEmpty.php"
+                }
+            ],
+            "dependencies": [
+                {
+                    "field": "category",
+                    "shouldMatch": "^no$"
+                }
+            ]
+        }
+    ],
+    "actions": {
+        "listing": {
+            "fieldsToHide": ["myName"],
+            "positionEditing": "direct"
+        }
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "adapter": "adapters/MySQL.php",
+    "freeze": false,
+    "fields": [
+        {"name": "name",
+            "label": "Name",
+            "presenter": "presenters/Text.php"
+        },
+        {"name": "price",
+            "label": "Price",
+            "presenter": "presenters/Text.php"
+        }
+    ]
+}
