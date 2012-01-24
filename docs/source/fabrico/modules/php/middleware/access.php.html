@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 22 Jan 2012 22:34:30 +0000">
+<meta name="when" content="Tue, 24 Jan 2012 15:12:57 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -51,62 +51,67 @@
 <a name="line7"></a>    */
 <a name="line8"></a>    class Access {
 <a name="line9"></a>    
-<a name="line10"></a>        public $credentials;
+<a name="line10"></a>        public $users = array();
 <a name="line11"></a>        public $form;
 <a name="line12"></a>        public $loginError = "";
 <a name="line13"></a>        
 <a name="line14"></a>        private $req;
 <a name="line15"></a>        private $logged = null;
 <a name="line16"></a>        
-<a name="line17"></a>        public function setCredentials($user, $pass) {
-<a name="line18"></a>            $this->credentials = (object) array("username" => $user, "password" => $pass);
-<a name="line19"></a>        }
-<a name="line20"></a>        public function isLogged($req) {
-<a name="line21"></a>            $this->req = $req;
-<a name="line22"></a>            if($this->logged !== null) {
-<a name="line23"></a>                return $this->logged;
-<a name="line24"></a>            } else {
-<a name="line25"></a>                $this->form = (object) array("username" => "username", "password" => "password");
-<a name="line26"></a>                if(
-<a name="line27"></a>                    isset($_SESSION["username"]) && 
-<a name="line28"></a>                    $_SESSION["username"] == $this->credentials->username && 
-<a name="line29"></a>                    isset($_SESSION["password"]) && 
-<a name="line30"></a>                    $_SESSION["password"] == $this->credentials->password
-<a name="line31"></a>                ) {
-<a name="line32"></a>                    $this->logged = true;
-<a name="line33"></a>                } else {
-<a name="line34"></a>                
-<a name="line35"></a>                    $usernameField = $this->form->username;
-<a name="line36"></a>                    $passwordField = $this->form->password;
+<a name="line17"></a>        public function isLogged($req) {
+<a name="line18"></a>            $this->req = $req;
+<a name="line19"></a>            if($this->logged !== null) {
+<a name="line20"></a>                return $this->logged;
+<a name="line21"></a>            } else {
+<a name="line22"></a>                foreach($this->users as $user) {
+<a name="line23"></a>                    $credentials = (object) array(
+<a name="line24"></a>                        "username" => $user->username,
+<a name="line25"></a>                        "password" => $user->password
+<a name="line26"></a>                    );
+<a name="line27"></a>                    $this->form = (object) array("username" => "username", "password" => "password");
+<a name="line28"></a>                    if(
+<a name="line29"></a>                        isset($_SESSION["username"]) && 
+<a name="line30"></a>                        $_SESSION["username"] == $credentials->username && 
+<a name="line31"></a>                        isset($_SESSION["password"]) && 
+<a name="line32"></a>                        $_SESSION["password"] == $credentials->password
+<a name="line33"></a>                    ) {
+<a name="line34"></a>                        $this->req->fabrico->currentUser = $user;
+<a name="line35"></a>                        $this->logged = true;
+<a name="line36"></a>                    } else {
 <a name="line37"></a>                    
-<a name="line38"></a>                    if(isset($this->req->body->$usernameField) && isset($this->req->body->$passwordField)) {
-<a name="line39"></a>                        if($this->req->body->$usernameField == $this->credentials->username && $this->req->body->$passwordField == $this->credentials->password) {
-<a name="line40"></a>                            $_SESSION["username"] = $this->req->body->$usernameField;
-<a name="line41"></a>                            $_SESSION["password"] = $this->req->body->$passwordField;
-<a name="line42"></a>                            $this->logged = true;
-<a name="line43"></a>                        } else {
-<a name="line44"></a>                            $this->logged = false;
-<a name="line45"></a>                            $this->loginError = "Wrong username or password!";
-<a name="line46"></a>                        }
-<a name="line47"></a>                    } else {
-<a name="line48"></a>                         $this->logged = false;
-<a name="line49"></a>                    }   
-<a name="line50"></a>                }
-<a name="line51"></a>                return $this->logged;
-<a name="line52"></a>            }
-<a name="line53"></a>        }
-<a name="line54"></a>        public function run($req, $res) {
-<a name="line55"></a>            $this->req = $req;
-<a name="line56"></a>        }
-<a name="line57"></a>        public function logout() {
-<a name="line58"></a>            $_SESSION["username"] = "";
-<a name="line59"></a>            $_SESSION["password"] = "";
-<a name="line60"></a>        }
-<a name="line61"></a>        
-<a name="line62"></a>    }
-<a name="line63"></a>
-<a name="line64"></a>
-<a name="line65"></a>?></pre>
+<a name="line38"></a>                        $usernameField = $this->form->username;
+<a name="line39"></a>                        $passwordField = $this->form->password;
+<a name="line40"></a>                        
+<a name="line41"></a>                        if(isset($this->req->body->$usernameField) && isset($this->req->body->$passwordField)) {
+<a name="line42"></a>                            if($this->req->body->$usernameField == $credentials->username && $this->req->body->$passwordField == $credentials->password) {
+<a name="line43"></a>                                $_SESSION["username"] = $this->req->body->$usernameField;
+<a name="line44"></a>                                $_SESSION["password"] = $this->req->body->$passwordField;
+<a name="line45"></a>                                $this->logged = true;
+<a name="line46"></a>                                $this->req->fabrico->currentUser = $user;
+<a name="line47"></a>                            } else {
+<a name="line48"></a>                                $this->logged = false;
+<a name="line49"></a>                                $this->loginError = "Wrong username or password!";
+<a name="line50"></a>                            }
+<a name="line51"></a>                        } else {
+<a name="line52"></a>                             $this->logged = false;
+<a name="line53"></a>                        }   
+<a name="line54"></a>                    }
+<a name="line55"></a>                }
+<a name="line56"></a>                return $this->logged;
+<a name="line57"></a>            }
+<a name="line58"></a>        }
+<a name="line59"></a>        public function run($req, $res) {
+<a name="line60"></a>            $this->req = $req;
+<a name="line61"></a>        }
+<a name="line62"></a>        public function logout() {
+<a name="line63"></a>            $_SESSION["username"] = "";
+<a name="line64"></a>            $_SESSION["password"] = "";
+<a name="line65"></a>        }
+<a name="line66"></a>        
+<a name="line67"></a>    }
+<a name="line68"></a>
+<a name="line69"></a>
+<a name="line70"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

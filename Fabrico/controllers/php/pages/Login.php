@@ -22,8 +22,8 @@
             $res->send(view("layout.html", array(
                 "javascript" => $req->fabrico->assets->get("javascript"),
                 "stylesheet" => $req->fabrico->assets->get("css"),
-                "pageTitle" => "Fabrico",
-                "title" => "Fabrico",
+                "title" => "Login",
+                "pageTitle" => "Login",
                 "mainNav" => "",
                 "data" => view("login.html"),
                 "error" => $req->fabrico->access->loginError != "" ? view("errormessage.html", array("text" => $req->fabrico->access->loginError), $this) : ""

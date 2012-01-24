@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 22 Jan 2012 22:34:30 +0000">
+<meta name="when" content="Tue, 24 Jan 2012 15:12:57 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -56,97 +56,99 @@
 <a name="line12"></a>    
 <a name="line13"></a>        public $model;
 <a name="line14"></a>        public $url;
-<a name="line15"></a>        public $title;
-<a name="line16"></a>    
-<a name="line17"></a>        protected $router;
-<a name="line18"></a>        protected $defaultRoutes = array();
-<a name="line19"></a>        protected $defaultController = "actions/Listing.php";
-<a name="line20"></a>        protected $matchedRouterRule;
-<a name="line21"></a>        
-<a name="line22"></a>        private $routes = array();
-<a name="line23"></a>        
-<a name="line24"></a>        public function __construct($router = null) {
-<a name="line25"></a>            $this->matchedRouterRule = $router->matchedRule;
-<a name="line26"></a>        }
-<a name="line27"></a>        public function run($req, $res) {
-<a name="line28"></a>        
-<a name="line29"></a>            // administrate a model if there is any associated with this controller
-<a name="line30"></a>            if(isset($this->matchedRouterRule->model) && $this->model = $req->fabrico->models->get($this->matchedRouterRule->model)) {
-<a name="line31"></a>            
-<a name="line32"></a>                $this->url = $this->filterRoutePattern($this->matchedRouterRule->pattern);
-<a name="line33"></a>                $this->title = $this->model->title !== null ? $this->model->title : "fabrico";
-<a name="line34"></a>                
-<a name="line35"></a>                // routes
-<a name="line36"></a>                $pattern = $this->matchedRouterRule->pattern;
-<a name="line37"></a>                $this->routes = array(
-<a name="line38"></a>                    // showing data from the database
-<a name="line39"></a>                    $pattern."/listing" => "actions/Listing.php",
-<a name="line40"></a>                    // adding data from the database
-<a name="line41"></a>                    $pattern."/adding" => "actions/Adding.php",
-<a name="line42"></a>                    // editing data from the database
-<a name="line43"></a>                    $pattern."/editing/@id" => "actions/Editing.php",
-<a name="line44"></a>                    // deleting data from the database
-<a name="line45"></a>                    $pattern."/deleting/@id" => "actions/Deleting.php",
-<a name="line46"></a>                    // ordering
-<a name="line47"></a>                    $pattern."/ordering/@type/@id/@position" => "actions/Ordering.php",
+<a name="line15"></a>        public $title = "...";
+<a name="line16"></a>        public $pageTitle = "...";
+<a name="line17"></a>    
+<a name="line18"></a>        protected $router;
+<a name="line19"></a>        protected $defaultRoutes = array();
+<a name="line20"></a>        protected $defaultController = "actions/Listing.php";
+<a name="line21"></a>        protected $matchedRouterRule;
+<a name="line22"></a>        
+<a name="line23"></a>        private $routes = array();
+<a name="line24"></a>        
+<a name="line25"></a>        public function __construct($router = null) {
+<a name="line26"></a>            $this->matchedRouterRule = $router->matchedRule;
+<a name="line27"></a>        }
+<a name="line28"></a>        public function run($req, $res) {
+<a name="line29"></a>        
+<a name="line30"></a>            // administrate a model if there is any associated with this controller
+<a name="line31"></a>            if(isset($this->matchedRouterRule->model) && $this->model = $req->fabrico->models->get($this->matchedRouterRule->model)) {
+<a name="line32"></a>            
+<a name="line33"></a>                $this->url = $this->filterRoutePattern($this->matchedRouterRule->pattern);
+<a name="line34"></a>                $this->title = $this->model->title !== null ? $this->model->title : $this->title;
+<a name="line35"></a>                $this->pageTitle = $this->model->pageTitle !== null ? $this->model->pageTitle : $this->pageTitle;
+<a name="line36"></a>                
+<a name="line37"></a>                // routes
+<a name="line38"></a>                $pattern = $this->matchedRouterRule->pattern;
+<a name="line39"></a>                $this->routes = array(
+<a name="line40"></a>                    // showing data from the database
+<a name="line41"></a>                    $pattern."/listing" => "actions/Listing.php",
+<a name="line42"></a>                    // adding data from the database
+<a name="line43"></a>                    $pattern."/adding" => "actions/Adding.php",
+<a name="line44"></a>                    // editing data from the database
+<a name="line45"></a>                    $pattern."/editing/@id" => "actions/Editing.php",
+<a name="line46"></a>                    // deleting data from the database
+<a name="line47"></a>                    $pattern."/deleting/@id" => "actions/Deleting.php",
 <a name="line48"></a>                    // ordering
-<a name="line49"></a>                    $pattern."/ordering/@type/@id" => "actions/Ordering.php",
-<a name="line50"></a>                    // default route
-<a name="line51"></a>                    $pattern => $this->defaultController
-<a name="line52"></a>                );
-<a name="line53"></a>                
-<a name="line54"></a>                // adding custom routes if any
-<a name="line55"></a>                foreach($this->defaultRoutes as $route => $path) {
-<a name="line56"></a>                    $this->routes[$route] = $path;
-<a name="line57"></a>                }
-<a name="line58"></a>                
-<a name="line59"></a>                // setup middleware
-<a name="line60"></a>                $this->using(array(
-<a name="line61"></a>                    "router" => "middleware/Router.php"
-<a name="line62"></a>                ));
-<a name="line63"></a>                
-<a name="line64"></a>                // setup routes
-<a name="line65"></a>                foreach($this->routes as $pattern => $action) {
-<a name="line66"></a>                    $rule = new RouterRule(array(
-<a name="line67"></a>                        "pattern" => $pattern,
-<a name="line68"></a>                        "handler" => $action,
-<a name="line69"></a>                        "controller" => $this,
-<a name="line70"></a>                        "model" => $this->model
-<a name="line71"></a>                    ));
-<a name="line72"></a>                    $this->router->all($rule);
-<a name="line73"></a>                }
-<a name="line74"></a>                
-<a name="line75"></a>                parent::run($req, $res);
-<a name="line76"></a>            
-<a name="line77"></a>            }
+<a name="line49"></a>                    $pattern."/ordering/@type/@id/@position" => "actions/Ordering.php",
+<a name="line50"></a>                    // ordering
+<a name="line51"></a>                    $pattern."/ordering/@type/@id" => "actions/Ordering.php",
+<a name="line52"></a>                    // default route
+<a name="line53"></a>                    $pattern => $this->defaultController
+<a name="line54"></a>                );
+<a name="line55"></a>                
+<a name="line56"></a>                // adding custom routes if any
+<a name="line57"></a>                foreach($this->defaultRoutes as $route => $path) {
+<a name="line58"></a>                    $this->routes[$route] = $path;
+<a name="line59"></a>                }
+<a name="line60"></a>                
+<a name="line61"></a>                // setup middleware
+<a name="line62"></a>                $this->using(array(
+<a name="line63"></a>                    "router" => "middleware/Router.php"
+<a name="line64"></a>                ));
+<a name="line65"></a>                
+<a name="line66"></a>                // setup routes
+<a name="line67"></a>                foreach($this->routes as $pattern => $action) {
+<a name="line68"></a>                    $rule = new RouterRule(array(
+<a name="line69"></a>                        "pattern" => $pattern,
+<a name="line70"></a>                        "handler" => $action,
+<a name="line71"></a>                        "controller" => $this,
+<a name="line72"></a>                        "model" => $this->model
+<a name="line73"></a>                    ));
+<a name="line74"></a>                    $this->router->all($rule);
+<a name="line75"></a>                }
+<a name="line76"></a>                
+<a name="line77"></a>                parent::run($req, $res);
 <a name="line78"></a>            
-<a name="line79"></a>        }
-<a name="line80"></a>        // output (send result to the browser)
-<a name="line81"></a>        public function response($content, $req, $res) {
-<a name="line82"></a>            $res->send(view("layout.html", array(
-<a name="line83"></a>                "javascript" => $req->fabrico->assets->get("javascript"),
-<a name="line84"></a>                "stylesheet" => $req->fabrico->assets->get("css"),
-<a name="line85"></a>                "pageTitle" => isset($this->title) ? $this->title : "fabrico",
-<a name="line86"></a>                "title" => isset($this->title) ? $this->title : "fabrico",
-<a name="line87"></a>                "mainNav" => view("mainnav.html", array(), $this),
-<a name="line88"></a>                "data" => $content
-<a name="line89"></a>            ), $this));
-<a name="line90"></a>        }
-<a name="line91"></a>        // other
-<a name="line92"></a>        public function __toString() {
-<a name="line93"></a>            return "Default";
-<a name="line94"></a>        }
-<a name="line95"></a>        private function filterRoutePattern($pattern) {
-<a name="line96"></a>            $charsToRemove = array("(", ")", ".", "?", "*");
-<a name="line97"></a>            foreach($charsToRemove as $char) {
-<a name="line98"></a>                $pattern = str_replace($char, "", $pattern);
-<a name="line99"></a>            }
-<a name="line100"></a>            return $pattern;
-<a name="line101"></a>        }
-<a name="line102"></a>    
-<a name="line103"></a>    }
-<a name="line104"></a>
-<a name="line105"></a>?></pre>
+<a name="line79"></a>            }
+<a name="line80"></a>            
+<a name="line81"></a>        }
+<a name="line82"></a>        // output (send result to the browser)
+<a name="line83"></a>        public function response($content, $req, $res) {
+<a name="line84"></a>            $res->send(view("layout.html", array(
+<a name="line85"></a>                "javascript" => $req->fabrico->assets->get("javascript"),
+<a name="line86"></a>                "stylesheet" => $req->fabrico->assets->get("css"),
+<a name="line87"></a>                "title" => $this->title,
+<a name="line88"></a>                "pageTitle" => $this->pageTitle,
+<a name="line89"></a>                "mainNav" => view("mainnav.html", array(), $this),
+<a name="line90"></a>                "data" => $content
+<a name="line91"></a>            ), $this));
+<a name="line92"></a>        }
+<a name="line93"></a>        // other
+<a name="line94"></a>        public function __toString() {
+<a name="line95"></a>            return "Default";
+<a name="line96"></a>        }
+<a name="line97"></a>        private function filterRoutePattern($pattern) {
+<a name="line98"></a>            $charsToRemove = array("(", ")", ".", "?", "*");
+<a name="line99"></a>            foreach($charsToRemove as $char) {
+<a name="line100"></a>                $pattern = str_replace($char, "", $pattern);
+<a name="line101"></a>            }
+<a name="line102"></a>            return $pattern;
+<a name="line103"></a>        }
+<a name="line104"></a>    
+<a name="line105"></a>    }
+<a name="line106"></a>
+<a name="line107"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

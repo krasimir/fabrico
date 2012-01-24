@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sun, 22 Jan 2012 22:34:30 +0000">
+<meta name="when" content="Tue, 24 Jan 2012 15:12:57 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -58,12 +58,14 @@
 <a name="line14"></a>            
 <a name="line15"></a>        }
 <a name="line16"></a>        public function run($req, $res) {
-<a name="line17"></a>            $this->response(view("home.html"), $req, $res);            
-<a name="line18"></a>        }
-<a name="line19"></a>    
-<a name="line20"></a>    }
-<a name="line21"></a>
-<a name="line22"></a>?></pre>
+<a name="line17"></a>            $this->title = 'Welcome '.$req->fabrico->currentUser->username.'.';
+<a name="line18"></a>            $this->pageTitle = 'Home';
+<a name="line19"></a>            $this->response(view("home.html"), $req, $res);            
+<a name="line20"></a>        }
+<a name="line21"></a>    
+<a name="line22"></a>    }
+<a name="line23"></a>
+<a name="line24"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

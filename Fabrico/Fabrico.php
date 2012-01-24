@@ -9,6 +9,7 @@
         public $req;
         public $res;
         public $paths;
+        public $currentUser;
         
         /**
         * @param $configs
@@ -65,16 +66,13 @@
                 }
             }
             
-            // models
+            // access
             if(isset($configs->access)) {
                 $this->log("Fabrico's configuration - 'access'.", "#C0C0C0");
                 $this->using(array(
                     "access" => "middleware/Access.php",
                 ));
-                $this->access->setCredentials(
-                    $configs->access->user, 
-                    $configs->access->pass
-                );
+                $this->access->users = $configs->access;
             }
             
             // router
@@ -106,11 +104,23 @@
                 ));
                 forEachView($this->paths);
             }
+            
+            // brand
+            if(isset($configs->brand)) {
+                if(isset($configs->views)) {
+                    forEachView((object) array(
+                        "brand" => $configs->brand
+                    ));
+                }
+            }
     
             $this->run($this->req, $this->res);
             
         }
         public function run($req, $res) {
+        
+            // setting a pointer to the fabrico
+            $this->req->fabrico = $this;
         
             if(isset($this->access) && !$this->access->isLogged($req) && isset($this->router)) {
                 $this->router->removeAllRoutes();
@@ -124,9 +134,6 @@
             if(defined("DEBUG") && DEBUG) {
                 $res->beforeExitHandler = array((object) array("obj" => $this, "method" => "onExit"));
             }
-            
-            // setting a pointer to the fabrico
-            $this->req->fabrico = $this;
             
             // running middleware
             parent::run($this->req, $this->res);

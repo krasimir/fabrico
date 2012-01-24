@@ -30,10 +30,15 @@
 <p>
 <pre class="code">
 {
+    "brand": "[string]", // optional
     "benchmark": "[yes|no]", // optional
     "models": "[path_to_your_models_json_files]", // optional
     "adapters": "[path_to_json_file]", // required only if you use "models"
-    "access": <a href="#access_object">[access_object]</a>, // optional
+    "access": [ // optional
+        <a href="#access_object">[access_object]</a>,
+        <a href="#access_object">[access_object]</a>,
+        ...
+    ],
     "assets": [ // optional
         <a href="#asset_object">[asset_object]</a>, 
         <a href="#asset_object">[asset_object]</a>,
@@ -57,8 +62,9 @@
 <h3>Access object</h3>
 <pre class="code">
 {
-    "user": "admin",
-    "pass": "admin"
+    "username": "admin",
+    "password": "admin",
+    ... // custom properties (later they will be available via $req->fabrico->currentUser
 }
 </pre>
 
