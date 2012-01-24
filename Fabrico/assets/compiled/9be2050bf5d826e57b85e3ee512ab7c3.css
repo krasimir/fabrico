@@ -2590,6 +2590,11 @@ body {
 #filesInputHolder .filesInputHolderItem .remove {
     display: none;
 }
+
+/* TINYMCE */
+.textarea-tinymce {
+    width: 90%;
+}
 /* The main calendar widget.  DIV containing a table. */
 
 .calendar {

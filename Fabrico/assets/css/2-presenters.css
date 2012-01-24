@@ -82,3 +82,8 @@
 #filesInputHolder .filesInputHolderItem .remove {
     display: none;
 }
+
+/* TINYMCE */
+.textarea-tinymce {
+    width: 90%;
+}

@@ -6,7 +6,12 @@
     "assets": [
         {
             "name": "javascript", 
-            "source": "/modules/js/*.js", 
+            "source": [
+                "/modules/js/calendar/*.js",
+                "/modules/js/color/*.js",
+                "/modules/js/tinymce/tiny_mce.js",
+                "/modules/js/utils/*.js"
+            ],
             "destination": "/assets/compiled/",
             "extension": "js",
             "build": true
