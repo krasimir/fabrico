@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Tue, 24 Jan 2012 17:37:22 +0000">
+<meta name="when" content="Wed, 01 Feb 2012 13:34:27 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -78,7 +78,7 @@
 <a name="line34"></a>            return $this;
 <a name="line35"></a>        }
 <a name="line36"></a>        public function add($default = null) {
-<a name="line37"></a>            $this->setResponse($value);
+<a name="line37"></a>            $this->setResponse($default);
 <a name="line38"></a>            return $this;
 <a name="line39"></a>        }
 <a name="line40"></a>        public function addAction() {
@@ -99,10 +99,10 @@
 <a name="line55"></a>        }
 <a name="line56"></a>        public function view($template, $data) {
 <a name="line57"></a>            $searchIn = array();
-<a name="line58"></a>            $searchIn []= $this->model->name."/".$this->name;
-<a name="line59"></a>            $searchIn []= $this->controller."/".$this->model->name."/".$this->name;
-<a name="line60"></a>            $searchIn []= $this->controller."/".$this."/".$this->name;
-<a name="line61"></a>            $searchIn []= $this->controller."/".$this;
+<a name="line58"></a>            $searchIn []= "/views/".$this->model->name."/".$this->name;
+<a name="line59"></a>            $searchIn []= "/views/".$this->controller."/".$this->model->name."/".$this->name;
+<a name="line60"></a>            $searchIn []= "/views/".$this->controller."/".$this."/".$this->name;
+<a name="line61"></a>            $searchIn []= "/views/".$this->controller."/".$this;
 <a name="line62"></a>            $searchIn []= ViewConfig::$searchIn[count(ViewConfig::$searchIn)-1]."/".$this;
 <a name="line63"></a>            return view($template, $data, $searchIn);
 <a name="line64"></a>        }       

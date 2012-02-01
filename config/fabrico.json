@@ -3,27 +3,7 @@
     "benchmark": "yes",
     "models": "/../config/models/",
     "adapters": "/../config/adapters.json",
-    "assets": [
-        {
-            "name": "javascript", 
-            "source": [
-                "/modules/js/calendar/*.js",
-                "/modules/js/color/*.js",
-                "/modules/js/tinymce/tiny_mce.js",
-                "/modules/js/utils/*.js"
-            ],
-            "destination": "/assets/compiled/",
-            "extension": "js",
-            "build": true
-        },
-        {
-            "name": "css", 
-            "source": "/assets/css/*.css", 
-            "destination": "/assets/compiled/",
-            "extension": "css",
-            "build": true
-        }
-    ],
+    "assets": "/../config/assets.json",
     "access": [
         {
             "username": "admin",

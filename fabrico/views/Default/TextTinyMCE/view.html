@@ -1,6 +1,6 @@
-<textarea id="{field}" name="{field}" rows="15" cols="80" class="textarea-tinymce">{value}</textarea>
+<textarea id="{field}" name="{field}" class="textarea-tinymce-{field}">{value}</textarea>
 <script type="text/javascript">
 	$(document).ready(function() {
-        global.fabrico.modules.presenters.TextTinyMCE.init({settings});
+        global.fabrico.modules.presenters.TextTinyMCE.init({settings}, "{field}");
     });
 </script>

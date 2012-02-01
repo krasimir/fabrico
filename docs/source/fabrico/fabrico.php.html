@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Tue, 24 Jan 2012 17:37:22 +0000">
+<meta name="when" content="Wed, 01 Feb 2012 13:34:27 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -104,7 +104,7 @@
 <a name="line60"></a>                    "assets" => "middleware/AssetsManager.php",
 <a name="line61"></a>                ));
 <a name="line62"></a>                $this->assets->root = $this->paths->root;
-<a name="line63"></a>                $assets = $configs->assets;
+<a name="line63"></a>                $assets = readJSON($this->paths->root.$configs->assets);
 <a name="line64"></a>                foreach($assets as $asset) {
 <a name="line65"></a>                    $this->assets->add($asset);
 <a name="line66"></a>                }

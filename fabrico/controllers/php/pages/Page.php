@@ -12,8 +12,8 @@
     
         public $model;
         public $url;
-        public $title = "...";
-        public $pageTitle = "...";
+        public $title;
+        public $pageTitle;
     
         protected $router;
         protected $defaultRoutes = array();
@@ -30,9 +30,9 @@
             // administrate a model if there is any associated with this controller
             if(isset($this->matchedRouterRule->model) && $this->model = $req->fabrico->models->get($this->matchedRouterRule->model)) {
             
-                $this->url = $this->filterRoutePattern($this->matchedRouterRule->pattern);
-                $this->title = $this->model->title !== null ? $this->model->title : $this->title;
-                $this->pageTitle = $this->model->pageTitle !== null ? $this->model->pageTitle : $this->pageTitle;
+                $this->url = $this->url === null ? $this->filterRoutePattern($this->matchedRouterRule->pattern) : $this->url;
+                $this->title = $this->title === null ? ($this->model->title !== null ? $this->model->title : "...") : $this->title;
+                $this->pageTitle = $this->model->pageTitle !== null ? $this->model->pageTitle : "...";
                 
                 // routes
                 $pattern = $this->matchedRouterRule->pattern;

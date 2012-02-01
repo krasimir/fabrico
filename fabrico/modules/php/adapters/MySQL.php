@@ -266,6 +266,7 @@
                 case "SelectRadio": $str .= " LONGTEXT "; break;
                 case "TextLong": $str .= " LONGTEXT "; break;
                 case "TextRich": $str .= " LONGTEXT "; break;
+                case "TextTinyMCE": $str .= " LONGTEXT "; break;
                 default: $str .= " VARCHAR(100) "; break;
             }
             if(isset($field->default)) {

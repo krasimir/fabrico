@@ -34,7 +34,7 @@
             return $this;
         }
         public function add($default = null) {
-            $this->setResponse($value);
+            $this->setResponse($default);
             return $this;
         }
         public function addAction() {
@@ -55,10 +55,10 @@
         }
         public function view($template, $data) {
             $searchIn = array();
-            $searchIn []= $this->model->name."/".$this->name;
-            $searchIn []= $this->controller."/".$this->model->name."/".$this->name;
-            $searchIn []= $this->controller."/".$this."/".$this->name;
-            $searchIn []= $this->controller."/".$this;
+            $searchIn []= "/views/".$this->model->name."/".$this->name;
+            $searchIn []= "/views/".$this->controller."/".$this->model->name."/".$this->name;
+            $searchIn []= "/views/".$this->controller."/".$this."/".$this->name;
+            $searchIn []= "/views/".$this->controller."/".$this;
             $searchIn []= ViewConfig::$searchIn[count(ViewConfig::$searchIn)-1]."/".$this;
             return view($template, $data, $searchIn);
         }       

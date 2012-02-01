@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Tue, 24 Jan 2012 17:37:22 +0000">
+<meta name="when" content="Wed, 01 Feb 2012 13:34:27 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -78,8 +78,8 @@
 <a name="line34"></a>        }
 <a name="line35"></a>        public function view($template, $data = array()) {
 <a name="line36"></a>            $searchIn = array();
-<a name="line37"></a>            $searchIn []= $this->model->name."/".$this;
-<a name="line38"></a>            $searchIn []= $this->controller."/".$this;
+<a name="line37"></a>            $searchIn []= "/views/".$this->model->name."/".$this;
+<a name="line38"></a>            $searchIn []= "/views/".$this->controller."/".$this;
 <a name="line39"></a>            $searchIn []= ViewConfig::$searchIn[count(ViewConfig::$searchIn)-1]."/".$this;
 <a name="line40"></a>            return view($template, $data, $searchIn);
 <a name="line41"></a>        }

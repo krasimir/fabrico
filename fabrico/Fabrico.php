@@ -60,7 +60,7 @@
                     "assets" => "middleware/AssetsManager.php",
                 ));
                 $this->assets->root = $this->paths->root;
-                $assets = $configs->assets;
+                $assets = readJSON($this->paths->root.$configs->assets);
                 foreach($assets as $asset) {
                     $this->assets->add($asset);
                 }

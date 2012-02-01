@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Tue, 24 Jan 2012 17:37:22 +0000">
+<meta name="when" content="Wed, 01 Feb 2012 13:34:27 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -56,8 +56,8 @@
 <a name="line12"></a>    
 <a name="line13"></a>        public $model;
 <a name="line14"></a>        public $url;
-<a name="line15"></a>        public $title = "...";
-<a name="line16"></a>        public $pageTitle = "...";
+<a name="line15"></a>        public $title;
+<a name="line16"></a>        public $pageTitle;
 <a name="line17"></a>    
 <a name="line18"></a>        protected $router;
 <a name="line19"></a>        protected $defaultRoutes = array();
@@ -74,9 +74,9 @@
 <a name="line30"></a>            // administrate a model if there is any associated with this controller
 <a name="line31"></a>            if(isset($this->matchedRouterRule->model) && $this->model = $req->fabrico->models->get($this->matchedRouterRule->model)) {
 <a name="line32"></a>            
-<a name="line33"></a>                $this->url = $this->filterRoutePattern($this->matchedRouterRule->pattern);
-<a name="line34"></a>                $this->title = $this->model->title !== null ? $this->model->title : $this->title;
-<a name="line35"></a>                $this->pageTitle = $this->model->pageTitle !== null ? $this->model->pageTitle : $this->pageTitle;
+<a name="line33"></a>                $this->url = $this->url === null ? $this->filterRoutePattern($this->matchedRouterRule->pattern) : $this->url;
+<a name="line34"></a>                $this->title = $this->title === null ? ($this->model->title !== null ? $this->model->title : "...") : $this->title;
+<a name="line35"></a>                $this->pageTitle = $this->model->pageTitle !== null ? $this->model->pageTitle : "...";
 <a name="line36"></a>                
 <a name="line37"></a>                // routes
 <a name="line38"></a>                $pattern = $this->matchedRouterRule->pattern;

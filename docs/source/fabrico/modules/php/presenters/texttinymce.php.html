@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Tue, 24 Jan 2012 17:37:22 +0000">
+<meta name="when" content="Wed, 01 Feb 2012 13:34:27 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -79,41 +79,45 @@
 <a name="line35"></a>            if(!isset($this->config)) {
 <a name="line36"></a>                $this->config = (object) array(
 <a name="line37"></a>                    "mode" => "textareas",
-<a name="line38"></a>                    "theme" => "simple"
-<a name="line39"></a>                );
-<a name="line40"></a>            } else {
-<a name="line41"></a>                $this->config->mode = isset($this->config->mode) ? $this->config->mode : "textareas";
-<a name="line42"></a>                $this->config->theme = isset($this->config->theme) ? $this->config->theme : "simple";
-<a name="line43"></a>            }
-<a name="line44"></a>        }
-<a name="line45"></a>        public function __toString() {
-<a name="line46"></a>            return "TextTinyMCE";
-<a name="line47"></a>        }
-<a name="line48"></a>        public function listing($value) {
-<a name="line49"></a>            $value = strip_tags($value);
-<a name="line50"></a>            if(strlen($value) > 300) {
-<a name="line51"></a>                $this->setResponse(substr($value, 0, 300)."...");
-<a name="line52"></a>            } else {
-<a name="line53"></a>                $this->setResponse($value);
-<a name="line54"></a>            }
-<a name="line55"></a>            return $this;
-<a name="line56"></a>        }
-<a name="line57"></a>        public function add($default = null) {
-<a name="line58"></a>            $this->setResponse($this->view("view.html", array(
-<a name="line59"></a>                "settings" => json_encode($this->config),
-<a name="line60"></a>                "field" => $this->name,
-<a name="line61"></a>                "value" => $default != null ? $default : (isset($this->defaultValue) ? $this->defaultValue : "")
-<a name="line62"></a>            )));
-<a name="line63"></a>            return $this;
-<a name="line64"></a>        }
-<a name="line65"></a>        public function edit($value) {
-<a name="line66"></a>            $this->setResponse($this->add(addslashes($value))->response->value);
+<a name="line38"></a>                    "theme" => "simple",
+<a name="line39"></a>                    "width" => "550",
+<a name="line40"></a>                    "height" => "250"
+<a name="line41"></a>                );
+<a name="line42"></a>            } else {
+<a name="line43"></a>                $this->config->mode = isset($this->config->mode) ? $this->config->mode : "textareas";
+<a name="line44"></a>                $this->config->theme = isset($this->config->theme) ? $this->config->theme : "simple";
+<a name="line45"></a>                $this->config->width = isset($this->config->width) ? $this->config->width : "550";
+<a name="line46"></a>                $this->config->height = isset($this->config->height) ? $this->config->height : "250";
+<a name="line47"></a>            }
+<a name="line48"></a>        }
+<a name="line49"></a>        public function __toString() {
+<a name="line50"></a>            return "TextTinyMCE";
+<a name="line51"></a>        }
+<a name="line52"></a>        public function listing($value) {
+<a name="line53"></a>            $value = strip_tags($value);
+<a name="line54"></a>            if(strlen($value) > 300) {
+<a name="line55"></a>                $this->setResponse(substr($value, 0, 300)."...");
+<a name="line56"></a>            } else {
+<a name="line57"></a>                $this->setResponse($value);
+<a name="line58"></a>            }
+<a name="line59"></a>            return $this;
+<a name="line60"></a>        }
+<a name="line61"></a>        public function add($default = null) {
+<a name="line62"></a>            $this->setResponse($this->view("view.html", array(
+<a name="line63"></a>                "settings" => json_encode($this->config),
+<a name="line64"></a>                "field" => $this->name,
+<a name="line65"></a>                "value" => $default != null ? $default : (isset($this->defaultValue) ? $this->defaultValue : "")
+<a name="line66"></a>            )));
 <a name="line67"></a>            return $this;
 <a name="line68"></a>        }
-<a name="line69"></a>    
-<a name="line70"></a>    }
-<a name="line71"></a>    
-<a name="line72"></a>?></pre>
+<a name="line69"></a>        public function edit($value) {
+<a name="line70"></a>            $this->setResponse($this->add(addslashes($value))->response->value);
+<a name="line71"></a>            return $this;
+<a name="line72"></a>        }
+<a name="line73"></a>    
+<a name="line74"></a>    }
+<a name="line75"></a>    
+<a name="line76"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

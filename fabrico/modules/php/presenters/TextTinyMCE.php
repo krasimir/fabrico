@@ -35,11 +35,15 @@
             if(!isset($this->config)) {
                 $this->config = (object) array(
                     "mode" => "textareas",
-                    "theme" => "simple"
+                    "theme" => "simple",
+                    "width" => "550",
+                    "height" => "250"
                 );
             } else {
                 $this->config->mode = isset($this->config->mode) ? $this->config->mode : "textareas";
                 $this->config->theme = isset($this->config->theme) ? $this->config->theme : "simple";
+                $this->config->width = isset($this->config->width) ? $this->config->width : "550";
+                $this->config->height = isset($this->config->height) ? $this->config->height : "250";
             }
         }
         public function __toString() {

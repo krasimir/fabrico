@@ -34,8 +34,8 @@
         }
         public function view($template, $data = array()) {
             $searchIn = array();
-            $searchIn []= $this->model->name."/".$this;
-            $searchIn []= $this->controller."/".$this;
+            $searchIn []= "/views/".$this->model->name."/".$this;
+            $searchIn []= "/views/".$this->controller."/".$this;
             $searchIn []= ViewConfig::$searchIn[count(ViewConfig::$searchIn)-1]."/".$this;
             return view($template, $data, $searchIn);
         }
