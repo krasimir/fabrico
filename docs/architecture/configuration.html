@@ -69,10 +69,20 @@
 <pre class="code">
 {
     "name": "[string]", // you will use this name later to fetch the asset
-    "source": "/assets/css/*.css", // regex
+    "sourceToCompile": [ // the files will be merged to one
+        "/assets/css/*.css",
+        "/assets/customcss/*.css"
+        ...
+        ...
+    ],
+    "sourceToInclude": [ // the files will be included in separate tags
+        "/assets/editor/*.css",
+        ...
+        ...
+    ],
     "destination": "/assets/compiled/", // output folder
     "extension": "[css|js|...]",
-    "build": [true|false]
+    "preventCompiling": [true|false] // if you want to use the compiled file, but don't want to run the compilation
 }
 </pre>
 

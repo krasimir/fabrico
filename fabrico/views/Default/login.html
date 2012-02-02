@@ -1,21 +1,20 @@
 {error}
-<form method="post" action="{url}/login">
+<form method="post" action="{url}/login" class="form-vertical">
     <fieldset>
-        <legend>Please type your username and password.</legend>
-        <div class="clearfix">
-            <label>Username:</label>
-            <div class="input">
-                <input type="text" name="username" class="xlarge" />
+        <div class="control-group">
+            <label class="control-label">Username:</label>
+            <div class="controls">
+                <input type="text" name="username" class="span4" />
             </div>
         </div>
-        <div class="clearfix">
-            <label>Password:</label>
-            <div class="input">
-                <input type="password" name="password" class="xlarge"/>
+        <div class="control-group">
+            <label class="control-label">Password:</label>
+            <div class="controls">
+                <input type="password" name="password" class="span4"/>
             </div>
         </div>
         <div class="actions">
-            <input type="submit" class="btn primary" value="Login" />
+            <input type="submit" class="btn btn-primary" value="Login" />
         </div>
     </fieldset>
 </form>

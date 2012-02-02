@@ -44,52 +44,77 @@
                     $asset->hash = file_get_contents($asset->hashFile);
                 }
             }
+            
         }
         public function get($name){
         
             $asset = $this->getAsset($name);
-            if(isset($asset->build) && $asset->build === true) {
-                $asset->source = is_array($asset->source) ? $asset->source : array($asset->source);
+            $result = "";
+            $result .= $this->compileFiles($asset);
+            $result .= $this->includeFiles($asset);
+            
+            return $result;
+            
+        }
+        public function compileFiles($asset) {
+        
+            if(isset($asset->sourceToCompile) && count($asset->sourceToCompile) > 0 && (!isset($asset->preventCompiling) || $asset->preventCompiling === false)) {
+            
+                if(defined("DEBUG") && DEBUG) {
+                    $this->log('compile -> '.$asset->name);
+                }
+            
+                if($asset->hash != "") {
+                    if(file_exists($asset->hashFile)) {
+                        unlink($asset->hashFile);
+                    }
+                    if(file_exists($this->root.$asset->destination.$asset->hash.".".$asset->extension)) {
+                        unlink($this->root.$asset->destination.$asset->hash.".".$asset->extension);
+                    }
+                }
+
+                $joiner = new FileJoin($this->root);
+                $content = $joiner->run($asset->sourceToCompile);
+                $asset->hash = md5($content);
+                file_put_contents($asset->hashFile, $asset->hash);
+                file_put_contents($this->root.$asset->destination.$asset->hash.".".$asset->extension, $content);
+                
+                return $this->getTag($asset->destination.$asset->hash.".".$asset->extension, $asset->extension);
+                
+            } else {
+                if(file_exists($this->root.$asset->destination.$asset->hash.".".$asset->extension)) {
+                    if(defined("DEBUG") && DEBUG) {
+                        $this->log('include hash -> '.$asset->name);
+                    }
+                    return $this->getTag($asset->destination.$asset->hash.".".$asset->extension, $asset->extension);
+                } else {
+                    return "";
+                }
+            }
+            
+        }
+        public function includeFiles($asset) {
+        
+            if(isset($asset->sourceToInclude) && count($asset->sourceToInclude) > 0) {
+        
+                if(defined("DEBUG") && DEBUG) {
+                    $this->log('include -> '.$asset->name);
+                }
+            
                 $result = "";
-                foreach($asset->source as $dir) {
+                foreach($asset->sourceToInclude as $dir) {
                     $files = rglob($this->root.$dir);
                     foreach($files as $file) {
                         $file = str_replace($this->root, "", $file);
                         $result .= $this->getTag($file, $asset->extension);
                     }
                 }
-                $this->build($name);
+                
                 return $result;
+            
             } else {
-                if($asset->hash == "") {
-                    $this->build($name);
-                }
-                return $this->getTag($asset->destination.$asset->hash.".".$asset->extension, $asset->extension);                
-            }            
-            
-        }
-        public function build($name) {
-        
-            $asset = $this->getAsset($name);
-            
-            if(defined("DEBUG") && DEBUG) {
-                $this->log($name);
+                return "";
             }
-        
-            if($asset->hash != "") {
-                if(file_exists($asset->hashFile)) {
-                    unlink($asset->hashFile);
-                }
-                if(file_exists($this->root.$asset->destination.$asset->hash.".".$asset->extension)) {
-                    unlink($this->root.$asset->destination.$asset->hash.".".$asset->extension);
-                }
-            }
-
-            $joiner = new FileJoin($this->root);
-            $content = $joiner->run($asset->source);
-            $asset->hash = md5($content);
-            file_put_contents($asset->hashFile, $asset->hash);
-            file_put_contents($this->root.$asset->destination.$asset->hash.".".$asset->extension, $content);
             
         }
         private function getAsset($name) {
@@ -114,7 +139,7 @@
             }                
         }
         private function log($str) {
-            echo '<div class="debug" style="background:#CAFCC2">AssetsManager: building -> '.$str.'</div>';
+            echo '<div class="debug" style="background:#CAFCC2">AssetsManager: '.$str.'</div>';
         }
     
     };

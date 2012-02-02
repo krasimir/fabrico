@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Wed, 01 Feb 2012 13:34:27 +0000">
+<meta name="when" content="Thu, 02 Feb 2012 22:11:07 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -88,82 +88,107 @@
 <a name="line44"></a>                    $asset->hash = file_get_contents($asset->hashFile);
 <a name="line45"></a>                }
 <a name="line46"></a>            }
-<a name="line47"></a>        }
-<a name="line48"></a>        public function get($name){
-<a name="line49"></a>        
-<a name="line50"></a>            $asset = $this->getAsset($name);
-<a name="line51"></a>            if(isset($asset->build) && $asset->build === true) {
-<a name="line52"></a>                $asset->source = is_array($asset->source) ? $asset->source : array($asset->source);
-<a name="line53"></a>                $result = "";
-<a name="line54"></a>                foreach($asset->source as $dir) {
-<a name="line55"></a>                    $files = rglob($this->root.$dir);
-<a name="line56"></a>                    foreach($files as $file) {
-<a name="line57"></a>                        $file = str_replace($this->root, "", $file);
-<a name="line58"></a>                        $result .= $this->getTag($file, $asset->extension);
-<a name="line59"></a>                    }
-<a name="line60"></a>                }
-<a name="line61"></a>                $this->build($name);
-<a name="line62"></a>                return $result;
-<a name="line63"></a>            } else {
-<a name="line64"></a>                if($asset->hash == "") {
-<a name="line65"></a>                    $this->build($name);
-<a name="line66"></a>                }
-<a name="line67"></a>                return $this->getTag($asset->destination.$asset->hash.".".$asset->extension, $asset->extension);                
-<a name="line68"></a>            }            
-<a name="line69"></a>            
-<a name="line70"></a>        }
-<a name="line71"></a>        public function build($name) {
-<a name="line72"></a>        
-<a name="line73"></a>            $asset = $this->getAsset($name);
-<a name="line74"></a>            
-<a name="line75"></a>            if(defined("DEBUG") && DEBUG) {
-<a name="line76"></a>                $this->log($name);
-<a name="line77"></a>            }
-<a name="line78"></a>        
-<a name="line79"></a>            if($asset->hash != "") {
-<a name="line80"></a>                if(file_exists($asset->hashFile)) {
-<a name="line81"></a>                    unlink($asset->hashFile);
-<a name="line82"></a>                }
-<a name="line83"></a>                if(file_exists($this->root.$asset->destination.$asset->hash.".".$asset->extension)) {
-<a name="line84"></a>                    unlink($this->root.$asset->destination.$asset->hash.".".$asset->extension);
-<a name="line85"></a>                }
-<a name="line86"></a>            }
-<a name="line87"></a>
-<a name="line88"></a>            $joiner = new FileJoin($this->root);
-<a name="line89"></a>            $content = $joiner->run($asset->source);
-<a name="line90"></a>            $asset->hash = md5($content);
-<a name="line91"></a>            file_put_contents($asset->hashFile, $asset->hash);
-<a name="line92"></a>            file_put_contents($this->root.$asset->destination.$asset->hash.".".$asset->extension, $content);
-<a name="line93"></a>            
-<a name="line94"></a>        }
-<a name="line95"></a>        private function getAsset($name) {
-<a name="line96"></a>            $asset = isset($this->assets->$name) ? $this->assets->$name : null;
-<a name="line97"></a>            if($asset == null) {
-<a name="line98"></a>                throw new Exception("Missing asset with name = '".$name."'");
-<a name="line99"></a>            }
-<a name="line100"></a>            return $asset;
-<a name="line101"></a>        }
-<a name="line102"></a>        private function getTag($file, $ext) {
-<a name="line103"></a>            $file = $this->req->url.$file;
-<a name="line104"></a>            switch($ext) {
-<a name="line105"></a>                case "js":
-<a name="line106"></a>                    return '<script src="'.$file.'"></script>';
-<a name="line107"></a>                break;
-<a name="line108"></a>                case "css":
-<a name="line109"></a>                    return '<link rel="stylesheet" href="'.$file.'" />';
-<a name="line110"></a>                break;
-<a name="line111"></a>                default:
-<a name="line112"></a>                    return $file;
-<a name="line113"></a>                break;
-<a name="line114"></a>            }                
-<a name="line115"></a>        }
-<a name="line116"></a>        private function log($str) {
-<a name="line117"></a>            echo '<div class="debug" style="background:#CAFCC2">AssetsManager: building -> '.$str.'</div>';
-<a name="line118"></a>        }
-<a name="line119"></a>    
-<a name="line120"></a>    };
-<a name="line121"></a>
-<a name="line122"></a>?></pre>
+<a name="line47"></a>            
+<a name="line48"></a>        }
+<a name="line49"></a>        public function get($name){
+<a name="line50"></a>        
+<a name="line51"></a>            $asset = $this->getAsset($name);
+<a name="line52"></a>            $result = "";
+<a name="line53"></a>            $result .= $this->compileFiles($asset);
+<a name="line54"></a>            $result .= $this->includeFiles($asset);
+<a name="line55"></a>            
+<a name="line56"></a>            return $result;
+<a name="line57"></a>            
+<a name="line58"></a>        }
+<a name="line59"></a>        public function compileFiles($asset) {
+<a name="line60"></a>        
+<a name="line61"></a>            if(isset($asset->sourceToCompile) && count($asset->sourceToCompile) > 0 && (!isset($asset->preventCompiling) || $asset->preventCompiling === false)) {
+<a name="line62"></a>            
+<a name="line63"></a>                if(defined("DEBUG") && DEBUG) {
+<a name="line64"></a>                    $this->log('compile -> '.$asset->name);
+<a name="line65"></a>                }
+<a name="line66"></a>            
+<a name="line67"></a>                if($asset->hash != "") {
+<a name="line68"></a>                    if(file_exists($asset->hashFile)) {
+<a name="line69"></a>                        unlink($asset->hashFile);
+<a name="line70"></a>                    }
+<a name="line71"></a>                    if(file_exists($this->root.$asset->destination.$asset->hash.".".$asset->extension)) {
+<a name="line72"></a>                        unlink($this->root.$asset->destination.$asset->hash.".".$asset->extension);
+<a name="line73"></a>                    }
+<a name="line74"></a>                }
+<a name="line75"></a>
+<a name="line76"></a>                $joiner = new FileJoin($this->root);
+<a name="line77"></a>                $content = $joiner->run($asset->sourceToCompile);
+<a name="line78"></a>                $asset->hash = md5($content);
+<a name="line79"></a>                file_put_contents($asset->hashFile, $asset->hash);
+<a name="line80"></a>                file_put_contents($this->root.$asset->destination.$asset->hash.".".$asset->extension, $content);
+<a name="line81"></a>                
+<a name="line82"></a>                return $this->getTag($asset->destination.$asset->hash.".".$asset->extension, $asset->extension);
+<a name="line83"></a>                
+<a name="line84"></a>            } else {
+<a name="line85"></a>                if(file_exists($this->root.$asset->destination.$asset->hash.".".$asset->extension)) {
+<a name="line86"></a>                    if(defined("DEBUG") && DEBUG) {
+<a name="line87"></a>                        $this->log('include hash -> '.$asset->name);
+<a name="line88"></a>                    }
+<a name="line89"></a>                    return $this->getTag($asset->destination.$asset->hash.".".$asset->extension, $asset->extension);
+<a name="line90"></a>                } else {
+<a name="line91"></a>                    return "";
+<a name="line92"></a>                }
+<a name="line93"></a>            }
+<a name="line94"></a>            
+<a name="line95"></a>        }
+<a name="line96"></a>        public function includeFiles($asset) {
+<a name="line97"></a>        
+<a name="line98"></a>            if(isset($asset->sourceToInclude) && count($asset->sourceToInclude) > 0) {
+<a name="line99"></a>        
+<a name="line100"></a>                if(defined("DEBUG") && DEBUG) {
+<a name="line101"></a>                    $this->log('include -> '.$asset->name);
+<a name="line102"></a>                }
+<a name="line103"></a>            
+<a name="line104"></a>                $result = "";
+<a name="line105"></a>                foreach($asset->sourceToInclude as $dir) {
+<a name="line106"></a>                    $files = rglob($this->root.$dir);
+<a name="line107"></a>                    foreach($files as $file) {
+<a name="line108"></a>                        $file = str_replace($this->root, "", $file);
+<a name="line109"></a>                        $result .= $this->getTag($file, $asset->extension);
+<a name="line110"></a>                    }
+<a name="line111"></a>                }
+<a name="line112"></a>                
+<a name="line113"></a>                return $result;
+<a name="line114"></a>            
+<a name="line115"></a>            } else {
+<a name="line116"></a>                return "";
+<a name="line117"></a>            }
+<a name="line118"></a>            
+<a name="line119"></a>        }
+<a name="line120"></a>        private function getAsset($name) {
+<a name="line121"></a>            $asset = isset($this->assets->$name) ? $this->assets->$name : null;
+<a name="line122"></a>            if($asset == null) {
+<a name="line123"></a>                throw new Exception("Missing asset with name = '".$name."'");
+<a name="line124"></a>            }
+<a name="line125"></a>            return $asset;
+<a name="line126"></a>        }
+<a name="line127"></a>        private function getTag($file, $ext) {
+<a name="line128"></a>            $file = $this->req->url.$file;
+<a name="line129"></a>            switch($ext) {
+<a name="line130"></a>                case "js":
+<a name="line131"></a>                    return '<script src="'.$file.'"></script>';
+<a name="line132"></a>                break;
+<a name="line133"></a>                case "css":
+<a name="line134"></a>                    return '<link rel="stylesheet" href="'.$file.'" />';
+<a name="line135"></a>                break;
+<a name="line136"></a>                default:
+<a name="line137"></a>                    return $file;
+<a name="line138"></a>                break;
+<a name="line139"></a>            }                
+<a name="line140"></a>        }
+<a name="line141"></a>        private function log($str) {
+<a name="line142"></a>            echo '<div class="debug" style="background:#CAFCC2">AssetsManager: '.$str.'</div>';
+<a name="line143"></a>        }
+<a name="line144"></a>    
+<a name="line145"></a>    };
+<a name="line146"></a>
+<a name="line147"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

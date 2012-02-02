@@ -5,23 +5,26 @@
     "title": "Sample administration",
     "fields": [
         {
-            "name": "shortText",
-            "presenter": "presenters/TextTinyMCE.php",
+            "name": "complexField",
+            "label": "My custom complex data",
+            "presenter": "presenters/ComplexData.php",
             "config": {
-                "mode" : "textareas",
-                "theme" : "advanced",
-                "theme_advanced_buttons1": "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,formatselect,|,bullist,numlist,|,code",
-                "theme_advanced_buttons2": "",
-                "theme_advanced_buttons3": "",
-                "theme_advanced_buttons4": ""
-            }
-        },
-        {
-            "name": "longText2",
-            "presenter": "presenters/TextTinyMCE.php",
-            "config": {
-                "mode" : "textareas",
-                "theme" : "simple"
+                "elementsSeparator": "(!~~~^)",
+                "elementsFieldsSeparator": "(@!!!%)",
+                "fields": [
+                    {
+                        "name": "name",
+                        "label": "Name of the product"
+                    },
+                    {
+                        "name": "id",
+                        "label": "ID"
+                    },
+                    {
+                        "name": "price",
+                        "label": "Price of the product"
+                    }
+                ]
             }
         },
         {
