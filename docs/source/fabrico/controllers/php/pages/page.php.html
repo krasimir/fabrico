@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sat, 04 Feb 2012 10:17:15 +0000">
+<meta name="when" content="Sat, 04 Feb 2012 11:47:04 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -82,13 +82,13 @@
 <a name="line38"></a>                $pattern = $this->matchedRouterRule->pattern;
 <a name="line39"></a>                $this->routes = array(
 <a name="line40"></a>                    // showing data from the database
-<a name="line41"></a>                    $pattern."/listing" => "actions/Listing.php",
+<a name="line41"></a>                    $pattern."/listing" => $this->getActionController("listing", "actions/Listing.php"),
 <a name="line42"></a>                    // adding data from the database
-<a name="line43"></a>                    $pattern."/adding" => "actions/Adding.php",
+<a name="line43"></a>                    $pattern."/adding" => $this->getActionController("adding", "actions/Adding.php"),
 <a name="line44"></a>                    // editing data from the database
-<a name="line45"></a>                    $pattern."/editing/@id" => "actions/Editing.php",
+<a name="line45"></a>                    $pattern."/editing/@id" => $this->getActionController("editing", "actions/Editing.php"),
 <a name="line46"></a>                    // deleting data from the database
-<a name="line47"></a>                    $pattern."/deleting/@id" => "actions/Deleting.php",
+<a name="line47"></a>                    $pattern."/deleting/@id" => $this->getActionController("deleting", "actions/Deleting.php"),
 <a name="line48"></a>                    // ordering
 <a name="line49"></a>                    $pattern."/ordering/@type/@id/@position" => "actions/Ordering.php",
 <a name="line50"></a>                    // ordering
@@ -145,10 +145,17 @@
 <a name="line101"></a>            }
 <a name="line102"></a>            return $pattern;
 <a name="line103"></a>        }
-<a name="line104"></a>    
-<a name="line105"></a>    }
-<a name="line106"></a>
-<a name="line107"></a>?></pre>
+<a name="line104"></a>        private function getActionController($propName, $default) {
+<a name="line105"></a>            if(isset($this->model->configs->actions->{$propName}) && isset($this->model->configs->actions->{$propName}->controller)) {
+<a name="line106"></a>                return $this->model->configs->actions->{$propName}->controller;
+<a name="line107"></a>            } else {
+<a name="line108"></a>                return $default;
+<a name="line109"></a>            }
+<a name="line110"></a>        }
+<a name="line111"></a>    
+<a name="line112"></a>    }
+<a name="line113"></a>
+<a name="line114"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

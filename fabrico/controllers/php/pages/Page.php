@@ -38,13 +38,13 @@
                 $pattern = $this->matchedRouterRule->pattern;
                 $this->routes = array(
                     // showing data from the database
-                    $pattern."/listing" => "actions/Listing.php",
+                    $pattern."/listing" => $this->getActionController("listing", "actions/Listing.php"),
                     // adding data from the database
-                    $pattern."/adding" => "actions/Adding.php",
+                    $pattern."/adding" => $this->getActionController("adding", "actions/Adding.php"),
                     // editing data from the database
-                    $pattern."/editing/@id" => "actions/Editing.php",
+                    $pattern."/editing/@id" => $this->getActionController("editing", "actions/Editing.php"),
                     // deleting data from the database
-                    $pattern."/deleting/@id" => "actions/Deleting.php",
+                    $pattern."/deleting/@id" => $this->getActionController("deleting", "actions/Deleting.php"),
                     // ordering
                     $pattern."/ordering/@type/@id/@position" => "actions/Ordering.php",
                     // ordering
@@ -100,6 +100,13 @@
                 $pattern = str_replace($char, "", $pattern);
             }
             return $pattern;
+        }
+        private function getActionController($propName, $default) {
+            if(isset($this->model->configs->actions->{$propName}) && isset($this->model->configs->actions->{$propName}->controller)) {
+                return $this->model->configs->actions->{$propName}->controller;
+            } else {
+                return $default;
+            }
         }
     
     }

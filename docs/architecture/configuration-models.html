@@ -42,12 +42,22 @@
     ],
     "actions": { // optional
         "listing": {
+            "controller": "actions/Listing.php",
             "fieldsToHide": [
                 "[name_of_field]", 
                 "[name_of_field]",
                 ...
             ],
             "positionEditing": "[up-down|direct]"
+        },
+        "adding": {
+            "controller": "actions/Adding.php"
+        },
+        "editing": {
+            "controller": "actions/Editing.php"
+        },
+        "deleting": {
+            "controller": "actions/Deleting.php"
         }
     }
 }

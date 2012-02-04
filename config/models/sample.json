@@ -75,8 +75,18 @@
     ],
     "actions": {
         "listing": {
+            "controller": "actions/Listing.php",
             "fieldsToHide": ["myName"],
             "positionEditing": "direct"
+        },
+        "adding": {
+            "controller": "actions/Adding.php"
+        },
+        "editing": {
+            "controller": "actions/Editing.php"
+        },
+        "deleting": {
+            "controller": "actions/Deleting.php"
         }
     }
 }
