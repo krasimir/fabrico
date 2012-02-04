@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<script src="../utils/js/jquery-1.6.3.min.js"></script>
+<script src="../utils/js/jquery.snippet.min.js"></script>
+<script src="../utils/js/scripts.js" type="text/javascript" language="JavaScript"></script>
+<link rel="stylesheet" type="text/css" href="../utils/css/jquery.snippet.min.css">
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
+<meta name="when" content="Sat, 04 Feb 2012 10:17:15 +0000">
+
+<link rel="stylesheet" type="text/css" href="../stylesheet.css">
+<link rel="start" href="../overview-summary.html">
+
+<title>fabrico\modules\php\presenters\ComplexData.php (Fabrico)</title>
+
+</head>
+<body id="file" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../overview-summary.html">Overview</a></li>
+<li>Package</li><li>Class</li><li>Tree</li><li><a href="../overview-files.html">Files</a></li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../todo-list.html">Todo</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../index.html" target="_top">Frames</a>
+<a href="../source\fabrico\modules\php\presenters\complexdata.php.html" target="_top">No frames</a>
+</div>
+<hr>
+
+<h1>fabrico\modules\php\presenters\ComplexData.php</h1>
+<hr>
+
+<a name="line1"></a><pre><?php
+<a name="line2"></a>
+<a name="line3"></a>    inject("presenters/Presenter.php");
+<a name="line4"></a>
+<a name="line5"></a>    /**
+<a name="line6"></a>    Definition:
+<a name="line7"></a>    <pre class="code">
+<a name="line8"></a>    {
+<a name="line9"></a>        \t"name": "nameField",
+<a name="line10"></a>        \t"presenter": "presenters/ComplexData.php",
+<a name="line11"></a>        \t"config": {
+<a name="line12"></a>            \t\t"elementsSeparator": "(!~~~^)",
+<a name="line13"></a>            \t\t"elementsFieldsSeparator": "(@!!!%)",
+<a name="line14"></a>            \t\t"fields": [
+<a name="line15"></a>                \t\t\t{
+<a name="line16"></a>                    \t\t\t\t"name": "name",
+<a name="line17"></a>                    \t\t\t\t"label": "Name of your field"
+<a name="line18"></a>                \t\t\t},
+<a name="line19"></a>                \t\t\t...
+<a name="line20"></a>                \t\t\t...
+<a name="line21"></a>            \t\t]
+<a name="line22"></a>        \t},
+<a name="line23"></a>        \t"label": "[string]", // optional
+<a name="line24"></a>        \t"dependencies": [dependencies], // optional
+<a name="line25"></a>        \t"validators": [validators] // optional
+<a name="line26"></a>    }
+<a name="line27"></a>    </pre>
+<a name="line28"></a>    * @package Fabrico\Modules\Presenters
+<a name="line29"></a>    */
+<a name="line30"></a>    class ComplexData extends Presenter {
+<a name="line31"></a>        
+<a name="line32"></a>        public function __construct($properties = array()) {
+<a name="line33"></a>            parent::__construct($properties);
+<a name="line34"></a>            $this->config->elementsSeparator = isset($this->config->elementsSeparator) ? $this->config->elementsSeparator : "(!~~~^)";
+<a name="line35"></a>            $this->config->elementsFieldsSeparator = isset($this->config->elementsFieldsSeparator) ? $this->config->elementsFieldsSeparator : "(@!!!%)";
+<a name="line36"></a>        }
+<a name="line37"></a>        public function __toString() {
+<a name="line38"></a>            return "ComplexData";
+<a name="line39"></a>        }
+<a name="line40"></a>        public function listing($value) {
+<a name="line41"></a>            if($value != "") {
+<a name="line42"></a>                $arr1 = explode($this->config->elementsSeparator, $value);
+<a name="line43"></a>                $result = '';
+<a name="line44"></a>                foreach($arr1 as $element) {
+<a name="line45"></a>                    $arr2 = explode($this->config->elementsFieldsSeparator, $element);
+<a name="line46"></a>                    foreach($arr2 as $field) {
+<a name="line47"></a>                        $result .= $field." / ";
+<a name="line48"></a>                    }
+<a name="line49"></a>                    $result .= '<br />';
+<a name="line50"></a>                }
+<a name="line51"></a>                $this->setResponse($result);
+<a name="line52"></a>            } else {
+<a name="line53"></a>                $this->setResponse("");
+<a name="line54"></a>            }
+<a name="line55"></a>            return $this;
+<a name="line56"></a>        }
+<a name="line57"></a>        public function add($default = null) {
+<a name="line58"></a>            $this->setResponse($this->view("view.html", array(
+<a name="line59"></a>                "field" => $this->name,
+<a name="line60"></a>                "value" => $default === null ? (isset($this->defaultValue) ? $this->defaultValue : "") : $default,
+<a name="line61"></a>                "config" => json_encode($this->config),
+<a name="line62"></a>                "label" => isset($this->label) ? $this->label : $this->name
+<a name="line63"></a>            )));
+<a name="line64"></a>            return $this;
+<a name="line65"></a>        }
+<a name="line66"></a>        public function addAction() {
+<a name="line67"></a>            if(isset($this->req->body->{strtolower($this->name)})) {
+<a name="line68"></a>                $this->setResponse($this->req->body->{strtolower($this->name)});
+<a name="line69"></a>            } else {
+<a name="line70"></a>                $this->setResponse(null);
+<a name="line71"></a>            }
+<a name="line72"></a>            return $this;
+<a name="line73"></a>        }
+<a name="line74"></a>        public function edit($value) {
+<a name="line75"></a>            $this->setResponse($this->view("view.html", array(
+<a name="line76"></a>                "field" => $this->name,
+<a name="line77"></a>                "value" => $value,
+<a name="line78"></a>                "config" => json_encode($this->config),
+<a name="line79"></a>                "label" => isset($this->label) ? $this->label : $this->name
+<a name="line80"></a>            )));
+<a name="line81"></a>            return $this;
+<a name="line82"></a>        }
+<a name="line83"></a>        public function editAction($value) {        
+<a name="line84"></a>            if(isset($this->req->body->{strtolower($this->name)})) {
+<a name="line85"></a>                $this->setResponse($this->req->body->{strtolower($this->name)});
+<a name="line86"></a>            } else {
+<a name="line87"></a>                $this->setResponse(null);
+<a name="line88"></a>            }
+<a name="line89"></a>            return $this;
+<a name="line90"></a>        }
+<a name="line91"></a>    
+<a name="line92"></a>    }
+<a name="line93"></a>    
+<a name="line94"></a>?></pre>
+<div class="header">
+<h1>Fabrico</h1>
+<ul>
+<li><a href="../overview-summary.html">Overview</a></li>
+<li>Package</li><li>Class</li><li>Tree</li><li><a href="../overview-files.html">Files</a></li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../todo-list.html">Todo</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../index.html" target="_top">Frames</a>
+<a href="../source\fabrico\modules\php\presenters\complexdata.php.html" target="_top">No frames</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>

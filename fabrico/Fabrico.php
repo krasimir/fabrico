@@ -88,7 +88,7 @@
                         "handler" => $route->controller,
                         "action" => isset($route->action) ? $route->action : "run",
                         "priority" => isset($route->priority) ? $route->priority : false,
-                        "model" => isset($route->model) ? $route->model : null,
+                        "model" => isset($route->model) ? $route->model : null
                     ));
                     $this->router->all($rule);
                 }
@@ -140,7 +140,7 @@
             
         }
         /**
-        * Called if ?debug=1. Displays information Benchmark and ModelsManager information.
+        * Called if ?debug=1
         */
         public function onExit() {
             global $injector;
