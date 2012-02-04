@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sat, 04 Feb 2012 11:47:04 +0000">
+<meta name="when" content="Sat, 04 Feb 2012 18:37:42 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -74,18 +74,18 @@
 <a name="line30"></a>            
 <a name="line31"></a>            // ************************************************************************************** MODULES *** 
 <a name="line32"></a>            
-<a name="line33"></a>            // config
-<a name="line34"></a>            if(isset($configs->adapters)) {
-<a name="line35"></a>                $this->log("Fabrico's configuration - 'adapters'.", "#C0C0C0");
-<a name="line36"></a>                $this->adapters = readJSON($this->paths->root.$configs->adapters);
-<a name="line37"></a>            }
-<a name="line38"></a>            
-<a name="line39"></a>            // benchmark
-<a name="line40"></a>            if(isset($configs->benchmark)) {
-<a name="line41"></a>                $this->log("Fabrico's configuration - 'benchmark'.", "#C0C0C0");
-<a name="line42"></a>                $this->using(array(
-<a name="line43"></a>                    "benchmark" => "middleware/Benchmark.php",
-<a name="line44"></a>                ));
+<a name="line33"></a>            // benchmark
+<a name="line34"></a>            if(isset($configs->benchmark)) {
+<a name="line35"></a>                $this->log("Fabrico's configuration - 'benchmark'.", "#C0C0C0");
+<a name="line36"></a>                $this->using(array(
+<a name="line37"></a>                    "benchmark" => "middleware/Benchmark.php",
+<a name="line38"></a>                ));
+<a name="line39"></a>            }
+<a name="line40"></a>            
+<a name="line41"></a>            // config
+<a name="line42"></a>            if(isset($configs->adapters)) {
+<a name="line43"></a>                $this->log("Fabrico's configuration - 'adapters'.", "#C0C0C0");
+<a name="line44"></a>                $this->adapters = readJSON($this->paths->root.$configs->adapters);
 <a name="line45"></a>            }
 <a name="line46"></a>            
 <a name="line47"></a>            // models

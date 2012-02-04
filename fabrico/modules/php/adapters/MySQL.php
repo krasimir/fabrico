@@ -12,10 +12,12 @@
         private $queries = array();
         private $tableName = "";
         private $query;
+        private $cache;
         
         public function __construct(MySQLConfig $configs) {
             $this->configs = $configs;
             $this->query = (object) array();
+            $this->cache = array();
         }
         public function __toString() {
             return "MySQL";
@@ -109,31 +111,36 @@
             $this->log($this.":<br />".$queriesReport, "#FFFFD2");
             return $this;
         }
-        public function flush() {
-            $result = $this->action();
+        public function flush($useCache = true) {
+            $result = $this->action(false, $useCache);
             $this->query = (object) array();
             return $result;
         }
-        public function action($queryStr = FALSE) {
+        public function action($queryStr = false, $useCache = true) {
             $this->initialize();
             if($queryStr === FALSE) {
                 $queryStr = $this->composeQueryStr();
             }
             $queryStr = str_replace("{tableName}", $this->tableName, $queryStr);
-            $this->queries []= $queryStr;
-            $res = mysql_query($queryStr);
-            if(is_resource($res)) {
-                if(mysql_num_rows($res) === 0) {
-                    return mysql_fetch_object($res);
-                } else {
-                    $rows = array();
-                    while($row = mysql_fetch_object($res)) {
-                        $rows []= $row;
+            if(isset($this->cache[$queryStr])) {
+                $this->queries []= $queryStr." (cached)";
+                return $this->cache[$queryStr];
+            } else {
+                $this->queries []= $queryStr;
+                $res = mysql_query($queryStr);
+                if(is_resource($res)) {
+                    if(mysql_num_rows($res) === 0) {
+                        return $this->cache[$queryStr] = mysql_fetch_object($res);
+                    } else {
+                        $rows = array();
+                        while($row = mysql_fetch_object($res)) {
+                            $rows []= $row;
+                        }
+                        return $this->cache[$queryStr] = $rows;
                     }
-                    return $rows;
                 }
+                return $res;
             }
-            return $res;
         }
         private function initialize() {
         

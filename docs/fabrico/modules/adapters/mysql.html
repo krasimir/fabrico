@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sat, 04 Feb 2012 11:47:04 +0000">
+<meta name="when" content="Sat, 04 Feb 2012 18:37:42 +0000">
 
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
 <link rel="start" href="../../../overview-summary.html">
@@ -113,11 +113,11 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 </tr>
 <tr>
 <td class="type"> void</td>
-<td class="description"><p class="name"><a href="#flush()">flush</a>()</p></td>
+<td class="description"><p class="name"><a href="#flush()">flush</a>(bool useCache)</p></td>
 </tr>
 <tr>
 <td class="type"> void</td>
-<td class="description"><p class="name"><a href="#action()">action</a>(bool queryStr)</p></td>
+<td class="description"><p class="name"><a href="#action()">action</a>(bool queryStr, bool useCache)</p></td>
 </tr>
 </table>
 
@@ -132,7 +132,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <hr>
 
 <h2 id="detail_method">Constructor Detail</h2>
-<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line16" class="location">fabrico\modules\php\adapters\MySQL.php at line 16</a>
+<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line17" class="location">fabrico\modules\php\adapters\MySQL.php at line 17</a>
 
 <h3 id="__construct()">__construct</h3>
 <code class="signature">public  void <strong>__construct</strong>(<a href="../../../fabrico/modules/adapters/mysqlconfig.html">MySQLConfig</a> configs)</code>
@@ -142,7 +142,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <hr>
 
 <h2 id="detail_method">Method Detail</h2>
-<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line32" class="location">fabrico\modules\php\adapters\MySQL.php at line 32</a>
+<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line34" class="location">fabrico\modules\php\adapters\MySQL.php at line 34</a>
 
 <h3 id="get()">get</h3>
 <code class="signature">public  void <strong>get</strong>()</code>
@@ -151,7 +151,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line36" class="location">fabrico\modules\php\adapters\MySQL.php at line 36</a>
+<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line38" class="location">fabrico\modules\php\adapters\MySQL.php at line 38</a>
 
 <h3 id="store()">store</h3>
 <code class="signature">public  void <strong>store</strong>(mixed record)</code>
@@ -160,7 +160,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line75" class="location">fabrico\modules\php\adapters\MySQL.php at line 75</a>
+<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line77" class="location">fabrico\modules\php\adapters\MySQL.php at line 77</a>
 
 <h3 id="trash()">trash</h3>
 <code class="signature">public  void <strong>trash</strong>(mixed record)</code>
@@ -169,7 +169,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line81" class="location">fabrico\modules\php\adapters\MySQL.php at line 81</a>
+<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line83" class="location">fabrico\modules\php\adapters\MySQL.php at line 83</a>
 
 <h3 id="order()">order</h3>
 <code class="signature">public  void <strong>order</strong>(mixed str)</code>
@@ -178,7 +178,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line85" class="location">fabrico\modules\php\adapters\MySQL.php at line 85</a>
+<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line87" class="location">fabrico\modules\php\adapters\MySQL.php at line 87</a>
 
 <h3 id="asc()">asc</h3>
 <code class="signature">public  void <strong>asc</strong>()</code>
@@ -187,7 +187,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line89" class="location">fabrico\modules\php\adapters\MySQL.php at line 89</a>
+<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line91" class="location">fabrico\modules\php\adapters\MySQL.php at line 91</a>
 
 <h3 id="desc()">desc</h3>
 <code class="signature">public  void <strong>desc</strong>()</code>
@@ -196,7 +196,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line96" class="location">fabrico\modules\php\adapters\MySQL.php at line 96</a>
+<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line98" class="location">fabrico\modules\php\adapters\MySQL.php at line 98</a>
 
 <h3 id="where()">where</h3>
 <code class="signature">public  void <strong>where</strong>(mixed str)</code>
@@ -205,7 +205,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line104" class="location">fabrico\modules\php\adapters\MySQL.php at line 104</a>
+<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line106" class="location">fabrico\modules\php\adapters\MySQL.php at line 106</a>
 
 <h3 id="report()">report</h3>
 <code class="signature">public  void <strong>report</strong>()</code>
@@ -214,19 +214,19 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line112" class="location">fabrico\modules\php\adapters\MySQL.php at line 112</a>
+<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line114" class="location">fabrico\modules\php\adapters\MySQL.php at line 114</a>
 
 <h3 id="flush()">flush</h3>
-<code class="signature">public  void <strong>flush</strong>()</code>
+<code class="signature">public  void <strong>flush</strong>(bool useCache)</code>
 <div class="details">
 </div>
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line117" class="location">fabrico\modules\php\adapters\MySQL.php at line 117</a>
+<a href="../../../source/fabrico/modules/php/adapters/mysql.php.html#line119" class="location">fabrico\modules\php\adapters\MySQL.php at line 119</a>
 
 <h3 id="action()">action</h3>
-<code class="signature">public  void <strong>action</strong>(bool queryStr)</code>
+<code class="signature">public  void <strong>action</strong>(bool queryStr, bool useCache)</code>
 <div class="details">
 </div>
 

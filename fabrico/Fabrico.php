@@ -30,18 +30,18 @@
             
             // ************************************************************************************** MODULES *** 
             
-            // config
-            if(isset($configs->adapters)) {
-                $this->log("Fabrico's configuration - 'adapters'.", "#C0C0C0");
-                $this->adapters = readJSON($this->paths->root.$configs->adapters);
-            }
-            
             // benchmark
             if(isset($configs->benchmark)) {
                 $this->log("Fabrico's configuration - 'benchmark'.", "#C0C0C0");
                 $this->using(array(
                     "benchmark" => "middleware/Benchmark.php",
                 ));
+            }
+            
+            // config
+            if(isset($configs->adapters)) {
+                $this->log("Fabrico's configuration - 'adapters'.", "#C0C0C0");
+                $this->adapters = readJSON($this->paths->root.$configs->adapters);
             }
             
             // models
