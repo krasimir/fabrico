@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Sat, 04 Feb 2012 18:37:42 +0000">
+<meta name="when" content="Sun, 05 Feb 2012 10:16:45 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -295,7 +295,7 @@
 <a name="line251"></a>            $presenterName = str_replace(".php", "", array_pop($parts));
 <a name="line252"></a>            $str = "";
 <a name="line253"></a>            switch($presenterName) {
-<a name="line254"></a>                case "Text": $str .= " VARCHAR(100) "; break;
+<a name="line254"></a>                case "Text": $str .= " VARCHAR(250) "; break;
 <a name="line255"></a>                case "Digit": $str .= " INT(10) "; break;
 <a name="line256"></a>                case "Color": $str .= " VARCHAR(10) "; break;
 <a name="line257"></a>                case "Date":
@@ -309,57 +309,58 @@
 <a name="line265"></a>                        return " DATE ";
 <a name="line266"></a>                    }
 <a name="line267"></a>                break;
-<a name="line268"></a>                case "File": $str .= " LONGTEXT "; break;
-<a name="line269"></a>                case "Files": $str .= " LONGTEXT "; break;
-<a name="line270"></a>                case "Select": $str .= " LONGTEXT "; break;
-<a name="line271"></a>                case "SelectCheck": $str .= " LONGTEXT "; break;
-<a name="line272"></a>                case "SelectDb": $str .= " LONGTEXT "; break;
-<a name="line273"></a>                case "SelectRadio": $str .= " LONGTEXT "; break;
-<a name="line274"></a>                case "TextLong": $str .= " LONGTEXT "; break;
-<a name="line275"></a>                case "TextRich": $str .= " LONGTEXT "; break;
-<a name="line276"></a>                case "TextTinyMCE": $str .= " LONGTEXT "; break;
-<a name="line277"></a>                default: $str .= " VARCHAR(100) "; break;
-<a name="line278"></a>            }
-<a name="line279"></a>            if(isset($field->default)) {
-<a name="line280"></a>                $str .= " NOT NULL DEFAULT '".$field->default."' ";
-<a name="line281"></a>            }
-<a name="line282"></a>            return $str;
-<a name="line283"></a>            // ALTER TABLE  `sample` ADD  `gsd` INT( 10 ) NOT NULL AFTER  `price`
-<a name="line284"></a>        }
-<a name="line285"></a>        private function error($str) {
-<a name="line286"></a>            throw new Exception($this.": ".$str);
-<a name="line287"></a>        }
-<a name="line288"></a>        private function log($str, $color) {
-<a name="line289"></a>            echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
-<a name="line290"></a>        }
-<a name="line291"></a>    
-<a name="line292"></a>    }
-<a name="line293"></a>    
-<a name="line294"></a>    /**
-<a name="line295"></a>    * @package Fabrico\Modules\Adapters
-<a name="line296"></a>    */
-<a name="line297"></a>    class MySQLConfig {
-<a name="line298"></a>    
-<a name="line299"></a>        public $name = null;
-<a name="line300"></a>        public $host = "";
-<a name="line301"></a>        public $user = "";
-<a name="line302"></a>        public $pass = "";
-<a name="line303"></a>        public $dbname = "";
-<a name="line304"></a>        public $freeze = false;
-<a name="line305"></a>        public $fields = null;
-<a name="line306"></a>        public $debug = false;
-<a name="line307"></a>        
-<a name="line308"></a>        public function __construct($props = null) {
-<a name="line309"></a>            if($props != null) {
-<a name="line310"></a>                foreach($props as $key => $value) {
-<a name="line311"></a>                    $this->$key = $value;
-<a name="line312"></a>                }
-<a name="line313"></a>            }
-<a name="line314"></a>        }
-<a name="line315"></a>        
-<a name="line316"></a>    }
-<a name="line317"></a>
-<a name="line318"></a>?></pre>
+<a name="line268"></a>                case "HiddenModifiedDate": return " DATETIME "; break;
+<a name="line269"></a>                case "File": $str .= " LONGTEXT "; break;
+<a name="line270"></a>                case "Files": $str .= " LONGTEXT "; break;
+<a name="line271"></a>                case "Select": $str .= " LONGTEXT "; break;
+<a name="line272"></a>                case "SelectCheck": $str .= " LONGTEXT "; break;
+<a name="line273"></a>                case "SelectDb": $str .= " LONGTEXT "; break;
+<a name="line274"></a>                case "SelectRadio": $str .= " LONGTEXT "; break;
+<a name="line275"></a>                case "TextLong": $str .= " LONGTEXT "; break;
+<a name="line276"></a>                case "TextRich": $str .= " LONGTEXT "; break;
+<a name="line277"></a>                case "TextTinyMCE": $str .= " LONGTEXT "; break;
+<a name="line278"></a>                default: $str .= " LONGTEXT "; break;
+<a name="line279"></a>            }
+<a name="line280"></a>            if(isset($field->default)) {
+<a name="line281"></a>                $str .= " NOT NULL DEFAULT '".$field->default."' ";
+<a name="line282"></a>            }
+<a name="line283"></a>            return $str;
+<a name="line284"></a>            // ALTER TABLE  `sample` ADD  `gsd` INT( 10 ) NOT NULL AFTER  `price`
+<a name="line285"></a>        }
+<a name="line286"></a>        private function error($str) {
+<a name="line287"></a>            throw new Exception($this.": ".$str);
+<a name="line288"></a>        }
+<a name="line289"></a>        private function log($str, $color) {
+<a name="line290"></a>            echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
+<a name="line291"></a>        }
+<a name="line292"></a>    
+<a name="line293"></a>    }
+<a name="line294"></a>    
+<a name="line295"></a>    /**
+<a name="line296"></a>    * @package Fabrico\Modules\Adapters
+<a name="line297"></a>    */
+<a name="line298"></a>    class MySQLConfig {
+<a name="line299"></a>    
+<a name="line300"></a>        public $name = null;
+<a name="line301"></a>        public $host = "";
+<a name="line302"></a>        public $user = "";
+<a name="line303"></a>        public $pass = "";
+<a name="line304"></a>        public $dbname = "";
+<a name="line305"></a>        public $freeze = false;
+<a name="line306"></a>        public $fields = null;
+<a name="line307"></a>        public $debug = false;
+<a name="line308"></a>        
+<a name="line309"></a>        public function __construct($props = null) {
+<a name="line310"></a>            if($props != null) {
+<a name="line311"></a>                foreach($props as $key => $value) {
+<a name="line312"></a>                    $this->$key = $value;
+<a name="line313"></a>                }
+<a name="line314"></a>            }
+<a name="line315"></a>        }
+<a name="line316"></a>        
+<a name="line317"></a>    }
+<a name="line318"></a>
+<a name="line319"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

@@ -3852,6 +3852,19 @@ var global = {};
     }();
 })();
 (function() {
+    global.fabrico.modules.presenters.Hidden = function() {
+        
+        var init = function(field) {
+            $("#" + field).parent().parent().parent().css("display", "none");
+        };
+        
+        return {
+            init: init
+        }
+        
+    }();
+})();
+(function() {
     global.fabrico.modules.presenters.SelectCheck = function() {
         
         var dependencyHide = function(field) {

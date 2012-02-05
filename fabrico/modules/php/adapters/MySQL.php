@@ -251,7 +251,7 @@
             $presenterName = str_replace(".php", "", array_pop($parts));
             $str = "";
             switch($presenterName) {
-                case "Text": $str .= " VARCHAR(100) "; break;
+                case "Text": $str .= " VARCHAR(250) "; break;
                 case "Digit": $str .= " INT(10) "; break;
                 case "Color": $str .= " VARCHAR(10) "; break;
                 case "Date":
@@ -265,6 +265,7 @@
                         return " DATE ";
                     }
                 break;
+                case "HiddenModifiedDate": return " DATETIME "; break;
                 case "File": $str .= " LONGTEXT "; break;
                 case "Files": $str .= " LONGTEXT "; break;
                 case "Select": $str .= " LONGTEXT "; break;
@@ -274,7 +275,7 @@
                 case "TextLong": $str .= " LONGTEXT "; break;
                 case "TextRich": $str .= " LONGTEXT "; break;
                 case "TextTinyMCE": $str .= " LONGTEXT "; break;
-                default: $str .= " VARCHAR(100) "; break;
+                default: $str .= " LONGTEXT "; break;
             }
             if(isset($field->default)) {
                 $str .= " NOT NULL DEFAULT '".$field->default."' ";
