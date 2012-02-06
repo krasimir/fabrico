@@ -10,11 +10,14 @@
         public $res;
         public $paths;
         public $currentUser;
+        public $configs;
         
         /**
         * @param $configs
         */
         public function __construct($configs) {
+        
+            $this->configs = $configs;
         
             // setting request and response
             $this->req = new Request();

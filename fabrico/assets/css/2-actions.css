@@ -1,23 +1,8 @@
 /* ************************************************************* Listing */
 .data-icon {
-    display: block;
-    float: left;
-    width: 18px;
-    height: 18px;
-    margin: 0 3px 0 0;
+    border: solid 1px #FFF;
+    padding: 2px;
 }
 .data-icon:hover {
-    background-position: 0 -18px;
-}
-.data-icon-edit {
-    background: url(../img/iconEdit.png) no-repeat;
-}
-.data-icon-delete {
-    background: url(../img/iconDelete.png) no-repeat;
-}
-.data-icon-up {
-    background: url(../img/iconUp.png) no-repeat;
-}
-.data-icon-down {
-    background: url(../img/iconDown.png) no-repeat;
+    border: solid 1px #999;
 }
