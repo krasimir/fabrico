@@ -57,7 +57,7 @@
                     // ordering
                     $pattern."/ordering/@type/@id" => "actions/Ordering.php",
                     // default route
-                    $pattern => $this->defaultController
+                    $pattern => $this->getActionController("listing", $this->defaultController)
                 );
                 
                 // adding custom routes if any
