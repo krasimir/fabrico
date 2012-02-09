@@ -2,7 +2,8 @@
     
     inject(array(
         "Middleware.php",
-        "middleware/Router.php"
+        "middleware/Router.php",
+        "utils/Signal.php"
     ));
 
     /**
@@ -14,6 +15,7 @@
         public $url;
         public $title;
         public $pageTitle;
+        public $events;
     
         protected $router;
         protected $defaultRoutes = array();
@@ -24,6 +26,11 @@
         
         public function __construct($router = null) {
             $this->matchedRouterRule = $router->matchedRule;
+            $this->events = (object) array(
+                "ON_ADD" => new Signal($this),
+                "ON_EDIT" => new Signal($this),
+                "ON_DELETE" => new Signal($this)
+            );
         }
         public function run($req, $res) {
         

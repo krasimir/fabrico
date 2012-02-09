@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Mon, 06 Feb 2012 08:57:11 +0000">
+<meta name="when" content="Thu, 09 Feb 2012 12:53:25 +0000">
 
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
 <link rel="start" href="../../../overview-summary.html">
@@ -61,18 +61,6 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<table id="summary_field">
-<tr><th colspan="2">Field Summary</th></tr>
-<tr>
-<td class="type"> mixed</td>
-<td class="description"><p class="name"><a href="#data">$data</a></p></td>
-</tr>
-<tr>
-<td class="type"> mixed</td>
-<td class="description"><p class="name"><a href="#target">$target</a></p></td>
-</tr>
-</table>
-
 <table id="summary_constructor">
 <tr><th colspan="2">Constructor Summary</th></tr>
 <tr>
@@ -85,7 +73,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <tr><th colspan="2">Method Summary</th></tr>
 <tr>
 <td class="type"> void</td>
-<td class="description"><p class="name"><a href="#add()">add</a>(mixed listener)</p></td>
+<td class="description"><p class="name"><a href="#add()">add</a>(mixed scope, mixed method)</p></td>
 </tr>
 <tr>
 <td class="type"> void</td>
@@ -97,27 +85,8 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 </tr>
 </table>
 
-<h2 id="detail_field">Field Detail</h2>
-<a href="../../../source/fabrico/modules/php/utils/signal.php.html#line10" class="location">fabrico\modules\php\utils\Signal.php at line 10</a>
-
-<h3 id="data">data</h3>
-<code class="signature">public  mixed <strong>$data</strong></code>
-<div class="details">
-</div>
-
-<hr>
-
-<a href="../../../source/fabrico/modules/php/utils/signal.php.html#line9" class="location">fabrico\modules\php\utils\Signal.php at line 9</a>
-
-<h3 id="target">target</h3>
-<code class="signature">public  mixed <strong>$target</strong></code>
-<div class="details">
-</div>
-
-<hr>
-
 <h2 id="detail_method">Constructor Detail</h2>
-<a href="../../../source/fabrico/modules/php/utils/signal.php.html#line12" class="location">fabrico\modules\php\utils\Signal.php at line 12</a>
+<a href="../../../source/fabrico/modules/php/utils/signal.php.html#line10" class="location">fabrico\modules\php\utils\Signal.php at line 10</a>
 
 <h3 id="__construct()">__construct</h3>
 <code class="signature">public  void <strong>__construct</strong>(mixed target)</code>
@@ -127,16 +96,16 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <hr>
 
 <h2 id="detail_method">Method Detail</h2>
-<a href="../../../source/fabrico/modules/php/utils/signal.php.html#line15" class="location">fabrico\modules\php\utils\Signal.php at line 15</a>
+<a href="../../../source/fabrico/modules/php/utils/signal.php.html#line13" class="location">fabrico\modules\php\utils\Signal.php at line 13</a>
 
 <h3 id="add()">add</h3>
-<code class="signature">public  void <strong>add</strong>(mixed listener)</code>
+<code class="signature">public  void <strong>add</strong>(mixed scope, mixed method)</code>
 <div class="details">
 </div>
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/utils/signal.php.html#line18" class="location">fabrico\modules\php\utils\Signal.php at line 18</a>
+<a href="../../../source/fabrico/modules/php/utils/signal.php.html#line19" class="location">fabrico\modules\php\utils\Signal.php at line 19</a>
 
 <h3 id="dispatch()">dispatch</h3>
 <code class="signature">public  void <strong>dispatch</strong>(mixed data)</code>
@@ -145,7 +114,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 
 <hr>
 
-<a href="../../../source/fabrico/modules/php/utils/signal.php.html#line24" class="location">fabrico\modules\php\utils\Signal.php at line 24</a>
+<a href="../../../source/fabrico/modules/php/utils/signal.php.html#line28" class="location">fabrico\modules\php\utils\Signal.php at line 28</a>
 
 <h3 id="numOfListeners()">numOfListeners</h3>
 <code class="signature">public  void <strong>numOfListeners</strong>()</code>

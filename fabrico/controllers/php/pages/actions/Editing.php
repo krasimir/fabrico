@@ -2,8 +2,7 @@
     
     inject(array(
         "presenters/Presenter.php",
-        "actions/Action.php",
-        "utils/Signal.php"
+        "actions/Action.php"
     ));
 
     /**
@@ -13,7 +12,6 @@
         
         public function __construct($router) {
             parent::__construct($router);
-            $this->events->saved = new Signal($this);
         }
         public function __toString() {
             return "Editing";
@@ -52,6 +50,7 @@
                         $content .= $this->view("subnav.html");
                         $content .= $this->view("result.html", array("id" => $this->model->store($record)));
                         $content .= $this->getForm($req, $res, $sentData);
+                        $this->controller->events->ON_EDIT->dispatch((object) array("id" => $record->id));
                     } else {
                         $content .= $this->view("subnav.html");
                         $content .= $this->getForm($req, $res, $sentData);

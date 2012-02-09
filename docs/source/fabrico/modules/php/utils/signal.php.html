@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Mon, 06 Feb 2012 08:57:11 +0000">
+<meta name="when" content="Thu, 09 Feb 2012 12:53:25 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -50,28 +50,32 @@
 <a name="line6"></a>    class Signal {
 <a name="line7"></a>    
 <a name="line8"></a>        private $listeners = array();
-<a name="line9"></a>        public $target;
-<a name="line10"></a>        public $data;
-<a name="line11"></a>        
-<a name="line12"></a>        public function __construct($target) {
-<a name="line13"></a>            $this->target = $target;
-<a name="line14"></a>        }
-<a name="line15"></a>        public function add($listener) {
-<a name="line16"></a>            $this->listeners []= $listener;
-<a name="line17"></a>        }
-<a name="line18"></a>        public function dispatch($data = null) {
-<a name="line19"></a>            $this->data = $data;
-<a name="line20"></a>            foreach($this->listeners as $listener) {
-<a name="line21"></a>                $listener($this);
-<a name="line22"></a>            }
-<a name="line23"></a>        }
-<a name="line24"></a>        public function numOfListeners() {
-<a name="line25"></a>            return count($this->listeners);
-<a name="line26"></a>        }
-<a name="line27"></a>        
-<a name="line28"></a>    }
-<a name="line29"></a>
-<a name="line30"></a>?></pre>
+<a name="line9"></a>        
+<a name="line10"></a>        public function __construct($target) {
+<a name="line11"></a>            $this->target = $target;
+<a name="line12"></a>        }
+<a name="line13"></a>        public function add($scope, $method) {
+<a name="line14"></a>            $this->listeners []= (object) array(
+<a name="line15"></a>                "scope" => $scope, 
+<a name="line16"></a>                "method" => $method
+<a name="line17"></a>            );
+<a name="line18"></a>        }
+<a name="line19"></a>        public function dispatch($data = null) {
+<a name="line20"></a>            $event = (object) array(
+<a name="line21"></a>                "data" => $data,
+<a name="line22"></a>                "target" => $this->target
+<a name="line23"></a>            );
+<a name="line24"></a>            foreach($this->listeners as $listener) {
+<a name="line25"></a>                $listener->scope->{$listener->method}($event);
+<a name="line26"></a>            }
+<a name="line27"></a>        }
+<a name="line28"></a>        public function numOfListeners() {
+<a name="line29"></a>            return count($this->listeners);
+<a name="line30"></a>        }
+<a name="line31"></a>        
+<a name="line32"></a>    }
+<a name="line33"></a>
+<a name="line34"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

@@ -6,19 +6,23 @@
     class Signal {
     
         private $listeners = array();
-        public $target;
-        public $data;
         
         public function __construct($target) {
             $this->target = $target;
         }
-        public function add($listener) {
-            $this->listeners []= $listener;
+        public function add($scope, $method) {
+            $this->listeners []= (object) array(
+                "scope" => $scope, 
+                "method" => $method
+            );
         }
         public function dispatch($data = null) {
-            $this->data = $data;
+            $event = (object) array(
+                "data" => $data,
+                "target" => $this->target
+            );
             foreach($this->listeners as $listener) {
-                $listener($this);
+                $listener->scope->{$listener->method}($event);
             }
         }
         public function numOfListeners() {

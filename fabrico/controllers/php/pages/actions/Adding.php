@@ -1,8 +1,7 @@
 <?php
     
     inject(array(
-        "actions/Action.php",
-        "utils/Signal.php"
+        "actions/Action.php"
     ));
 
     /**
@@ -12,7 +11,6 @@
         
         public function __construct($router) {
             parent::__construct($router);
-            $this->events->saved = new Signal($this);
         }
         public function __toString() {
             return "Adding";
@@ -52,7 +50,7 @@
                         "controllerURL" => $this->controller->url
                     ));
                     $content .= $this->view("result.html", array("id" => $id));
-                    $this->events->saved->dispatch(true);
+                    $this->controller->events->ON_ADD->dispatch((object) array("id" => $id));
                     $this->controller->response($content, $req, $res);
                 } else {
                     $content .= $this->getForm($req, $res, $sentData);

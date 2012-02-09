@@ -28,6 +28,7 @@
                     }
                 }
                 $this->model->trash($record);
+                $this->controller->events->ON_DELETE->dispatch((object) array("id" => $id));
                 header("Location: ".$req->fabrico->paths->url.$this->controller->url);
             }
             
