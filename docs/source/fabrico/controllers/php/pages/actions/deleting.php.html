@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Thu, 09 Feb 2012 13:08:48 +0000">
+<meta name="when" content="Fri, 10 Feb 2012 09:57:12 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -72,7 +72,7 @@
 <a name="line28"></a>                    }
 <a name="line29"></a>                }
 <a name="line30"></a>                $this->model->trash($record);
-<a name="line31"></a>                $this->controller->events->ON_DELETE->dispatch((object) array("id" => $id));
+<a name="line31"></a>                $this->controller->events->ON_DELETE->dispatch($record);
 <a name="line32"></a>                header("Location: ".$req->fabrico->paths->url.$this->controller->url);
 <a name="line33"></a>            }
 <a name="line34"></a>            

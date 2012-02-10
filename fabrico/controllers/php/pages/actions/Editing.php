@@ -50,7 +50,7 @@
                         $content .= $this->view("subnav.html");
                         $content .= $this->view("result.html", array("id" => $this->model->store($record)));
                         $content .= $this->getForm($req, $res, $sentData);
-                        $this->controller->events->ON_EDIT->dispatch((object) array("id" => $record->id));
+                        $this->controller->events->ON_EDIT->dispatch($record);
                     } else {
                         $content .= $this->view("subnav.html");
                         $content .= $this->getForm($req, $res, $sentData);

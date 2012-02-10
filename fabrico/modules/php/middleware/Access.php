@@ -33,6 +33,7 @@
                     ) {
                         $this->req->fabrico->currentUser = $user;
                         $this->logged = true;
+                        return $this->logged;
                     } else {
                     
                         $usernameField = $this->form->username;
@@ -53,7 +54,6 @@
                         }   
                     }
                 }
-                return $this->logged;
             }
         }
         public function run($req, $res) {

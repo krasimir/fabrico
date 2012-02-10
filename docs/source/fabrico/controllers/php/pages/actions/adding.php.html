@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Thu, 09 Feb 2012 13:08:48 +0000">
+<meta name="when" content="Fri, 10 Feb 2012 09:57:12 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -94,53 +94,54 @@
 <a name="line50"></a>                        "controllerURL" => $this->controller->url
 <a name="line51"></a>                    ));
 <a name="line52"></a>                    $content .= $this->view("result.html", array("id" => $id));
-<a name="line53"></a>                    $this->controller->events->ON_ADD->dispatch((object) array("id" => $id));
-<a name="line54"></a>                    $this->controller->response($content, $req, $res);
-<a name="line55"></a>                } else {
-<a name="line56"></a>                    $content .= $this->getForm($req, $res, $sentData);
-<a name="line57"></a>                }
-<a name="line58"></a>            // displaying the form
-<a name="line59"></a>            } else {
-<a name="line60"></a>                $content .= $this->getForm($req, $res);
-<a name="line61"></a>            }
-<a name="line62"></a>            
-<a name="line63"></a>            $this->controller->response($content, $req, $res);
-<a name="line64"></a>            
-<a name="line65"></a>        }
-<a name="line66"></a>        private function getForm($req, $res, $sentData = null) {
-<a name="line67"></a>            $content = "";
-<a name="line68"></a>            $fields = $this->model->fields;
-<a name="line69"></a>            foreach($fields as $field) {
-<a name="line70"></a>                $default = $validatorMessage = null;
-<a name="line71"></a>                $dependencies = isset($field->dependencies) ? $field->dependencies : null;
-<a name="line72"></a>                if(isset($sentData) && isset($sentData->{$field->name})) {
-<a name="line73"></a>                    $default =  $sentData->{$field->name}->value;
-<a name="line74"></a>                    $validatorMessage = !$sentData->{$field->name}->presenterResponse->valid ? $sentData->{$field->name}->presenterResponse->message : null;
-<a name="line75"></a>                }
-<a name="line76"></a>                $presenter = $this->getPresenter($field);
-<a name="line77"></a>                $content .= $this->view("row.html", array(
-<a name="line78"></a>                    "name" => (isset($field->label) ? $field->label : $field->name),
-<a name="line79"></a>                    "field" => $field->name,
-<a name="line80"></a>                    "description" => (isset($field->description) ? $field->description : ""),
-<a name="line81"></a>                    "presenter" => $presenter->add($default)->response->value,
-<a name="line82"></a>                    "validatorMessage" => $validatorMessage !== null ? $this->view("error.html", array(
-<a name="line83"></a>                        "text" => $validatorMessage
-<a name="line84"></a>                    )) : "",
-<a name="line85"></a>                    "rowClass" => $dependencies !== null ? "has-dependencies" : "no-dependencies"
-<a name="line86"></a>                ));
-<a name="line87"></a>            }
-<a name="line88"></a>            $content .= $this->view("submit.html");
-<a name="line89"></a>            $content = $this->view("form.html", array(
-<a name="line90"></a>                "presentersContent" => $content,
-<a name="line91"></a>                "fields" => $this->fieldsJson
-<a name="line92"></a>            ));
-<a name="line93"></a>            $content = $this->view("subnav.html").$content;
-<a name="line94"></a>            return $content;
-<a name="line95"></a>        }
-<a name="line96"></a>    
-<a name="line97"></a>    }
-<a name="line98"></a>
-<a name="line99"></a>?></pre>
+<a name="line53"></a>                    $record->id = $id;
+<a name="line54"></a>                    $this->controller->events->ON_ADD->dispatch($record);
+<a name="line55"></a>                    $this->controller->response($content, $req, $res);
+<a name="line56"></a>                } else {
+<a name="line57"></a>                    $content .= $this->getForm($req, $res, $sentData);
+<a name="line58"></a>                }
+<a name="line59"></a>            // displaying the form
+<a name="line60"></a>            } else {
+<a name="line61"></a>                $content .= $this->getForm($req, $res);
+<a name="line62"></a>            }
+<a name="line63"></a>            
+<a name="line64"></a>            $this->controller->response($content, $req, $res);
+<a name="line65"></a>            
+<a name="line66"></a>        }
+<a name="line67"></a>        private function getForm($req, $res, $sentData = null) {
+<a name="line68"></a>            $content = "";
+<a name="line69"></a>            $fields = $this->model->fields;
+<a name="line70"></a>            foreach($fields as $field) {
+<a name="line71"></a>                $default = $validatorMessage = null;
+<a name="line72"></a>                $dependencies = isset($field->dependencies) ? $field->dependencies : null;
+<a name="line73"></a>                if(isset($sentData) && isset($sentData->{$field->name})) {
+<a name="line74"></a>                    $default =  $sentData->{$field->name}->value;
+<a name="line75"></a>                    $validatorMessage = !$sentData->{$field->name}->presenterResponse->valid ? $sentData->{$field->name}->presenterResponse->message : null;
+<a name="line76"></a>                }
+<a name="line77"></a>                $presenter = $this->getPresenter($field);
+<a name="line78"></a>                $content .= $this->view("row.html", array(
+<a name="line79"></a>                    "name" => (isset($field->label) ? $field->label : $field->name),
+<a name="line80"></a>                    "field" => $field->name,
+<a name="line81"></a>                    "description" => (isset($field->description) ? $field->description : ""),
+<a name="line82"></a>                    "presenter" => $presenter->add($default)->response->value,
+<a name="line83"></a>                    "validatorMessage" => $validatorMessage !== null ? $this->view("error.html", array(
+<a name="line84"></a>                        "text" => $validatorMessage
+<a name="line85"></a>                    )) : "",
+<a name="line86"></a>                    "rowClass" => $dependencies !== null ? "has-dependencies" : "no-dependencies"
+<a name="line87"></a>                ));
+<a name="line88"></a>            }
+<a name="line89"></a>            $content .= $this->view("submit.html");
+<a name="line90"></a>            $content = $this->view("form.html", array(
+<a name="line91"></a>                "presentersContent" => $content,
+<a name="line92"></a>                "fields" => $this->fieldsJson
+<a name="line93"></a>            ));
+<a name="line94"></a>            $content = $this->view("subnav.html").$content;
+<a name="line95"></a>            return $content;
+<a name="line96"></a>        }
+<a name="line97"></a>    
+<a name="line98"></a>    }
+<a name="line99"></a>
+<a name="line100"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

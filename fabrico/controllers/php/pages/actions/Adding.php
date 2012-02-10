@@ -50,7 +50,8 @@
                         "controllerURL" => $this->controller->url
                     ));
                     $content .= $this->view("result.html", array("id" => $id));
-                    $this->controller->events->ON_ADD->dispatch((object) array("id" => $id));
+                    $record->id = $id;
+                    $this->controller->events->ON_ADD->dispatch($record);
                     $this->controller->response($content, $req, $res);
                 } else {
                     $content .= $this->getForm($req, $res, $sentData);

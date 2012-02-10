@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Thu, 09 Feb 2012 13:08:48 +0000">
+<meta name="when" content="Fri, 10 Feb 2012 09:57:12 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -48,21 +48,12 @@
 <a name="line4"></a>    define("DEBUG", isset($_GET["debug"]) && $_GET["debug"] == 1);
 <a name="line5"></a>    
 <a name="line6"></a>    // defininf root
-<a name="line7"></a>    define("ROOT", isset($_SERVER["SCRIPT_FILENAME"]) ? dirname($_SERVER["SCRIPT_FILENAME"]) : NULL);
+<a name="line7"></a>    define("ROOT", dirname(__FILE__));
 <a name="line8"></a>    
 <a name="line9"></a>    require(dirname(__FILE__)."/modules/php/utils/Injector.php");
 <a name="line10"></a>    $injector->setRoot(ROOT);
 <a name="line11"></a>    
-<a name="line12"></a>    inject(array(
-<a name="line13"></a>        "utils/ErrorHandler.php",
-<a name="line14"></a>        "utils/Request.php",
-<a name="line15"></a>        "utils/Response.php",
-<a name="line16"></a>        "utils/Middleware.php",
-<a name="line17"></a>        "utils/readJSON.php",
-<a name="line18"></a>        "Fabrico.php"
-<a name="line19"></a>    ));
-<a name="line20"></a>    
-<a name="line21"></a>?></pre>
+<a name="line12"></a>?></pre>
 <div class="header">
 <h1>Fabrico</h1>
 <ul>

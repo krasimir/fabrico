@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Thu, 09 Feb 2012 13:08:48 +0000">
+<meta name="when" content="Fri, 10 Feb 2012 09:57:12 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -66,7 +66,7 @@ Detail: <a href="#detail_global">Global</a>
 </tr>
 <tr>
 <td class="type"> mixed</td>
-<td class="description"><p class="name"><a href="#_SERVER">_SERVER</a></p></td>
+<td class="description"><p class="name"><a href="#configs">configs</a></p></td>
 </tr>
 <tr>
 <td class="type"> mixed</td>
@@ -91,7 +91,7 @@ Detail: <a href="#detail_global">Global</a>
 <a href="../source/fabrico/global.php.html#line7" class="location">fabrico\global.php at line 7</a>
 
 <h3 id="ROOT">ROOT</h3>
-<code class="signature">public final  mixed <strong>ROOT</strong> = isset($_SERVER[&quot;SCRIPT_FILENAME&quot;]</code>
+<code class="signature">public final  mixed <strong>ROOT</strong> = dirname(__FILE__</code>
 <div class="details">
 </div>
 
@@ -106,25 +106,28 @@ Detail: <a href="#detail_global">Global</a>
 
 <hr>
 
-<a href="../source/fabrico/global.php.html#line7" class="location">fabrico\global.php at line 7</a>
+<a href="../source/custom/index.php.html#line7" class="location">custom\index.php at line 7</a>
 
-<h3 id="_SERVER">_SERVER</h3>
-<code class="signature">public  mixed <strong>_SERVER</strong></code>
+<h3 id="configs">configs</h3>
+<code class="signature">public  mixed <strong>configs</strong> = object) array(
+        &quot;router&quot; =&gt; array(
+            (object) array(
+                &quot;url&quot; =&gt; &quot;(.*)?&quot;</code>
 <div class="details">
 </div>
 
 <hr>
 
-<a href="../source/fabrico/index.php.html#line4" class="location">fabrico\index.php at line 4</a>
+<a href="../source/custom/index.php.html#line16" class="location">custom\index.php at line 16</a>
 
 <h3 id="fabrico">fabrico</h3>
-<code class="signature">public  mixed <strong>fabrico</strong> = new Fabrico(readJSON(ROOT.&quot;/../config/fabrico.json&quot;</code>
+<code class="signature">public  mixed <strong>fabrico</strong> = new Fabrico($configs</code>
 <div class="details">
 </div>
 
 <hr>
 
-<a href="../source/fabrico/global.php.html#line10" class="location">fabrico\global.php at line 10</a>
+<a href="../source/custom/index.php.html#line4" class="location">custom\index.php at line 4</a>
 
 <h3 id="injector">injector</h3>
 <code class="signature">public  mixed <strong>injector</strong></code>

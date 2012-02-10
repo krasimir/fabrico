@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://peej.github.com/phpdoctor/)">
-<meta name="when" content="Thu, 09 Feb 2012 13:08:48 +0000">
+<meta name="when" content="Fri, 10 Feb 2012 09:57:12 +0000">
 
 <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 <link rel="start" href="../overview-summary.html">
@@ -94,7 +94,7 @@
 <a name="line50"></a>                        $content .= $this->view("subnav.html");
 <a name="line51"></a>                        $content .= $this->view("result.html", array("id" => $this->model->store($record)));
 <a name="line52"></a>                        $content .= $this->getForm($req, $res, $sentData);
-<a name="line53"></a>                        $this->controller->events->ON_EDIT->dispatch((object) array("id" => $record->id));
+<a name="line53"></a>                        $this->controller->events->ON_EDIT->dispatch($record);
 <a name="line54"></a>                    } else {
 <a name="line55"></a>                        $content .= $this->view("subnav.html");
 <a name="line56"></a>                        $content .= $this->getForm($req, $res, $sentData);
