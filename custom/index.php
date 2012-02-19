@@ -1,18 +1,13 @@
 <?php
 
-    require("../fabrico/global.php");
-    $injector->setRoot(dirname(__FILE__)."/../");
-    require("../fabrico/inject.php");
+    require("../global.php");
     
-    $configs = (object) array(
-        "router" => array(
-            (object) array(
-                "url" => "(.*)?",
-                "controller" => "controllers/Custom.php"
-            )
+    $fabrico = new Fabrico(
+        array(
+            ROOT."/admin/modules/adapters.php",
+            ROOT."/admin/modules/models.php",
+            ROOT_APP."/modules/router.php"
         )
     );
-    
-    $fabrico = new Fabrico($configs);
 
 ?>

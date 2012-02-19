@@ -1,8 +1,0 @@
-{
-    "MySQL": {
-        "host": "localhost",
-        "user": "root",
-        "pass": "",
-        "dbname": "fabrico_test"
-    }
-}

@@ -1,6 +1,6 @@
 <?php
 
-    require("fabrico/global.php");
+    require("global.php");
     
     echo "Yes, it works!";
 
