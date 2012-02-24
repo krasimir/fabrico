@@ -98,7 +98,7 @@ class Request {
           foreach ($array as $name=>$value) {
              $name = strtolower(trim($name));
              if (!empty($name)) {
-                $object->$name = $this->arrayToObject($value);
+                $object->$name = addslashes($this->arrayToObject($value));
              }
           }
          return $object; 
