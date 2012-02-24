@@ -1,15 +1,17 @@
 <?php
 
     function access() {
-        return (object) array(
-            "type" => "access",
-            "users" => array(
-                (object) array(
-                    "username" => "admin",
-                    "password" => "admin"
-                )
-            )
-        );
+        return json_decode('
+            {
+                "type": "access",
+                "users": [
+                    {
+                        "username": "admin",
+                        "password": "admin"
+                    }
+                ]
+            }
+        ');
     }
 
 ?>

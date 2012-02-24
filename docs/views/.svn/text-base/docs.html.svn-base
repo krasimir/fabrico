@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Localizer Doc</title>
+        <meta name="description" content="Hakkapedia">
+        <meta name="author" content="Hakkapedia">
+        <style type="text/css">
+        
+            {css}
+            
+            section {
+                padding: 0 0 40px 0;
+            }
+            .sub-title {
+                margin: 15px 0 0 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            
+            <div class="page-header">
+                <h1>Localizer <small>documentation</small></h1>
+            </div>
+            
+            <section id="access">
+                <div class="row">
+                    <div class="span3">
+                        <h2>Using the API</h2>
+                        <p>The localizer provides several ways for fetching data.</p>
+                    </div>
+                    <div class="span9">
+                        
+                        <h3>Endpoint</h3>
+                        <p>{host}/api/get</p>
+                        
+                        <h3>Parameters</h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>parameter</th>
+                                    <th>Values</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>lang</td>
+                                    <td>Any valid language prefix like <strong>fi</strong> or <strong>se</strong> for example. By default the value of this parameter is <strong>@all</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>categories</td>
+                                    <td>Any valid <strong>id</strong> of category. You could pass many categories by separating them with <strong>commas(,)</strong> . It is possible to pass <strong>@all</strong> as parameter to receive all the added categories together with their added translations.</td>
+                                </tr>
+                                <tr>
+                                    <td>keys</td>
+                                    <td>Any valid <strong>uid</strong> of translation. You could pass many translations by separating them with <strong>commas(,)</strong> . It is possible to pass <strong>@all</strong> as parameter to receive all the added translations.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <h3>Examples</h3>
+                        <a href="{host}/api/get?categories=3,2&lang=se" target="_blank">{host}/api/get?categories=3,2&amp;lang=se</a><br />
+                        <a href="{host}/api/get?keys=main-menu-button2,new-translation" target="_blank">{host}/api/get?keys=main-menu-button2,new-translation</a>
+                        
+                    </div>
+                </div>
+            </section>
+            
+            <section id="access">
+                <div class="row">
+                    <div class="span3">
+                        <h2>Pinging</h2>
+                        <p>The localizer offers a possibility to ping some url defined by you and send a data to it. The pinging works when some new translation is added or an existence is edited. So, to receive a ping just open and save some of the current made records.</p>
+                    </div>
+                    <div class="span9">
+                        
+                        <h3>Add your url in the localizer</h3>
+                        <ul>
+                            <li>Log in</li>
+                            <li>Go to <a href="{host}/admin/categories">{host}/admin/categories</a></li>
+                            <li>Click the <strong>Edit</strong> icon next to the category which you want to setup</li>
+                            <li>
+                                Click <strong>Add</strong> in <strong>API calls</strong> section<br />
+                                Location to ping - your url<br />
+                                Lang - fi, se, no ...<br />
+                                Compress - set <strong>1</strong> if <strong>gzuncompress</strong> php method is available on your server
+                            </li>                            
+                        </ul>
+                        
+                        <h3>Setup the necessary files on your server</h3>
+                        <ul>
+                            <li>Download the helper class - <a href="{host}/pinger/LocalizerPinger.zip">LocalizerPinger</a></li>
+                            <li>
+                                Usage of the class
+<pre>
+require("LocalizerPinger.php");
+$pinger = new LocalizerPinger();
+// $pinger->error is an object if there is any error
+if(!$pinger->error) { 
+    // $pinger->data - contains all the translations send by the localizer
+    // $pinger->roughData - contains translations in JSON format
+    file_put_contents("your_translations.json", json_encode($pinger->data));
+}
+</pre>
+                            </li>
+                        </ul>
+                        
+                    </div>
+                </div>
+            </section>
+            
+            
+        </div>
+    </body>
+</html>

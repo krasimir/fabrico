@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/nokianrenkaat_localizer/!svn/ver/5/docs
+END
+.htaccess
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/nokianrenkaat_localizer/!svn/ver/5/docs/.htaccess
+END
+index.php
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/nokianrenkaat_localizer/!svn/ver/7/docs/index.php
+END

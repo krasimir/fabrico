@@ -20,7 +20,7 @@
         public function run($req, $res) {
             inject(array("utils/view.php"));
             ViewConfig::config(array(
-                "root" => $req->fabrico->paths->root,
+                "root" => ROOT_APP,
                 "searchIn" => $this->config->paths
             ));
             forEachView($req->fabrico->paths);

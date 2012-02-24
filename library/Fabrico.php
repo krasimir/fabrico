@@ -39,6 +39,9 @@
                     throw new Exception("Fabrico: missing '".$moduleName."()' method in '".$module."'."); 
                 } else {
                     $moduleConfig = $moduleName();
+                    if($moduleConfig === null) {
+                        throw new Exception("Fabrico: wrong definition in  '".$module."'."); 
+                    }
                     $moduleClass = "";
                     switch($moduleConfig->type) {
                         case "access": $moduleClass = "modules/Access.php"; break;
