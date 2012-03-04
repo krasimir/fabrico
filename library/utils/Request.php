@@ -23,8 +23,8 @@ class Request {
                 'referrer' => isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:"",
                 'ip' => $_SERVER['REMOTE_ADDR'],
                 'ajax' => ((isset($_SERVER['HTTP_X_REQUESTED_WITH'])?$_SERVER['HTTP_X_REQUESTED_WITH']:"") == 'XMLHttpRequest'),
-                'scheme' => $_SERVER['SERVER_PROTOCOL'],
-                'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                'scheme' => isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : "",
+                'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : "",
                 'type' => isset($_SERVER['CONTENT_TYPE'])?$_SERVER['CONTENT_TYPE']:"",
                 'length' => isset($_SERVER['CONTENT_LENGTH'])?$_SERVER['CONTENT_LENGTH']:0,
                 'query' => array(),
@@ -98,7 +98,7 @@ class Request {
           foreach ($array as $name=>$value) {
              $name = strtolower(trim($name));
              if (!empty($name)) {
-                $object->$name = addslashes($this->arrayToObject($value));
+                $object->$name = $this->arrayToObject($value);
              }
           }
          return $object; 

@@ -7,6 +7,13 @@
         <meta name="author" content="Hakkapedia">
         <link rel="stylesheet" href="{host}/docs/css/bootstrap.min.css"></link>
         <link rel="stylesheet" href="{host}/docs/css/bootstrap-over.css"></link>
+        <link rel="stylesheet" href="{host}/docs/css/prettify.css"></link>
+        <script type="text/javascript" src="{host}/docs/js/prettify.js"></script>
+        <script type="text/javascript">
+            window.onload = function() {
+                prettyPrint();
+            };
+        </script>
     </head>
     <body>
         <div class="container">
@@ -17,15 +24,18 @@
                         <div class="brand">Fabrico documentation</div>
                         <ul class="nav pull-right">
                             <li><a href="#installation">Installation</a></li>
+                            <li><a href="#units">Units</a></li>
                             <li><a href="#modules">Modules</a></li>
+                            <li><a href="#Presenters">Presenters</a></li>
+                            <li><a href="#Validators">Validators</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
             
             <!----------------------------------------------------------------------------------------------------- installation -->
+            <a name="installation"></a>
             <div class="container container-main">
-                <a name="installation"></a>
                 <h1 class="section-title">Installation</h1>
                 <div class="row">
                     <div class="span12">
@@ -44,17 +54,1264 @@
                 </div>
             </div>
             
-            <!----------------------------------------------------------------------------------------------------- modules -->
+            <!----------------------------------------------------------------------------------------------------- Units -->
+            <a name="units"></a>
             <div class="container container-main">
-                <a name="modules"></a>
-                <h1 class="section-title">Modules</h1>
+                <h1 class="section-title">Units</h1>
                 <div class="row">
                     <div class="span12">
-                        <h2>Access</h2>
-                        <p></p>
+                        <h3>What is unit?</h3>
+                        <p>
+                           The purpose of the unit is to hold specific logic, which means that it is a good idea to split your application logically and create as many units as you need. The default units are:
+                            <ul>
+                                <li><strong>admin</strong> - solution for administrating models</li>
+                                <li><strong>custom</strong> - an example of unit</li>
+                                <li><strong>console</strong> - console unit</li>
+                                <li><strong>docs</strong> - the documentation of Fabrico</li>
+                            </ul>
+                        </p>
+                        <h3>Structure of a unit</h3>
+                        <p>
+                            Every unit is placed in its own directory. To create a unit you need two files
+                            <ul>
+                                <li><strong>.htaccess</strong></li>
+<pre class="prettyprint linenums">
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php?slug=$1 [QSA,L]
+</pre>
+                                <li><strong>index.php</strong></li>
+<pre class="prettyprint linenums">
+&lt?php
+
+    require("../global.php");
+    
+    $fabrico = new Fabrico(
+        array(
+            // describe the unit's modules here
+        )
+    );
+
+?>
+</pre>
+                            </ul>
+                            Please check the <strong>custom</strong> unit. It's role is to give you a rough idea of how to create a unit.
+                        </p>
                     </div>
                 </div>
             </div>
+            
+            <!----------------------------------------------------------------------------------------------------- modules -->
+            <a name="modules"></a>
+            <div class="container container-main">
+                <h1 class="section-title">Modules</h1>
+                
+                <div class="row">
+                    <div class="span12">
+                        <ul>
+                            <li><a href="#Access">Access</a></li>
+                            <li><a href="#Adapters">Adapters</a></li>
+                            <li><a href="#Assets">Assets</a></li>
+                            <li><a href="#Benchmark">Benchmark</a></li>
+                            <li><a href="#Models">Models</a></li>
+                            <li><a href="#Router">Router</a></li>
+                            <li><a href="#Views">Views</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="Access" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>Access</h2>
+                        <p>Restricts the access to the unit.</p>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">{
+    "type": "access",
+    "users": [
+        {
+            "username": "&lt;string>",
+            "password": "&lt;string>",
+            "type": "&lt;string>",
+            "&lt;your custom property name here>: "&lt;your custom property value here>"
+        }
+    ]
+}</pre>
+                        <h3>Example</h3>
+<pre class="prettyprint linenums">
+{
+    "type": "access",
+    "users": [
+        {
+            "username": "admin",
+            "password": "admin"
+        }
+    ]
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="Adapters" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>Adapters</h2>
+                        <p>Holds the settings for the database connection. Required if you are going to use <strong>Models</strong>.</p>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    "type": "adapters",
+    "MySQL": {
+        "host": "&lt;host>",
+        "user": "&lt;user>",
+        "pass": "&lt;pass>",
+        "dbname": "&lt;database name>"
+    }
+}
+</pre>
+                        <h3>Example</h3>
+<pre class="prettyprint linenums">
+{
+    "type": "adapters",
+    "MySQL": {
+        "host": "localhost",
+        "user": "root",
+        "pass": "",
+        "dbname": "fabrico_test"
+    }
+}
+</pre>
+                    </div>
+                </div>       
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="Assets" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>Assets</h2>
+                        <p>Compilation and including of css and javascript.</p>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    "type": "assets",
+    "assets": [
+        &lt;asset>,
+        &lt;asset>,
+        &lt;asset>,
+        ...
+    ]
+}
+</pre>
+<h5>Asset</h5>
+<pre class="prettyprint linenums">
+{
+    "name": "&lt;name of the asset>", 
+    "sourceToCompile": [
+        &lt;path to file>,
+        &lt;path to file>,
+        &lt;path to file>,
+        ...
+    ],
+    "sourceToInclude": [
+        &lt;path to file>,
+        &lt;path to file>,
+        &lt;path to file>,
+        ...
+    ],
+    "destination": "&lt;path to dir>",
+    "extension": "&lt;js, css, ...>",
+    "preventCompiling": &lt;boolean>
+}
+</pre>
+                        <h3>Example</h3>
+<pre class="prettyprint linenums">
+{
+    "type": "assets",
+    "assets": [
+        {
+            "name": "javascript", 
+            "sourceToCompile": [
+                "/js/jquery/jquery-1.7.1.min.js",
+                "/js/calendar/*.js",
+                "/js/color/*.js",
+                "/js/utils/*.js",
+                "/js/presenters/*.js",
+                "/js/bootstrap/*.js"
+            ],
+            "sourceToInclude": [
+                "/js/tinymce/tiny_mce.js"
+            ],
+            "destination": "/assets/compiled/",
+            "extension": "js",
+            "preventCompiling": false
+        },
+        {
+            "name": "css", 
+            "sourceToCompile": [
+                "/assets/css/*.css"
+            ],
+            "sourceToInclude": [
+            
+            ],
+            "destination": "/assets/compiled/",
+            "extension": "css"
+        }
+    ]
+}
+</pre>
+                    </div>
+                </div>    
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="Benchmark" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>Benchmark</h2>
+                        <p>Provides benchmark information.</p>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    "type": "benchmark"
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="Models" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>Models</h2>
+                        <p>Holds the models' definition</p>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    "type": "models",
+    "adapters": "fabrico/adapters.php",
+    "models": {
+        "&lt;model name>": &lt;Model>,
+        "&lt;model name>": &lt;Model>,
+        "&lt;model name>": &lt;Model>,
+        ...
+    }
+}
+</pre>
+<h5>Model</h5>
+<pre class="prettyprint linenums">
+{
+    "adapter": "&lt;path to adapter>",
+    "freeze": &lt;boolean>,
+    "pageTitle": "&lt;string>",
+    "title": "&lt;string>",
+    "fields": [
+        &lt;Field>,
+        &lt;Field>,
+        &lt;Field>,
+        ...
+    ],
+    "actions": {
+        "listing": {
+            "controller": "&lt;path to controller>",
+            "fieldsToHide": [
+                "&lt;name of field>"
+            ],
+            "positionEditing": "&lt;direct|up-down>"
+        },
+        "adding": {
+            "controller": "&lt;path to controller>"
+        },
+        "editing": {
+            "controller": "&lt;path to controller>"
+        },
+        "deleting": {
+            "controller": "&lt;path to controller>"
+        }
+    }
+}
+</pre>
+<h5>Field</h5>
+<pre class="prettyprint linenums">
+{
+    "name": "&lt;name of the field>",
+    "presenter": "&lt;path to presenter>",
+    "label": "&lt;label of the field>",
+    "description": "&lt;description of the field>",
+    "defaultValue": "&lt;default value>",
+    "config": {
+        &lt;configuration of the <a href="#Presenters">Presenter</a>>
+    },
+    "dependencies": [ 
+        &lt;Dependency>, 
+        &lt;Dependency>, 
+        &lt;Dependency>, 
+        ...
+    ],
+    "validators": [
+        &lt;Validator>, 
+        &lt;Validator>,
+        &lt;Validator>,
+        ...
+    ]
+}
+</pre>
+<h5>Dependency</h5>
+<pre class="prettyprint linenums">
+{
+    "field": "&lt;name of field>",
+    "shouldMatch": "&lt;regular expression>"
+}
+
+
+// A complex logic could be added in the dependencies' section. For example:
+"dependencies": [
+    a,
+    b
+]
+// means: a && b. While:
+"dependencies": [
+    a,
+    [
+        b
+    ]
+]
+// means: a || b.
+// note that
+"dependencies": [
+    [
+        b
+    ],
+    a
+]
+// still means a && b.
+// So, when Fabrico reaches an array it uses ||, otherwise &&. Few examples:
+"dependencies": [
+    a,
+    [
+        b,
+        c
+    ]
+]
+// -> a || (b && c)
+"dependencies": [
+    a,
+    [
+        [
+            b,
+            c
+        ],
+        [
+            d,
+            e
+        ]        
+    ]
+]
+// -> a || ((b && c) || (d && e))
+"dependencies": [
+    [
+        a
+    ],
+    [
+        b     
+    ]
+]
+// -> a || b
+"dependencies": [
+    [
+        b,
+        [
+            c
+        ]
+    ],
+    a
+]
+-> a && (b || c)
+</pre>
+<h5>Validator</h5>
+<pre class="prettyprint linenums">
+{
+    "class": "&lt;path to validator php>",
+    "parameters": { 
+        // please check the specific <u><a href="#Validators">Validators</a></u> section
+    },
+    "method": "&lt;name of method (default: run)>",
+    "message": "&lt;messsage (default: Wrong input!)"
+}
+</pre>
+                        <h3>Example</h3>
+<pre class="prettyprint linenums">
+{
+    "type": "models",
+    "adapters": "fabrico/adapters.php",
+    "models": {
+        "sample": {
+            "adapter": "adapters/MySQL.php",
+            "freeze": false,
+            "pageTitle": "Sample administration",
+            "title": "Sample administration",
+            "fields": [
+                {
+                    "name": "complexField",
+                    "label": "My custom complex data",
+                    "presenter": "presenters/ComplexData.php",
+                    "config": {
+                        "elementsSeparator": "(!~~~^)",
+                        "elementsFieldsSeparator": "(@!!!%)",
+                        "fields": [
+                            {
+                                "name": "name",
+                                "label": "Name of the product"
+                            },
+                            {
+                                "name": "id",
+                                "label": "ID"
+                            },
+                            {
+                                "name": "price",
+                                "label": "Price of the product"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "filesApp",
+                    "presenter": "presenters/Files.php",
+                    "config": {
+                        "destination": "/assets/uploads"
+                    }
+                },
+                {
+                    "name": "avatar",
+                    "presenter": "presenters/File.php",
+                    "config": {
+                        "destination": "/assets/uploads"
+                    }
+                },
+                {
+                    "name": "category",
+                    "presenter": "presenters/Select.php",
+                    "config": {
+                        "options": [
+                            {"key": "yes", "label": "answer Yes"},
+                            {"key": "no", "label": "answer No"},
+                            {"key": "maybe", "label": "answer Maybe"}
+                        ]
+                    }
+                },
+                {
+                    "name": "types",
+                    "presenter": "presenters/SelectDbCheck.php",
+                    "defaultValue": "33",
+                    "config": {
+                        "model": "types",
+                        "field": "name"
+                    },
+                    "validators": [
+                        {
+                            "class": "validators/NotEmpty.php"
+                        }
+                    ],
+                    "dependencies": [
+                        {
+                            "field": "category",
+                            "shouldMatch": "^no$"
+                        }
+                    ]
+                }
+            ],
+            "actions": {
+                "listing": {
+                    "controller": "actions/Listing.php",
+                    "fieldsToHide": ["myName"],
+                    "positionEditing": "direct"
+                },
+                "adding": {
+                    "controller": "actions/Adding.php"
+                },
+                "editing": {
+                    "controller": "actions/Editing.php"
+                },
+                "deleting": {
+                    "controller": "actions/Deleting.php"
+                }
+            }
+        }
+    }
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="Router" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>Router</h2>
+                        <p>Setup the routs of your unit here.</p>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    "type": "router",
+    "routes": [
+        &lt;Route>,
+        &lt;Route>,
+        &lt;Route>,
+        ...
+    ]
+}
+</pre>
+<h5>Route</h5>
+<pre class="prettyprint linenums">
+{
+    "url": "&lt;regular expression>", 
+    "controller": "&lt;path to controller>", 
+    "model": "&lt;model to administrate (optional)>", 
+    "action": "&lt;method of the controller (optional)>", 
+    "priority": &lt;boolean (default: false)>
+}
+</pre>
+                        <h3>Example</h3>
+<pre class="prettyprint linenums">
+{
+    "type": "router",
+    "routes": [
+        {
+            "url": "/sample(.*)?", 
+            "controller": "controllers/Page.php", 
+            "model": "sample", 
+            "action": "run", 
+            "priority": false
+        },
+        {
+            "url": "/types(.*)?", 
+            "controller": "controllers/Page.php", 
+            "model": "types", 
+            "action": "run", 
+            "priority": false
+        },
+        {
+            "url": "/logout(.*)?", 
+            "controller": "controllers/Logout.php",
+            "model": null,
+            "action": "run", 
+            "priority": false
+        },
+        {
+            "url": "/login(.*)?", 
+            "controller": "controllers/Login.php",
+            "model": null,
+            "action": "run", 
+            "priority": false
+        },
+        {
+            "url": "(.*)?", 
+            "controller": "controllers/Home.php",
+            "model": null,
+            "action": "run", 
+            "priority": false
+        }
+    ]
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="Views" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>Views</h2>
+                        <p>Settings for the views' logic</p>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    "type": "views",
+    "paths": [
+        "&lt;path to views files>"
+    ],
+    "forEachView": {
+        "&lt;name of property>": "&lt;value of property>",
+        "&lt;name of property>": "&lt;value of property>",
+        "&lt;name of property>": "&lt;value of property>",
+        ...
+    }
+}
+</pre>
+                        <h3>Example</h3>
+<pre class="prettyprint linenums">
+{
+    "type": "views",
+    "paths": [
+        "/views/Default"
+    ],
+    "forEachView": {
+        "brand": "fabrico!"
+    }
+}
+</pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!----------------------------------------------------------------------------------------------------- presenters -->
+            <a name="Presenters"></a>
+            <div class="container container-main">
+                <h1 class="section-title">Presenters</h1>
+                
+                <div class="row">
+                    <div class="span12">
+                        <ul>
+                            <li><a href="#Color">Color</a></li>
+                            <li><a href="#ComplexData">ComplexData</a></li>
+                            <li><a href="#Date">Date</a></li>
+                            <li><a href="#File">File</a></li>
+                            <li><a href="#Files">Files</a></li>
+                            <li><a href="#HiddenCurrentUser">HiddenCurrentUser</a></li>
+                            <li><a href="#HiddenModifiedDate">HiddenModifiedDate</a></li>
+                            <li><a href="#Select">Select</a></li>
+                            <li><a href="#SelectCheck">SelectCheck</a></li>
+                            <li><a href="#SelectDb">SelectDb</a></li>
+                            <li><a href="#SelectDbCheck">SelectDbCheck</a></li>
+                            <li><a href="#SelectRadio">SelectRadio</a></li>
+                            <li><a href="#Text">Text</a></li>
+                            <li><a href="#TextLong">TextLong</a></li>
+                            <li><a href="#TextRich">TextRich</a></li>
+                            <li><a href="#TextTinyMCE">TextTinyMCE</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="Color" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>Color</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+                        <p><strong>Color</strong> presenter doesn't have configuration settings.</p>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="ComplexData" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>ComplexData</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "presenter": "presenters/ComplexData.php",
+    "config": {
+        "elementsSeparator": "&lt;string>",
+        "elementsFieldsSeparator": "&lt;string>",
+        "fields": [
+            {"name": "&lt;string>", "label": "&lt;string>"},
+            {"name": "&lt;string>", "label": "&lt;string>"},
+            {"name": "&lt;string>", "label": "&lt;string>"},
+            ...
+        ]
+    },
+    ...
+}
+</pre>
+<h3>Example</h3>
+<pre class="prettyprint linenums">
+{
+    "name": "nameField",
+    "presenter": "presenters/ComplexData.php",
+    "config": {
+        "elementsSeparator": "(!~~~^)",
+        "elementsFieldsSeparator": "(@!!!%)",
+        "fields": [
+            {
+                "name": "fname",
+                "label": "First name"
+            },
+            {
+                "name": "lname",
+                "label": "Last name"
+            }
+        ]
+    }
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="Date" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>Date</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "presenter": "presenters/Date.php",
+    "config": {
+        "showsTime": &lt;boolean (default: false)>
+    },
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="File" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>File</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "presenter": "presenters/File.php",
+    "config": {
+        "destination": "&lt;dir path (example: "/assets/uploads")>"
+    },
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="Files" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>Files</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "presenter": "presenters/File.php",
+    "config": {
+        "destination": "&lt;dir path (example: "/assets/uploads")>"
+    },
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="HiddenCurrentUser" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>HiddenCurrentUser</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "presenter": "presenters/HiddenCurrentUser.php",
+    "config": {
+        "propertyForListingArea": "&lt;string>"
+    },
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="HiddenModifiedDate" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>HiddenModifiedDate</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+                        <p><strong>HiddenModifiedDate</strong> presenter doesn't have configuration settings.</p>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="Select" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>Select</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "presenter": "presenters/Select.php",
+    "config": {
+        "options": [
+            {"key": "&lt;string>", "label": "&lt;string>"},
+            {"key": "&lt;string>", "label": "&lt;string>"},
+            {"key": "&lt;string>", "label": "&lt;string>"},
+            ...
+        ]
+    },
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="SelectCheck" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>SelectCheck</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "presenter": "presenters/Select.php",
+    "config": {
+        "options": [
+            {"key": "&lt;string>", "label": "&lt;string>"},
+            {"key": "&lt;string>", "label": "&lt;string>"},
+            {"key": "&lt;string>", "label": "&lt;string>"},
+            ...
+        ]
+    },
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="SelectDb" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>SelectDb</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "presenter": "presenters/SelectDb.php",
+    "config": {
+        "model": "&lt;name of model>",
+        "field": "&lt;name of the field in the model>"
+    },
+    "defaultValue": "&lt;id of the database record>",
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="SelectDbCheck" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>SelectDbCheck</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "presenter": "presenters/SelectDb.php",
+    "config": {
+        "model": "&lt;name of model>",
+        "field": "&lt;name of the field in the model>"
+    },
+    "defaultValue": "&lt;id of the db record>|&lt;id of the db record>|&lt;id of the db record>|...",
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="SelectRadio" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>SelectRadio</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "presenter": "presenters/Select.php",
+    "config": {
+        "options": [
+            {"key": "&lt;string>", "label": "&lt;string>"},
+            {"key": "&lt;string>", "label": "&lt;string>"},
+            {"key": "&lt;string>", "label": "&lt;string>"},
+            ...
+        ]
+    },
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="Text" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>Text</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+                        <p><strong>HiddenModifiedDate</strong> presenter doesn't have configuration settings.</p>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="TextLong" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>TextLong</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>\
+                        <p><strong>HiddenModifiedDate</strong> presenter doesn't have configuration settings.</p>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="TextRich" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>TextRich</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "presenter": "presenters/TextRich.php",
+    "config": {
+        "swfURL": "&lt;path to swf (example: "/assets/swf/wysiwyg/bin/swf/Project.swf")>",
+        "fontFamily": "&lt;"no" or "yes" (default: "no")>",
+        "bullets": "&lt;"no" or "yes" (default: "no")>",
+        "linkInput": "&lt;"no" or "yes" (default: "yes")>",
+        "fontSize": "&lt;"no" or "yes" (default: "no")>",
+        "colorPicker": "&lt;"no" or "yes" (default: "no")>",
+        "alignButtons": "&lt;"no" or "yes" (default: "no")>",
+        "bold": "&lt;"no" or "yes" (default: "yes")>",
+        "italic": "&lt;"no" or "yes" (default: "yes")>",
+        "underline": "&lt;"no" or "yes" (default: "yes")>"
+    },
+    ...
+
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="TextTinyMCE" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>TextTinyMCE</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "presenter": "presenters/TextTinyMCE.php",
+    "config": {
+        "mode" : "textareas",
+        "theme" : "&lt;"simple" or "advanced">",
+        "theme_advanced_buttons1": "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,formatselect",
+        "theme_advanced_buttons2": "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,outdent,indent,blockquote",
+        "theme_advanced_buttons3": "search,replace",
+        "theme_advanced_buttons4": ""
+        ...
+    },
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!----------------------------------------------------------------------------------------------------- presenters -->
+            <a name="Validators"></a>
+            <div class="container container-main">
+                
+                <h1 class="section-title">Validators</h1>
+                <div class="row">
+                    <div class="span12">
+                        <ul>
+                            <li><a href="#LengthExact">LengthExact</a></li>
+                            <li><a href="#LengthMax">LengthMax</a></li>
+                            <li><a href="#LengthMin">LengthMin</a></li>
+                            <li><a href="#NotEmpty">NotEmpty</a></li>
+                            <li><a href="#OnlyLetters">OnlyLetters</a></li>
+                            <li><a href="#OnlyLettersAndNumbers">OnlyLettersAndNumbers</a></li>
+                            <li><a href="#OnlyNumbers">OnlyNumbers</a></li>
+                            <li><a href="#RegEx">RegEx</a></li>
+                            <li><a href="#ValidEmail">ValidEmail</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="LengthExact" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>LengthExact</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "validators": [
+        {
+            "class": "validators/LengthExact.php",
+            "parameters": {
+                "length": 5
+            },
+            "method": "&lt;method of the validator (default: run)>",
+            "message": "&lt;message if the validation fail (default: Wrong input!)>"
+        }
+    ],
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="LengthMax" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>LengthMax</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "validators": [
+        {
+            "class": "validators/LengthMax.php",
+            "parameters": {
+                "length": 5
+            },
+            "method": "&lt;method of the validator (default: run)>",
+            "message": "&lt;message if the validation fail (default: Wrong input!)>"
+        }
+    ],
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="LengthMin" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>LengthMin</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "validators": [
+        {
+            "class": "validators/LengthMin.php",
+            "parameters": {
+                "length": 5
+            },
+            "method": "&lt;method of the validator (default: run)>",
+            "message": "&lt;message if the validation fail (default: Wrong input!)>"
+        }
+    ],
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="NotEmpty" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>NotEmpty</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "validators": [
+        {
+            "class": "validators/NotEmpty.php",
+            "method": "&lt;method of the validator (default: run)>",
+            "message": "&lt;message if the validation fail (default: Wrong input!)>"
+        }
+    ],
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="OnlyLetters" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>OnlyLetters</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "validators": [
+        {
+            "class": "validators/OnlyLetters.php",
+            "method": "&lt;method of the validator (default: run)>",
+            "message": "&lt;message if the validation fail (default: Wrong input!)>"
+        }
+    ],
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="OnlyLettersAndNumbers" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>OnlyLettersAndNumbers</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "validators": [
+        {
+            "class": "validators/OnlyLettersAndNumbers.php",
+            "method": "&lt;method of the validator (default: run)>",
+            "message": "&lt;message if the validation fail (default: Wrong input!)>"
+        }
+    ],
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="OnlyNumbers" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>OnlyNumbers</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "validators": [
+        {
+            "class": "validators/OnlyNumbers.php",
+            "method": "&lt;method of the validator (default: run)>",
+            "message": "&lt;message if the validation fail (default: Wrong input!)>"
+        }
+    ],
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="RegEx" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>RegEx</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "validators": [
+        {
+            "class": "validators/RegEx.php",
+            "parameters": {
+                "match": "/^[0-9]+$/"
+            },
+            "method": "&lt;method of the validator (default: run)>",
+            "message": "&lt;message if the validation fail (default: Wrong input!)>"
+        }
+    ],
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="ValidEmail" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>ValidEmail</h2>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    ...
+    "validators": [
+        {
+            "class": "validators/ValidEmail.php",
+            "method": "&lt;method of the validator (default: run)>",
+            "message": "&lt;message if the validation fail (default: Wrong input!)>"
+        }
+    ],
+    ...
+}
+</pre>
+                    </div>
+                </div>
+                
+            </div>
+            
             
         </div>
     </body>

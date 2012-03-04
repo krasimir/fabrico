@@ -1,15 +1,17 @@
 <?php
 
     function adapters() {
-        return (object) array(
-            "type" => "adapters",
-            "MySQL" => (object) array(
-                "host" => "localhost",
-                "user" => "root",
-                "pass" => "",
-                "dbname" => "fabrico_test"
-            )
-        );
+        return json_decode('
+            {
+                "type": "adapters",
+                "MySQL": {
+                    "host": "localhost",
+                    "user": "root",
+                    "pass": "",
+                    "dbname": "fabrico_test"
+                }
+            }
+        ');
     };
 
 ?>

@@ -1,15 +1,17 @@
 <?php
 
     function views() {
-        return (object) array(
-            "type" => "views",
-            "paths" => array(
-                "/views/Default"
-            ),
-            "forEachView" => array(
-                "brand" => "fabrico!"
-            )
-        );
+        return json_decode('
+            {
+                "type": "views",
+                "paths": [
+                    "/views/Default"
+                ],
+                "forEachView": {
+                    "brand": "fabrico!"
+                }
+            }
+        ');
     }
 
 ?>

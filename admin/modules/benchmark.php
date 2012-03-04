@@ -1,9 +1,11 @@
 <?php
 
     function benchmark() {
-        return (object) array(
-            "type" => "benchmark"
-        );
+        return json_decode('
+            {
+                "type": "benchmark"
+            }
+        ');
     }
 
 ?>
