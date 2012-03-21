@@ -3,7 +3,7 @@
     function router() {
         return json_decode('
             {
-                "type": "router",
+                "type": "Router",
                 "routes": [
                     {
                         "url": "/sample(.*)?", 

@@ -3,7 +3,7 @@
     function adapters() {
         return json_decode('
             {
-                "type": "adapters",
+                "type": "Adapters",
                 "MySQL": {
                     "host": "localhost",
                     "user": "root",

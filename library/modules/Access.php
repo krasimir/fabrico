@@ -52,6 +52,10 @@
                                 $_SESSION["password"] = $this->req->body->$passwordField;
                                 $this->logged = true;
                                 $this->req->fabrico->currentUser = $user;
+                                if(isset($this->req->body->redirect) && $this->req->body->redirect !== "") {
+                                    header("Location: ".$this->req->body->redirect);
+                                    die();
+                                }
                             } else {
                                 $this->logged = false;
                                 $this->loginError = "Wrong username or password!";
@@ -67,7 +71,11 @@
             $this->req = $req;
             if(!$this->isLogged($req)) {
                 if(strpos($req->fabrico->paths->slug, "login") === FALSE) {
-                    header("Location: ".$req->fabrico->paths->url."/login");
+                    if($req->requestUrl == "/admin/") {
+                        header("Location: ".$req->fabrico->paths->url."/login");
+                    } else {
+                        header("Location: ".$req->fabrico->paths->url."/login?r=".$req->fabrico->paths->host.$req->requestUrl);
+                    }
                 }
             }
         }

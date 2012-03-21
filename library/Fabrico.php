@@ -25,7 +25,7 @@
         
             // setting the root
             $this->paths = (object) array(
-                "root" => ROOT_APP,
+                "root" => ROOT_UNIT,
                 "host" => $this->req->host,
                 "slug" => $this->req->slug,
                 "url" => $this->req->url
@@ -42,16 +42,7 @@
                     if($moduleConfig === null) {
                         throw new Exception("Fabrico: wrong definition in  '".$module."'."); 
                     }
-                    $moduleClass = "";
-                    switch($moduleConfig->type) {
-                        case "access": $moduleClass = "modules/Access.php"; break;
-                        case "router": $moduleClass = "modules/Router.php"; break;
-                        case "assets": $moduleClass = "modules/AssetsManager.php"; break;
-                        case "adapters": $moduleClass = "modules/Adapters.php"; break;
-                        case "models": $moduleClass = "modules/ModelsManager.php"; break;
-                        case "benchmark": $moduleClass = "modules/Benchmark.php"; break;
-                        case "views": $moduleClass = "modules/Views.php"; break;
-                    }
+                    $moduleClass = $moduleConfig->type.".php";
                     if($moduleClass == "") {
                         throw new Exception("Fabrico: missing module class for type '".$moduleConfig->type."'."); 
                     } else {

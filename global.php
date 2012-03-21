@@ -5,13 +5,13 @@
     
     // defininf root
     define("ROOT", dirname(__FILE__));
-    define("ROOT_APP", dirname($_SERVER["SCRIPT_FILENAME"]));
+    define("ROOT_UNIT", dirname($_SERVER["SCRIPT_FILENAME"]));
     
     require(ROOT."/library/utils/Injector.php");
     
     $injector->path(array(
         ROOT."/library",
-        ROOT_APP."/controllers"
+        ROOT_UNIT."/controllers"
     ));
     
     inject(array(

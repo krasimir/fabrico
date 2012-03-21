@@ -6,7 +6,7 @@
         array(
             ROOT."/admin/modules/adapters.php",
             ROOT."/admin/modules/models.php",
-            ROOT_APP."/modules/router.php"
+            ROOT_UNIT."/modules/router.php"
         )
     );
 

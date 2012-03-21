@@ -26,7 +26,8 @@
                 "pageTitle" => "Login",
                 "mainNav" => "",
                 "data" => view("login.html"),
-                "error" => $req->fabrico->access->loginError != "" ? view("errormessage.html", array("text" => $req->fabrico->access->loginError), $this) : ""
+                "error" => $req->fabrico->access->loginError != "" ? view("errormessage.html", array("text" => $req->fabrico->access->loginError), $this) : "",
+                "redirect" => isset($req->params["r"]) ? $req->params["r"] : ""
             )));
         }
     

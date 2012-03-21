@@ -3,7 +3,7 @@
     function models() {
         return json_decode('
             {
-                "type": "models",
+                "type": "Models",
                 "adapters": "fabrico/adapters.php",
                 "models": {
                     "sample": {

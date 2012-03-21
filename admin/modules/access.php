@@ -3,11 +3,17 @@
     function access() {
         return json_decode('
             {
-                "type": "access",
+                "type": "Access",
                 "users": [
                     {
                         "username": "admin",
-                        "password": "admin"
+                        "password": "admin",
+                        "type": "admin"
+                    },
+                    {
+                        "username": "customer",
+                        "password": "customer",
+                        "type": "customer"
                     }
                 ]
             }

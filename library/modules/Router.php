@@ -8,6 +8,8 @@
     * @package Fabrico\Library\Modules
     */
     class Router extends Module {
+    
+        public $config;
 
         private $_rules;
         private $logStr = "";
@@ -18,6 +20,7 @@
             
         }
         public function init($config) {
+            $this->config = $config;
             $routes = $config->routes;
             foreach($routes as $route) {
                 $rule = new RouterRule(array(

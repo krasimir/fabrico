@@ -2,7 +2,5 @@ RewriteEngine On
 
 #RewriteBase /
 
-RewriteRule ^(docs) - [L]
-
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ index.php?slug=$1 [QSA,L]

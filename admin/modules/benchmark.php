@@ -3,7 +3,7 @@
     function benchmark() {
         return json_decode('
             {
-                "type": "benchmark"
+                "type": "Benchmark"
             }
         ');
     }

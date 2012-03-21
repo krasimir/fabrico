@@ -3,7 +3,7 @@
     function views() {
         return json_decode('
             {
-                "type": "views",
+                "type": "Views",
                 "paths": [
                     "/views/Default"
                 ],

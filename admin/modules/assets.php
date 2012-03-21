@@ -3,7 +3,7 @@
     function assets() {
         return json_decode('
             {
-                "type": "assets",
+                "type": "Assets",
                 "assets": [
                     {
                         "name": "javascript", 
