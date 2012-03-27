@@ -2,7 +2,7 @@
 
     function router() {
         return (object) array(
-            "type" => "router",
+            "type" => "Router",
             "routes" => array(
                 (object) array(
                     "url" => "(.*)?",
