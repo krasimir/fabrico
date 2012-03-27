@@ -47,18 +47,16 @@
                         $passwordField = $this->form->password;
                         
                         if(isset($this->req->body->$usernameField) && isset($this->req->body->$passwordField)) {
-                            if($this->req->body->$usernameField == $credentials->username && $this->req->body->$passwordField == $credentials->password) {
+                            if($this->req->body->$usernameField == $credentials->username && $this->req->body->$passwordField == $credentials->password) {                            
                                 $_SESSION["username"] = $this->req->body->$usernameField;
                                 $_SESSION["password"] = $this->req->body->$passwordField;
                                 $this->logged = true;
                                 $this->req->fabrico->currentUser = $user;
-                                if(isset($this->req->body->redirect) && $this->req->body->redirect !== "") {
-                                    header("Location: ".$this->req->body->redirect);
-                                    die();
-                                }
+                                return $this->logged;
                             } else {
                                 $this->logged = false;
                                 $this->loginError = "Wrong username or password!";
+                                return $this->logged;
                             }
                         } else {
                              $this->logged = false;
@@ -69,13 +67,10 @@
         }
         public function run($req, $res) {
             $this->req = $req;
-            if(!$this->isLogged($req)) {
+            $logged = $this->isLogged($req);
+            if(!$logged) {
                 if(strpos($req->fabrico->paths->slug, "login") === FALSE) {
-                    if($req->requestUrl == "/admin/") {
-                        header("Location: ".$req->fabrico->paths->url."/login");
-                    } else {
-                        header("Location: ".$req->fabrico->paths->url."/login?r=".$req->fabrico->paths->host.$req->requestUrl);
-                    }
+                    header("Location: ".$req->fabrico->paths->url."/login");
                 }
             }
         }
