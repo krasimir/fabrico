@@ -6,20 +6,6 @@
                 "type": "Router",
                 "routes": [
                     {
-                        "url": "/sample(.*)?", 
-                        "controller": "controllers/Page.php", 
-                        "model": "sample", 
-                        "action": "run", 
-                        "priority": false
-                    },
-                    {
-                        "url": "/types(.*)?", 
-                        "controller": "controllers/Page.php", 
-                        "model": "types", 
-                        "action": "run", 
-                        "priority": false
-                    },
-                    {
                         "url": "/logout(.*)?", 
                         "controller": "controllers/Logout.php",
                         "model": null,

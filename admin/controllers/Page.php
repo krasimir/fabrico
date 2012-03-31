@@ -94,9 +94,9 @@
                 "stylesheet" => $req->fabrico->assets->get("css"),
                 "title" => $this->title,
                 "pageTitle" => $this->pageTitle,
-                "mainNav" => view("mainnav.html", array(), $this),
+                "mainNav" => view("mainnav.html", array(), "/views/".$this),
                 "data" => $content
-            ), $this));
+            ), "/views/".$this));
         }
         // other
         public function __toString() {
