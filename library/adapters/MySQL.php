@@ -49,7 +49,7 @@
                     }
                     $this->query->update = substr($this->query->update, 0, strlen($this->query->update)-2);
                     $this->where("id='".$record->id."'");
-                    $this->flush();
+                    $this->flush(false);
                     return $record->id;
                     
                 // inserting
@@ -65,8 +65,8 @@
                     $fields = substr($fields, 0, strlen($fields)-2);
                     $values = substr($values, 0, strlen($values)-2);
                     $this->query->insert .= $fields.") VALUES (".$values.")";
-                    $this->flush();
-                    $res = $this->action("SELECT max(id) as value FROM {tableName}");
+                    $this->flush(false);
+                    $res = $this->action("SELECT max(id) as value FROM {tableName}", false);
                     return $res[0]->value;
                 }
             
@@ -122,7 +122,7 @@
                 $queryStr = $this->composeQueryStr();
             }
             $queryStr = str_replace("{tableName}", $this->tableName, $queryStr);
-            if(isset($this->cache[$queryStr])) {
+            if($useCache && isset($this->cache[$queryStr])) {
                 $this->queries []= $queryStr." (cached)";
                 return $this->cache[$queryStr];
             } else {
@@ -138,6 +138,8 @@
                         }
                         return $this->cache[$queryStr] = $rows;
                     }
+                } else {
+                    $this->queries []= $queryStr." (failed)";
                 }
                 return $res;
             }

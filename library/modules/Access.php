@@ -47,7 +47,7 @@
                         $passwordField = $this->form->password;
                         
                         if(isset($this->req->body->$usernameField) && isset($this->req->body->$passwordField)) {
-                            if($this->req->body->$usernameField == $credentials->username && $this->req->body->$passwordField == $credentials->password) {                            
+                            if($this->req->body->$usernameField == $credentials->username && $this->req->body->$passwordField == $credentials->password) {
                                 $_SESSION["username"] = $this->req->body->$usernameField;
                                 $_SESSION["password"] = $this->req->body->$passwordField;
                                 $this->logged = true;
@@ -56,7 +56,6 @@
                             } else {
                                 $this->logged = false;
                                 $this->loginError = "Wrong username or password!";
-                                return $this->logged;
                             }
                         } else {
                              $this->logged = false;

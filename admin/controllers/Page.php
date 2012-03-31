@@ -55,15 +55,16 @@
                     // ordering
                     $pattern."/ordering/@type/@id/@position" => "actions/Ordering.php",
                     // ordering
-                    $pattern."/ordering/@type/@id" => "actions/Ordering.php",
-                    // default route
-                    $pattern => $this->getActionController("listing", $this->defaultController)
+                    $pattern."/ordering/@type/@id" => "actions/Ordering.php"
                 );
                 
                 // adding custom routes if any
                 foreach($this->defaultRoutes as $route => $path) {
                     $this->routes[$route] = $path;
                 }
+                
+                // default route
+                $this->routes[$pattern] = $this->getActionController("listing", $this->defaultController);
                 
                 // setup middleware
                 $this->using(array(

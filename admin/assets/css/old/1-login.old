@@ -1,8 +1,0 @@
-.login-form {
-    
-}
-.login-form label,
-.login-form input {
-    display: block;
-    margin: 10px 0 10px 0;
-}
