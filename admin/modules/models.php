@@ -4,9 +4,9 @@
         return json_decode('
             {
                 "type": "Models",
-                "adapters": "fabrico/adapters.php",
+                "adapters": "modules/adapters.php",
                 "models": {
-                    
+                
                 }
             }
         ');

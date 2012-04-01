@@ -2271,7 +2271,7 @@ var fconsole = (function() {
                         }
                     }
                 } else {
-                    operations.output.error("Missing queue.");
+                    operations.output.error("Wrong back-end response (missing queue)!");
                 }
             });
             request.fail(function(res) {
@@ -2313,6 +2313,20 @@ var fconsole = (function() {
     
     return {
         init: init
+    }
+    
+})();
+operations.manage = (function() {
+  
+    var json = function(json) {
+        var json = JSON.parse(json);
+        var form = '';
+        
+        // info(new JSONView(json).htmlPreview());
+    };
+    
+    return {
+        json: json
     }
     
 })();

@@ -52,8 +52,9 @@
             $commandsPath = dirname(__FILE__)."/../library/commands/";
             if(file_exists($commandsPath.$nameOfCommand.".php")) {
                 require($commandsPath.$nameOfCommand.".php");
-                if(class_exists($nameOfCommand)) {
-                    $commandInstance = new $nameOfCommand($command, $this->response, $req, $res);
+                if(class_exists($nameOfCommand."_command")) {
+                    $class = $nameOfCommand."_command";
+                    $commandInstance = new $class($command, $this->response, $req, $res);
                     $commandInstance->prepare();
                     $commandInstance->execute();
                 } else {

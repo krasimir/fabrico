@@ -2,7 +2,7 @@
 
     require_once(dirname(__FILE__)."/Command.php");
 
-    class help extends Command {
+    class help_command extends Command {
     
         public function prepare() {
             $this->operations []= (object) array(

@@ -39,7 +39,7 @@ var fconsole = (function() {
                         }
                     }
                 } else {
-                    operations.output.error("Missing queue.");
+                    operations.output.error("Wrong back-end response (missing queue)!");
                 }
             });
             request.fail(function(res) {

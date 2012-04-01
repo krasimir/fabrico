@@ -2,7 +2,7 @@
 
     require_once(dirname(__FILE__)."/Command.php");
 
-    class clear extends Command {
+    class clear_command extends Command {
         
     }
 
