@@ -16,6 +16,18 @@
                 "pattern" => "models show",
                 "callback" => "showModels"
             );
+            $this->operations []= (object) array(
+                "pattern" => "models manage @unit @file",
+                "callback" => "manage"
+            );
+            $this->operations []= (object) array(
+                "pattern" => "models manage @unit",
+                "callback" => "manage"
+            );
+            $this->operations []= (object) array(
+                "pattern" => "models manage",
+                "callback" => "manage"
+            );
             parent::prepare();
         }
         public function showModels($params) {
@@ -31,7 +43,33 @@
             } else {
                 $this->addToQueue("output.error", $unit."/".$file." is missing.");
             }
-            
+        }
+        public function manage($params) {
+            $unit = isset($params["unit"]) ? $params["unit"] : "admin";
+            $file = isset($params["file"]) ? $params["file"] : "modules/models.php";
+            $templates = array(
+                (object) array(
+                    "template" => view("commands/templates/models.module.json.tpl"),
+                    "label" => "Module Configuration"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.json.tpl"),
+                    "label" => "Model"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.json.tpl"),
+                    "label" => "Field"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.dependency.json.tpl"),
+                    "label" => "Field Dependency"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.validator.json.tpl"),
+                    "label" => "Field Validator"
+                )
+            );
+            $this->processManageCommand($unit, $file, json_encode($templates));                        
         }
     }
 

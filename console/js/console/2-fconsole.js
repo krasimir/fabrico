@@ -25,29 +25,34 @@ var fconsole = (function() {
                     command: command
                 }
             });
-            request.done(function(res) {
-                commandObj.rawResponse = JSON.stringify(res);
-                debug("back-end response").log(res);
-                if(typeof res.queue !== "undefined") {
-                    var numOfItems = res.queue.length;
-                    for(var i=0; i<numOfItems; i++) {
-                        var operationsParts = res.queue[i].operation.split(".");
-                        if(typeof operations[operationsParts[0]] !== "undefined") {
-                            operations[operationsParts[0]][operationsParts[1]](res.queue[i].params);
-                        } else {
-                            operations.output.error("Missing operation <b>" + res.queue[i].operation + "</b>.");
-                        }
-                    }
-                } else {
-                    operations.output.error("Wrong back-end response (missing queue)!");
-                }
-            });
-            request.fail(function(res) {
-                commandObj.rawResponse = JSON.stringify(res.responseText);
-                operations.output.error(res.responseText);
-            });
+            request.done(requestDone);
+            request.fail(requestFail);
             operations.output.echo('<div class="alert"><i class="icon-share-alt"></i>&nbsp;&nbsp;' + command + '</div>');
         }
+    };
+    var requestDone = function(res) {
+        lastCommand().rawResponse = JSON.stringify(res);
+        debug("back-end response").log(res);
+        if(typeof res.queue !== "undefined") {
+            var numOfItems = res.queue.length;
+            for(var i=0; i<numOfItems; i++) {
+                var operationsParts = res.queue[i].operation.split(".");
+                if(typeof operations[operationsParts[0]] !== "undefined") {
+                    operations[operationsParts[0]][operationsParts[1]](res.queue[i].params);
+                } else {
+                    operations.output.error("Missing operation <b>" + res.queue[i].operation + "</b>.");
+                }
+            }
+        } else {
+            operations.output.error("Wrong back-end response (missing queue)!");
+        }
+    };
+    var requestFail = function(res) {
+        lastCommand().rawResponse = JSON.stringify(res.responseText);
+        operations.output.error(res.responseText);
+    };
+    var lastCommand = function() {
+        return commands[commands.length-1];
     };
     
     var init = function(hostURL) {
@@ -80,7 +85,10 @@ var fconsole = (function() {
     };
     
     return {
-        init: init
+        init: init,
+        sendCommand: sendCommand,
+        requestDone: requestDone,
+        requestFail: requestFail
     }
     
 })();

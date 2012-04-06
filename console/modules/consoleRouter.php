@@ -13,6 +13,13 @@
                         "priority": false
                     },
                     {
+                        "url": "/update-json(.*)?", 
+                        "controller": "controllers/Console.php",
+                        "model": null,
+                        "action": "updateJSON", 
+                        "priority": false
+                    },
+                    {
                         "url": "/test-command(.*)?", 
                         "controller": "controllers/Console.php",
                         "model": null,

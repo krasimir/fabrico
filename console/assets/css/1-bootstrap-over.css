@@ -38,3 +38,34 @@ h1 {
     height: 300px;
     font-family: Verdana;
 }
+.command-manage-form form {
+    margin: 0;
+    padding: 0;
+}
+.command-manage-buttons {
+    padding: 10px 0 0 0;
+}
+.manage-templates {
+    margin: 10px 0 10px 0;
+}
+.manage-templates select {
+    width: 141px;
+}
+.manage-templates-list {
+    margin: 5px 0 0 0;
+}
+.manage-templates-btn {
+    display: block;
+    margin: 0 0 5px 0;
+}
+.modal {
+    display: none;
+}
+.alert .close {
+    right: -4px;
+}
+.template-modal-textarea {
+    width: 100%;
+    height: 300px;
+    font-family: Verdana;
+}

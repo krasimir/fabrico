@@ -3,6 +3,7 @@
     require("../global.php");
     
     $injector->mapFile(ROOT_UNIT."/library/ConsoleResponse.php");
+    $injector->mapFile(ROOT_UNIT."/library/ConsoleUtils.php");
     
     $fabrico = new Fabrico(
         array(

@@ -83,50 +83,27 @@
             }
         }
         protected function formatJSON($jsonObj) {
-            $jsonString = stripslashes(json_encode($jsonObj));
-            $tabcount = 0;
-            $result = '';
-            $inquote = false;
-            $tab = "      ";
-            $newline = "\n";
-            for($i = 0; $i < strlen($jsonString); $i++) {
-                $char = $jsonString[ $i];
-                if($char == '"' && $jsonString[$i-1] != '\\') {
-                    $inquote = !$inquote;
-                }
-                if($inquote) {
-                    $result .= $char;
-                    continue;
-                }
-                switch($char) {
-                    case '{':
-                        if($i) {
-                            $result .= $newline;
-                        }
-                        $result .= str_repeat($tab, $tabcount).$char.$newline.str_repeat($tab, ++$tabcount);
-                    break;
-                    case '[':
-                        $result .= $char;
-                        $tabcount += 1;
-                    break;
-                    case '}':
-                        $tabcount = $tabcount-1 > 0 ? $tabcount - 1 : 0;
-                        $result .= $newline.str_repeat($tab, $tabcount).$char;
-                    break;
-                    case ']':
-                        $tabcount = $tabcount-1 > 0 ? $tabcount - 1 : 0;
-                        $result .= $newline.str_repeat($tab, $tabcount).$char;
-                    break;
-                    case ',':
-                        $result .= $char;
-                        if($jsonString[$i+1] != '{') $result .= $newline.str_repeat($tab, $tabcount);
-                    break;
-                    default:
-                        $result .= $char;
-                }
+            return ConsoleUtils::formatJSON($jsonObj);
+        }
+        protected function processManageCommand($unit, $file, $templates) {
+            if(file_exists(dirname(__FILE__)."/../../../".$unit."/".$file)) {
+                $funcName = str_replace(".php", "", basename($file));
+                if(!function_exists($funcName)) {
+                    require(dirname(__FILE__)."/../../../".$unit."/".$file);
+                }                
+                $config = $funcName();
+                $this->addToQueue("output.info", view("commands/manage.html", array(
+                    "json" => $this->formatJSON($config),
+                    "formId" => md5(rand(0, 1000000000)),
+                    "unit" => $unit,
+                    "file" => $file,
+                    "templates" => $templates,
+                    "uid" => md5(time())
+                ))."");
+            } else {
+                $this->addToQueue("output.error", $unit."/".$file." is missing.");
             }
-            return $result;
-        } 
+        }
         private function match($pattern, $command, &$params) {
         
             $matched = false;

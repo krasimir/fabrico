@@ -18,15 +18,15 @@
             );
             $this->operations []= (object) array(
                 "pattern" => "routes manage @unit @file",
-                "callback" => "showManage"
+                "callback" => "manage"
             );
             $this->operations []= (object) array(
                 "pattern" => "routes manage @unit",
-                "callback" => "showManage"
+                "callback" => "manage"
             );
             $this->operations []= (object) array(
                 "pattern" => "routes manage",
-                "callback" => "showManage"
+                "callback" => "manage"
             );
             parent::prepare();
         }
@@ -44,21 +44,20 @@
                 $this->addToQueue("output.error", $unit."/".$file." is missing.");
             }            
         }
-        public function showManage($params) {
+        public function manage($params) {
             $unit = isset($params["unit"]) ? $params["unit"] : "admin";
             $file = isset($params["file"]) ? $params["file"] : "modules/router.php";
-            if(file_exists(dirname(__FILE__)."/../../../".$unit."/".$file)) {
-                $funcName = str_replace(".php", "", basename($file));
-                if(!function_exists($funcName)) {
-                    require(dirname(__FILE__)."/../../../".$unit."/".$file);
-                }                
-                $config = $funcName();
-                $this->addToQueue("output.info", view("commands/manage.html", array(
-                    "json" => $this->formatJSON($config)
-                ))."");
-            } else {
-                $this->addToQueue("output.error", $unit."/".$file." is missing.");
-            }            
+            $templates = array(
+                (object) array(
+                    "template" => view("commands/templates/route.module.json.tpl"),
+                    "label" => "Module Configuration"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/route.json.tpl"),
+                    "label" => "Route"
+                )
+            );
+            $this->processManageCommand($unit, $file, json_encode($templates));                        
         }
     }
 

@@ -2,7 +2,8 @@
 
     inject(array(
         "utils/view.php",
-        "library/ConsoleResponse.php"
+        "library/ConsoleResponse.php",
+        "library/ConsoleUtils.php"
     ));
 
     class Console {
@@ -82,11 +83,74 @@
             }
         }
         
+        // update json
+        public function updateJSON($req, $res) {
+            
+            $this->init($req, $res);
+        
+            $unit = isset($req->body) && isset($req->body->unit) ? $req->body->unit : "";
+            $file = isset($req->body) && isset($req->body->file) ? $req->body->file : "";
+            $json = isset($req->body) && isset($req->body->json) ? $req->body->json : "";
+            
+            // check the input params 
+            if($unit === "") {
+                $this->response("output.error", "Missing unit!");
+            }
+            if($file === "") {
+                $this->response("output.error", "Missing file!");
+            }
+            if($json === "") {
+                $this->response("output.error", "Missing json!");
+            }
+            
+            // check if the json string has valid format
+            try {
+                
+                $jsonObj = json_decode($json);
+                if($jsonObj == null) {
+                    throw new Exception("Broken json!");
+                }
+                
+                // check if the unit and file exists
+                if(file_exists($req->fabrico->paths->root."/../".$unit)) {
+                    if(file_exists($req->fabrico->paths->root."/../".$unit."/".$file)) {
+                        $fileContent = view("commands/templates/module.php.tpl", array(
+                            "moduleName" => str_replace(".php", "", basename($file)),
+                            "json" => ConsoleUtils::formatJSON($jsonObj, 2)
+                        ));
+                        if(file_put_contents($req->fabrico->paths->root."/../".$unit."/".$file, $fileContent) === false) {
+                            $this->response("output.error", "Can't write file <strong>".$unit."/".$file."</strong>!");
+                        }
+                    } else {
+                        $this->response("output.error", "File <strong>".$unit."/".$file."</strong> doesn't exists!");
+                    }
+                } else {
+                    $this->response("output.error", "Unit <strong>".$unit."</strong> doesn't exists!");
+                }
+                
+            } catch(Exception $err) {
+                $this->response("output.error", "Broken json!");
+            }
+            
+            $this->response("output.success", "Data saved successfully.");
+            
+        }
+        
         // utils
         private function init($req, $res) {
             $this->req = $req;
             $this->res = $res;
             $this->response = new ConsoleResponse($res);
+        }
+        private function response($operation, $params) {
+            $this->response->send(array(
+                "queue" => array(
+                    array(
+                        "operation" => $operation,
+                        "params" => $params
+                    )
+                )
+            ));
         }
         
     }
