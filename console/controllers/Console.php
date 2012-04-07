@@ -17,23 +17,16 @@
         }
         public function run($req, $res) {
             $this->init($req, $res);
-            if($this->checkConsoleAvailability($req)) {
-                $res->send(view("layout.html", array(
-                    "stylesheet" => $req->fabrico->assets->get("css"),
-                    "javascript" => $req->fabrico->assets->get("javascript"),
-                    "host" => $req->fabrico->paths->host
-                )));
-            } else {
-                $res->send(view("pleaseLogin.html", array(
-                    "stylesheet" => $req->fabrico->assets->get("css"),
-                    "host" => $req->fabrico->paths->host
-                )));
-            }
+            $res->send(view("layout.html", array(
+                "stylesheet" => $req->fabrico->assets->get("css"),
+                "javascript" => $req->fabrico->assets->get("javascript"),
+                "host" => $req->fabrico->paths->host
+            )));
         }
         
         // check if the user is logged with admin account
         private function checkConsoleAvailability($req) {
-            return $req->fabrico->access->isLogged($req) && $req->fabrico->currentUser->type === "admin";
+            return $req->fabrico->access->isLogged($req);
         }
         
         // commands

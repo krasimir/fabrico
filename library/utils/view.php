@@ -71,7 +71,7 @@ class View {
         if(!empty($searchInDefault)) {
             $searchIn = array_merge($searchIn, $searchInDefault);
         }
-       
+        
         $foundInSearchIn = false;
         foreach($searchIn as $search) {
             $searchPath = $root.$search."/".$path;

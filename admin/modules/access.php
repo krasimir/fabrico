@@ -4,6 +4,7 @@
         return json_decode('
             {
                 "type": "Access",
+                "title": "Login",
                 "users": [
                     {
                         "username": "admin",

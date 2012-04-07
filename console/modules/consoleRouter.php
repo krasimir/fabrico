@@ -9,7 +9,7 @@
                         "url": "/command(.*)?", 
                         "controller": "controllers/Console.php",
                         "model": null,
-                        "action": "command", 
+                        "action": "command",
                         "priority": false
                     },
                     {

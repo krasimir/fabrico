@@ -16,10 +16,12 @@
         public $loginError = "";
         
         private $req;
+        private $title;
         private $logged = null;
         
         public function init($config) {
             $this->users = $config->users;
+            $this->title = isset($config->title) ? $config->title : "Login";
         }
         public function isLogged($req) {
             $this->req = $req;
@@ -66,11 +68,23 @@
         }
         public function run($req, $res) {
             $this->req = $req;
+            if(isset($this->req->params["logout"]) && $this->req->params["logout"] == 1) {
+                $this->logout();
+            }
             $logged = $this->isLogged($req);
             if(!$logged) {
-                if(strpos($req->fabrico->paths->slug, "login") === FALSE) {
-                    header("Location: ".$req->fabrico->paths->url."/login");
-                }
+                ViewConfig::$root = dirname(__FILE__);
+                $res->send(view("/views/layout.html", array(
+                    "pageTitle" => "Login",
+                    "title" => $this->title,
+                    "css" => view("/assets/css/0-bootstrap.min.css"),
+                    "data" => view("/views/form.html", array(
+                        "error" => $this->loginError != "" ? view("/views/errormessage.html", array(
+                            "text" => $this->loginError
+                        )) : "",
+                        "url" => $this->req->fabrico->paths->url
+                    ))
+                )));
             }
         }
         public function logout() {
