@@ -58,7 +58,67 @@
                 ),
                 (object) array(
                     "template" => view("commands/templates/model.field.json.tpl"),
-                    "label" => "Field"
+                    "label" => "Fields",
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.Text.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ Text"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.ComplexData.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ ComplexData"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.Date.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ Date"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.File.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ File"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.Files.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ Files"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.HiddenCurrentUser.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ HiddenCurrentUser"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.HiddenModifiedDate.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ HiddenModifiedDate"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.Select.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ Select"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.SelectCheck.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ SelectCheck"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.SelectDb.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ SelectDb"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.SelectDbCheck.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ SelectDbCheck"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.SelectRadio.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ SelectRadio"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.TextLong.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ TextLong"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.TextRich.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ TextRich"
+                ),
+                (object) array(
+                    "template" => view("commands/templates/model.field.TextTinyMCE.json.tpl"),
+                    "label" => "&nbsp;&nbsp;&nbsp;└ TextTinyMCE"
                 ),
                 (object) array(
                     "template" => view("commands/templates/model.field.dependency.json.tpl"),

@@ -12,7 +12,7 @@
         <a href="javascript:fconsole.sendCommand('clear')" class="btn">Cancel</a>
         <div class="manage-templates">
             <strong>Templates</strong>
-            <div class="manage-templates-list" id="templates-{uid}"></div>
+            <select class="manage-templates-list" id="templates-{uid}"></select>
         </div>
     </div>
 </div>
@@ -33,7 +33,7 @@
         };
         var showTemplate = function(index) {
             $("#template-modal-textarea-{uid}").val(data[index].template.tplFileContent);
-            $("#template-modal-textarea-{uid}-title").text(data[index].label);
+            $("#template-modal-textarea-{uid}-title").html(data[index].label);
             $("#template-modal-{uid}").modal({
                 show: false
             });
@@ -44,11 +44,23 @@
         };
     })();
     $(document).ready(function() {
+        $("#templates-{uid}").append($('<option value="emtpty"></option>'));
         var numOfTemplates = templates{uid}.getData().length;
         for(var i=0; i<numOfTemplates; i++) {
             var template = templates{uid}.getData()[i];
-            $("#templates-{uid}").append(
-                $('<a class="manage-templates-btn" href="javascript:templates{uid}.showTemplate(\'' + i + '\')">+ ' + template.label + '</a>'));
-        }        
+            if(template.template == "") {
+                $("#templates-{uid}").append(
+                    $('<option disabled="disabled">' + template.label + '</option>')
+                );
+            } else {
+                $("#templates-{uid}").append(
+                    $('<option class="manage-templates-btn" value="' + i + '">' + template.label + '</option>')
+                );
+            }
+        }
+        $("#templates-{uid}").change(function() {
+            templates{uid}.showTemplate($("#templates-{uid}").val());
+            $("#templates-{uid}").val("emtpty");
+        });
     });
 </script>
