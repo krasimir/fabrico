@@ -26,8 +26,6 @@
                             <li><a href="#installation">Installation</a></li>
                             <li><a href="#units">Units</a></li>
                             <li><a href="#modules">Modules</a></li>
-                            <li><a href="#Presenters">Presenters</a></li>
-                            <li><a href="#Validators">Validators</a></li>
                         </ul>
                     </div>
                 </div>
@@ -48,6 +46,7 @@
                             http://[path to fabrico's files]/admin<br />
                             http://[path to fabrico's files]/docs<br />
                             http://[path to fabrico's files]/custom<br />
+                            http://[path to fabrico's files]/console<br />
                             http://[path to fabrico's files]/...
                         </p>
                     </div>
@@ -115,6 +114,13 @@ RewriteRule ^(.*)$ index.php?slug=$1 [QSA,L]
                             <li><a href="#Benchmark">Benchmark</a></li>
                             <li><a href="#Models">Models</a></li>
                             <li><a href="#Router">Router</a></li>
+                            <li>
+                                <a href="#Controllers">Controllers</a>
+                                <ul>
+                                    <li><a href="#Presenters">Presenters</a></li>
+                                    <li><a href="#Validators">Validators</a></li>
+                                </ul>
+                            </li>
                             <li><a href="#Views">Views</a></li>
                         </ul>
                     </div>
@@ -314,140 +320,18 @@ RewriteRule ^(.*)$ index.php?slug=$1 [QSA,L]
 {
     "adapter": "&lt;path to adapter>",
     "freeze": &lt;boolean>,
-    "pageTitle": "&lt;string>",
-    "title": "&lt;string>",
     "fields": [
         &lt;Field>,
         &lt;Field>,
         &lt;Field>,
         ...
-    ],
-    "actions": {
-        "listing": {
-            "controller": "&lt;path to controller>",
-            "fieldsToHide": [
-                "&lt;name of field>"
-            ],
-            "positionEditing": "&lt;direct|up-down>"
-        },
-        "adding": {
-            "controller": "&lt;path to controller>"
-        },
-        "editing": {
-            "controller": "&lt;path to controller>"
-        },
-        "deleting": {
-            "controller": "&lt;path to controller>"
-        }
-    }
+    ]
 }
 </pre>
 <h5>Field</h5>
 <pre class="prettyprint linenums">
 {
-    "name": "&lt;name of the field>",
-    "presenter": "&lt;path to presenter>",
-    "label": "&lt;label of the field>",
-    "description": "&lt;description of the field>",
-    "defaultValue": "&lt;default value>",
-    "config": {
-        &lt;configuration of the <a href="#Presenters">Presenter</a>>
-    },
-    "dependencies": [ 
-        &lt;Dependency>, 
-        &lt;Dependency>, 
-        &lt;Dependency>, 
-        ...
-    ],
-    "validators": [
-        &lt;Validator>, 
-        &lt;Validator>,
-        &lt;Validator>,
-        ...
-    ]
-}
-</pre>
-<h5>Dependency</h5>
-<pre class="prettyprint linenums">
-{
-    "field": "&lt;name of field>",
-    "shouldMatch": "&lt;regular expression>"
-}
-
-
-// A complex logic could be added in the dependencies' section. For example:
-"dependencies": [
-    a,
-    b
-]
-// means: a && b. While:
-"dependencies": [
-    a,
-    [
-        b
-    ]
-]
-// means: a || b.
-// note that
-"dependencies": [
-    [
-        b
-    ],
-    a
-]
-// still means a && b.
-// So, when Fabrico reaches an array it uses ||, otherwise &&. Few examples:
-"dependencies": [
-    a,
-    [
-        b,
-        c
-    ]
-]
-// -> a || (b && c)
-"dependencies": [
-    a,
-    [
-        [
-            b,
-            c
-        ],
-        [
-            d,
-            e
-        ]        
-    ]
-]
-// -> a || ((b && c) || (d && e))
-"dependencies": [
-    [
-        a
-    ],
-    [
-        b     
-    ]
-]
-// -> a || b
-"dependencies": [
-    [
-        b,
-        [
-            c
-        ]
-    ],
-    a
-]
--> a && (b || c)
-</pre>
-<h5>Validator</h5>
-<pre class="prettyprint linenums">
-{
-    "class": "&lt;path to validator php>",
-    "parameters": { 
-        // please check the specific <u><a href="#Validators">Validators</a></u> section
-    },
-    "method": "&lt;name of method (default: run)>",
-    "message": "&lt;messsage (default: Wrong input!)"
+    "name": "&lt;name of the field>"
 }
 </pre>
                         <h3>Example</h3>
@@ -578,8 +462,10 @@ RewriteRule ^(.*)$ index.php?slug=$1 [QSA,L]
 <pre class="prettyprint linenums">
 {
     "url": "&lt;regular expression>", 
-    "controller": "&lt;path to controller>", 
-    "model": "&lt;model to administrate (optional)>", 
+    "controller": {
+        "class": "&lt;path to controller>",
+        "uid": &lt;used only if you are working with a controller for the admin unit>
+    }
     "action": "&lt;method of the controller (optional)>", 
     "priority": &lt;boolean (default: false)>
 }
@@ -587,44 +473,243 @@ RewriteRule ^(.*)$ index.php?slug=$1 [QSA,L]
                         <h3>Example</h3>
 <pre class="prettyprint linenums">
 {
-    "type": "router",
-    "routes": [
+    "type":"Router",
+    "routes":[
         {
-            "url": "/sample(.*)?", 
-            "controller": "controllers/Page.php", 
-            "model": "sample", 
-            "action": "run", 
-            "priority": false
+            "url":"/testcontroller(.*)?",
+            "controller":
+            {
+                "class":"controllers/Controller.php",
+                "uid":"testcontroller"
+            },
+            "action":"run",
+            "priority":false
         },
         {
-            "url": "/types(.*)?", 
-            "controller": "controllers/Page.php", 
-            "model": "types", 
-            "action": "run", 
-            "priority": false
-        },
-        {
-            "url": "/logout(.*)?", 
-            "controller": "controllers/Logout.php",
-            "model": null,
-            "action": "run", 
-            "priority": false
-        },
-        {
-            "url": "/login(.*)?", 
-            "controller": "controllers/Login.php",
-            "model": null,
-            "action": "run", 
-            "priority": false
-        },
-        {
-            "url": "(.*)?", 
-            "controller": "controllers/Home.php",
-            "model": null,
-            "action": "run", 
-            "priority": false
+            "url":"(.*)?",
+            "controller":
+            {
+                "class":"controllers/Home.php",
+                "config":null
+            },
+            "action":"run",
+            "priority":false
         }
     ]
+}
+</pre>
+                    </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------- -->
+                <a name="Controllers" class="anchor"></a>
+                <div class="row">
+                    <div class="span3">
+                        <h2>Controllers</h2>
+                        <p>Set configuration of the controllers.</p>
+                    </div>
+                    <div class="span9">
+                        <h3>Configuration</h3>
+<pre class="prettyprint linenums">
+{
+    "type": "Controllers",
+    "controllers": {
+        "&lt;name of the controller>": &lt;Controller's settings>,
+        "&lt;name of the controller>": &lt;Controller's settings>,
+        "&lt;name of the controller>": &lt;Controller's settings>,
+        ...
+    }
+}
+</pre>
+<h5>Controller's settings</h5>
+<pre class="prettyprint linenums">
+{
+    "modelToAdministrate": "&lt;model name>",
+    "pageTitle": "&lt;string>",
+    "title": "&lt;string>",
+    "fields": [
+        &lt;Field>,
+        &lt;Field>,
+        &lt;Field>,
+        ...
+    ],
+    "actions": {
+        "listing": {
+            "controller": "&lt;path to controller>",
+            "fieldsToHide": [
+                "&lt;name of field>"
+            ],
+            "positionEditing": "&lt;direct|up-down>"
+        },
+        "adding": {
+            "controller": "&lt;path to controller>"
+        },
+        "editing": {
+            "controller": "&lt;path to controller>"
+        },
+        "deleting": {
+            "controller": "&lt;path to controller>"
+        }
+    }
+}
+</pre>
+<h5>Field</h5>
+<pre class="prettyprint linenums">
+{
+    "name": "&ltname of the field>",
+    "presenter": "&ltpath to presenter>",
+    "label": "&ltlabel of the field>",
+    "description": "&ltdescription of the field>",
+    "defaultValue": "&ltdefault value>",
+    "config": {
+        &ltconfiguration of the Presenter>
+    },
+    "dependencies": [ 
+        &ltDependency>, 
+        &ltDependency>, 
+        &ltDependency>, 
+        ...
+    ],
+    "validators": [
+        &ltValidator>, 
+        &ltValidator>,
+        &ltValidator>,
+        ...
+    ]
+}    
+</pre>
+
+<h5>Dependency</h5>
+<pre class="prettyprint linenums">
+{
+    "field": "&lt;name of field>",
+    "shouldMatch": "&lt;regular expression>"
+}
+
+
+// A complex logic could be added in the dependencies' section. For example:
+"dependencies": [
+    a,
+    b
+]
+// means: a && b. While:
+"dependencies": [
+    a,
+    [
+        b
+    ]
+]
+// means: a || b.
+// note that
+"dependencies": [
+    [
+        b
+    ],
+    a
+]
+// still means a && b.
+// So, when Fabrico reaches an array it uses ||, otherwise &&. Few examples:
+"dependencies": [
+    a,
+    [
+        b,
+        c
+    ]
+]
+// -> a || (b && c)
+"dependencies": [
+    a,
+    [
+        [
+            b,
+            c
+        ],
+        [
+            d,
+            e
+        ]        
+    ]
+]
+// -> a || ((b && c) || (d && e))
+"dependencies": [
+    [
+        a
+    ],
+    [
+        b     
+    ]
+]
+// -> a || b
+"dependencies": [
+    [
+        b,
+        [
+            c
+        ]
+    ],
+    a
+]
+-> a && (b || c)
+</pre>
+<h5>Validator</h5>
+<pre class="prettyprint linenums">
+{
+    "class": "&lt;path to validator php>",
+    "parameters": { 
+        // please check the specific <u><a href="#Validators">Validators</a></u> section
+    },
+    "method": "&lt;name of method (default: run)>",
+    "message": "&lt;messsage (default: Wrong input!)"
+}
+</pre>
+                        <h3>Example</h3>
+<pre class="prettyprint linenums">
+{
+    "type":"Controllers",
+    "controllers":
+    {
+        "testcontroller":
+        {
+            "modelToAdministrate":"testmodel",
+            "pageTitle":"Test Model",
+            "title":"Test",
+            "fields":[
+                {
+                    "name":"job",
+                    "presenter":"presenters/Select.php",
+                    "config":
+                    {
+                        "options":[
+                            {
+                                "key":"",
+                                "label":"Please choose your job"
+                            },
+                            {
+                                "key":"PHP",
+                                "label":"PHP developer"
+                            },
+                            {
+                                "key":"Javascript",
+                                "label":"Javascript developer"
+                            },
+                            {
+                                "key":"AS3",
+                                "label":"ActionScript3"
+                            }
+                        ]
+                    },
+                    "label":"Your job",
+                    "description":"Your current job",
+                    "validators":[
+                        {
+                            "class":"validators/NotEmpty.php",
+                            "message":"Please choose your job!"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
 }
 </pre>
                     </div>

@@ -11,10 +11,7 @@
         private $req;
         private $res;
         private $response;
-    
-        public function __construct($router) {
-            
-        }
+        
         public function run($req, $res) {
             $this->init($req, $res);
             $res->send(view("layout.html", array(

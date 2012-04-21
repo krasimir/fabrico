@@ -5,7 +5,7 @@
             {
                 "type": "Views",
                 "paths": [
-                    "/views/Default"
+                    "/views/Controller"
                 ],
                 "forEachView": {
                     "brand": "fabrico!"

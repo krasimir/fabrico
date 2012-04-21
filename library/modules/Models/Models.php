@@ -70,6 +70,13 @@
             return $model;
         
         }
+        public function getConfig($name) {
+            if(!isset($this->config->models->$name)) {
+                throw new Exception($this.": model '".$name."' is missing. Please check your module definition.");
+            } else {
+                return $this->config->models->$name;
+            }
+        }
         public function run($req, $res) {
             $this->req = $req;
             $this->res = $res;

@@ -18,7 +18,7 @@
         protected $fieldsJson;
         
         public function __construct($router) {
-            $this->controller = $router->matchedRule->controller;
+            $this->controller = $router->matchedRule->parentController;
             $this->model = $router->matchedRule->model;
             $this->fieldsJson = json_encode($this->model->fields);
         }

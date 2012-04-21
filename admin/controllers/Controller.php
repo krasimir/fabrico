@@ -6,10 +6,7 @@
         "utils/Signal.php"
     ));
 
-    /**
-    * @package Fabrico\Controllers\Pages
-    */
-    class Page extends Middleware {
+    class Controller extends Middleware {
     
         public $model;
         public $url;
@@ -17,6 +14,8 @@
         public $pageTitle;
         public $events;
     
+        protected $config;
+        protected $uid;
         protected $router;
         protected $defaultRoutes = array();
         protected $defaultController = "actions/Listing.php";
@@ -24,8 +23,9 @@
         
         private $routes = array();
         
-        public function __construct($router = null) {
+        public function __construct($router, $config) {
             $this->matchedRouterRule = $router->matchedRule;
+            $this->uid = isset($config->uid) ? $config->uid : "";
             $this->events = (object) array(
                 "ON_ADD" => new Signal($this),
                 "ON_EDIT" => new Signal($this),
@@ -34,12 +34,14 @@
         }
         public function run($req, $res) {
         
+            $this->config = $req->fabrico->controllers->get($this->uid);
+        
             // administrate a model if there is any associated with this controller
-            if(isset($this->matchedRouterRule->model) && $this->model = $req->fabrico->models->get($this->matchedRouterRule->model)) {
+            if($this->model = $this->getModel($req)) {
             
                 $this->url = $this->url === null ? $this->filterRoutePattern($this->matchedRouterRule->pattern) : $this->url;
-                $this->title = $this->title === null ? ($this->model->title !== null ? $this->model->title : "...") : $this->title;
-                $this->pageTitle = $this->model->pageTitle !== null ? $this->model->pageTitle : "...";
+                $this->title = $this->title === null ? ($this->config->title !== null ? $this->config->title : "...") : $this->title;
+                $this->pageTitle = $this->config->pageTitle !== null ? $this->config->pageTitle : "...";
                 
                 // routes
                 $pattern = $this->matchedRouterRule->pattern;
@@ -75,8 +77,8 @@
                 foreach($this->routes as $pattern => $action) {
                     $rule = new RouterRule(array(
                         "pattern" => $pattern,
-                        "handler" => $action,
-                        "controller" => $this,
+                        "controller" => (object) array("class" => $action),
+                        "parentController" => $this,
                         "model" => $this->model
                     ));
                     $this->router->all($rule);
@@ -84,6 +86,8 @@
                 
                 parent::run($req, $res);
             
+            } else {
+                $this->response("There is no model associated with this controller.", $req, $res);
             }
             
         }
@@ -100,7 +104,7 @@
         }
         // other
         public function __toString() {
-            return "Default";
+            return "Controller";
         }
         private function filterRoutePattern($pattern) {
             $charsToRemove = array("(", ")", ".", "?", "*");
@@ -115,6 +119,28 @@
             } else {
                 return $default;
             }
+        }
+        private function getModel($req) {
+            if($this->config !== false && isset($this->config->modelToAdministrate)) {
+                $model = $req->fabrico->models->get($this->config->modelToAdministrate);
+                $modelFields = $model->getFields();
+                foreach($modelFields as $modelField) {
+                    $defined = false;
+                    foreach($this->config->fields as $configField) {
+                        if($configField->name === $modelField->name) {
+                            $defined = true;
+                            foreach($configField as $key => $value) {
+                                $modelField->$key = $value;
+                            }
+                        }
+                    }
+                    if(!$defined) {
+                        $modelField->presenter = "presenters/Text.php";
+                    }
+                }
+                return $model;
+            }
+            return false;
         }
     
     }

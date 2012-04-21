@@ -1,16 +1,13 @@
 <?php
 
     inject(array(
-        "controllers/Page.php",
+        "controllers/Controller.php",
         "utils/view.php"
     ));
 
-    /**
-    * @package Fabrico\Controllers\Pages
-    */
-    class Home extends Page {
+    class Home extends Controller {
             
-        public function __construct($router) {
+        public function __construct($configKey) {
             
         }
         public function run($req, $res) {

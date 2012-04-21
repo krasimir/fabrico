@@ -92,9 +92,6 @@
             $this->query->desc = " DESC";
             return $this;
         }
-        /**
-        * usage: ->where("id=3")
-        */
         public function where($str) {
             if(isset($this->query->where)) {
                 $this->query->where .= $str;
@@ -143,6 +140,9 @@
                 }
                 return $res;
             }
+        }
+        public function getFields() {
+            return $this->configs->fields;
         }
         private function initialize() {
         

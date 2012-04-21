@@ -25,7 +25,7 @@
             foreach($routes as $route) {
                 $rule = new RouterRule(array(
                     "pattern" => $route->url,
-                    "handler" => $route->controller,
+                    "controller" => $route->controller,
                     "action" => isset($route->action) ? $route->action : "run",
                     "priority" => isset($route->priority) ? $route->priority : false,
                     "model" => isset($route->model) ? $route->model : null
@@ -68,24 +68,24 @@
             $numOfRules = count($this->_rules);
             for($i=0; $i<$numOfRules; $i++) {
                 $rule = $this->_rules[$i];
-                $handler = $rule->handler;
+                $controller = $rule->controller;
                 $pattern = $rule->pattern;
                 if($rule->method == $req->method) {
                     $match = $this->match($pattern, $req->slug, $req->params);
-                    /*var_dump("('".$pattern."' == '".$req->slug."') ('".$req->method."' == '".$rule->method."') (handler=".$handler.") (match=".($match ? "true" : "false").")");
+                    /*var_dump("('".$pattern."' == '".$req->slug."') ('".$req->method."' == '".$rule->method."') (controller=".$controller.") (match=".($match ? "true" : "false").")");
                     var_dump($match);*/
                     if($match) {
                         if(defined("DEBUG") && DEBUG) {
-                            $this->toLog("Router:<br />matched pattern: '".$pattern."'<br />Handler: '".$handler."'", "#D3D5E7");
+                            $this->toLog("Router:<br />matched pattern: '".$pattern."'<br />controller: '".$controller."'", "#D3D5E7");
                         }
                         $this->matchedRule = $rule;
-                        if(is_callable($handler)) {
-                            $handler($req, $res);
-                        } else if(is_string($handler)) {
-                            $this->createController($handler, $rule, $req, $res);
+                        if(is_callable($controller)) {
+                            $controller($req, $res);
+                        } if(is_object($controller)) {
+                            $this->createController($controller, $rule, $req, $res);
                             break;
                         } else {
-                            throw new Exception("not usable ".$handler.' for route handler');
+                            throw new Exception("not usable ".$controller.' for route controller');
                         }
                     }
                 }                
@@ -141,12 +141,13 @@
         public function getAllRules() {
             return $this->_rules;
         }
-        private function createController($path, $rule, $req, $res) {
+        private function createController($controller, $rule, $req, $res) {
+            $path = $controller->class;
             inject($path);
             $parts = explode("/", $path);
             $last =  array_pop($parts);
             $className = str_replace(".php", "", $last);
-            $instance = new $className($this);
+            $instance = new $className($this, $controller);
             $action = $rule->action;
             $instance->$action($req, $res);
         }
@@ -157,8 +158,8 @@
             if(!isset($rule->pattern)) {
                 throw new Exception("Missing 'pattern' in a rule.");
             }
-            if(!isset($rule->handler)) {
-                throw new Exception("Missing 'handler' in a rule.");
+            if(!isset($rule->controller)) {
+                throw new Exception("Missing 'controller' in a rule.");
             }
             if(!isset($rule->action)) {
                 $rule->action = "run";
@@ -182,7 +183,7 @@
     class RouterRule {
     
         public $pattern = null;
-        public $handler = null;
+        public $controller = null;
         public $action = "run";
         public $priority = false;
         public $model = null;

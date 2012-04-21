@@ -7,10 +7,7 @@
                 "routes": [
                     {
                         "url": "(.*)?", 
-                        "controller": "controllers/Custom.php",
-                        "model": null,
-                        "action": "run", 
-                        "priority": false
+                        "controller": {"class": "controllers/Custom.php"}
                     }
                 ]
             }

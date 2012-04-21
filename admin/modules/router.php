@@ -5,9 +5,22 @@
             "type":"Router",
             "routes":[
                 {
+                    "url":"/testcontroller(.*)?",
+                    "controller":
+                    {
+                        "class":"controllers/Controller.php",
+                        "uid":"testcontroller"
+                    },
+                    "action":"run",
+                    "priority":false
+                },
+                {
                     "url":"(.*)?",
-                    "controller":"controllers/Home.php",
-                    "model":null,
+                    "controller":
+                    {
+                        "class":"controllers/Home.php",
+                        "config":null
+                    },
                     "action":"run",
                     "priority":false
                 }
