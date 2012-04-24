@@ -1,6 +1,6 @@
 {
     "name": "<name of the field>",
-    "presenter": "presenters/Select.php",
+    "presenter": "presenters/SelectRadio.php",
     "config": {
         "options": [
             {"key": "<string>", "label": "<string>"},

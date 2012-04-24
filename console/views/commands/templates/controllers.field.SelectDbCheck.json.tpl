@@ -1,6 +1,6 @@
 {
     "name": "<name of the field>",
-    "presenter": "presenters/SelectDb.php",
+    "presenter": "presenters/SelectDbCheck.php",
     "config": {
         "model": "<name of model>",
         "field": "<name of the field in the model>"

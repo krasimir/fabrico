@@ -123,6 +123,7 @@
         private function getModel($req) {
             if($this->config !== false && isset($this->config->modelToAdministrate)) {
                 $model = $req->fabrico->models->get($this->config->modelToAdministrate);
+                $model->actions = isset($this->config->actions) ? $this->config->actions : null;
                 $modelFields = $model->getFields();
                 foreach($modelFields as $modelField) {
                     $defined = false;
