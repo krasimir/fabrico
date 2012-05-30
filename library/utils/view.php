@@ -57,37 +57,37 @@ class View {
 	public $vars = array();
 
 	public function __construct($path, $data, $searchIn) {
-    
-        $cache = ViewCache::get($path);
         
-        if(!$cache) {
-            $originalPath = $path;
-            $root = ViewConfig::$root;
-            $searchInDefault = ViewConfig::$searchIn;
+        $root = ViewConfig::$root;
+        $searchInDefault = ViewConfig::$searchIn;
+        
+        if($searchIn != null) {
+            if(!is_array($searchIn)) {
+                $searchIn = array($searchIn);
+            }
+        } else {
+            $searchIn = array();
+        }
+        if(!empty($searchInDefault)) {
+            $searchIn = array_merge($searchIn, $searchInDefault);
+        }
+       
+        $foundInSearchIn = false;
+        foreach($searchIn as $search) {
+            $searchPath = $root.$search."/".$path;
+            if(file_exists($searchPath)) {
+                $path = $searchPath;
+                $foundInSearchIn = true;
+                break;
+            }
+        }
+        if(!$foundInSearchIn) {
+            $path = $root.$path;
+        }
+        
+        $cache = ViewCache::get($path);
             
-            if($searchIn != null) {
-                if(!is_array($searchIn)) {
-                    $searchIn = array($searchIn);
-                }
-            } else {
-                $searchIn = array();
-            }
-            if(!empty($searchInDefault)) {
-                $searchIn = array_merge($searchIn, $searchInDefault);
-            }
-           
-            $foundInSearchIn = false;
-            foreach($searchIn as $search) {
-                $searchPath = $root.$search."/".$path;
-                if(file_exists($searchPath)) {
-                    $path = $searchPath;
-                    $foundInSearchIn = true;
-                    break;
-                }
-            }
-            if(!$foundInSearchIn) {
-                $path = $root.$path;
-            }
+        if(!$cache) {
             
             if(defined("DEBUG") && DEBUG) {
                $this->log("view: ".str_replace($root, "", $path), "#BEC7B1");
@@ -98,14 +98,13 @@ class View {
             }
             $this->tplFileContent = fread($fh, filesize($path));
             fclose($fh);
-            ViewCache::add($originalPath, $this->tplFileContent);
+            ViewCache::add($path, $this->tplFileContent);
         } else {
             $this->tplFileContent = $cache;
         }
 
 		$this->vars = $data;
 	}
-
 	public function __toString() {	
 	
 		// adding assigned variabls
@@ -124,7 +123,6 @@ class View {
 
 		return $output;
 	}
-    
     private function log($str, $color) {
         echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
     }
