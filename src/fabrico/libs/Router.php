@@ -24,7 +24,7 @@
                 $this->params[$key] = $value;
             }            
         }
-        public function register($pattern, $controller, $method = "GET") {
+        public function register($pattern, $controller, $method = "ALL") {
             $methods = explode(",", $method);
             foreach($methods as $m) {
                 $this->rules []= (object) array(
@@ -41,7 +41,7 @@
                 $rule = $this->rules[$i];
                 $controller = $rule->controller;
                 $pattern = $rule->pattern;
-                if($rule->method == $this->method) {
+                if($rule->method == $this->method || $rule->method == "ALL") {
                     $match = $this->match($pattern, $this->slug, $this->params);
                     if($match) {
                         $this->matchedRule = $rule;
