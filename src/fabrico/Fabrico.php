@@ -1,30 +1,40 @@
 <?php
 
     class Fabrico {
-    
-        private $injector;
-        
-        public $router;
+
+        private $paths;
+        private $coreModules;
         
         public function __construct() {
-        
-            $this->injector()->inject(array(
-                "libs"
-            ), dirname(__FILE__));
-            
+            $this->paths = (object) array(
+                "fabricoRoot" => dirname(__FILE__)."/",
+                "appRoot" => dirname(isset($_SERVER["SCRIPT_FILENAME"]) ? $_SERVER["SCRIPT_FILENAME"] : "")."/"
+            );
+            $this->coreModules = array(
+                (object) array(
+                    "name" => "ErrorHandler"
+                ),
+                (object) array(
+                    "name" => "Router"
+                ),
+                (object) array(
+                    "name" => "View"
+                )
+            );
+            $this->initialize($this->coreModules);
         }
-        public function injector() {
-            if(!$this->injector) {
-                require_once(dirname(__FILE__)."/libs/Injector.php");
-                $this->injector = new Injector();
+
+        public function initialize($modules) {
+            if(!is_array($modules)) $modules = array($modules);
+            foreach($modules as $module) {
+                if(file_exists($this->paths->fabricoRoot."modules/".$module->name."/index.php")) {
+                    require($this->paths->fabricoRoot."modules/".$module->name."/index.php");
+                } else if(file_exists($this->paths->appRoot."modules/".$module->name."/index.php")) {
+                    require($this->paths->appRoot."modules/".$module->name."/index.php");
+                } else {
+                    throw new Exception("Missing module '".$module->name."'!");
+                }
             }
-            return $this->injector;
-        }
-        public function router() {
-            if(!$this->router) {
-                $this->router = new Router();
-            }
-            return $this->router;
         }
         
     }
