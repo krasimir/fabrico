@@ -67,7 +67,7 @@ At the end you should have the following structure:
       └ controllers
       └ views
 
-Then just simply execute your php file via the command line
+Navigate to your php file and then just execute it via the command line
 
     php install.php
 

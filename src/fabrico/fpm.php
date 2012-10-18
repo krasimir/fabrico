@@ -5,6 +5,7 @@
         private $gitEndPoint = "https://api.github.com/";
         private $gitEndPointRaw = "https://raw.github.com/";
         private $gitRepos;
+        private $installedModules;
 
         private $packageFileName = "package.json";
         private $modulesDir = "modules";
@@ -12,6 +13,7 @@
         public function __construct() {
             global $APP_ROOT;
             $this->gitRepos = (object) array();
+            $this->installedModules = (object) array();
             $this->installModules($APP_ROOT.$this->packageFileName);
         }
         private function installModules($packageFile, $indent = 0) {
@@ -39,6 +41,10 @@
             global $APP_ROOT;
             if($this->shouldContain($module, array("path"))) {
                 $this->formatModule($module);
+                if(isset($this->installedModules->{$module->name})) {
+                    $this->log($module->name." module is skipped (it is already installed)", "", $indent + 2);
+                    return;
+                }
                 if(!file_exists($installInDir."/".$module->name)) {
                     if(mkdir($installInDir."/".$module->name, 0777)) {
                         $this->log($module->name." directory created", "", $indent + 2);
@@ -86,6 +92,7 @@
                         } else {
                             $this->error($module->name."/commit.sha file is node added", "", $indent + 2);
                         }
+                        $this->installedModules->{$module->name} = true;
                         if(file_exists($installInDir."/".$module->name."/package.json")) {
                             $this->installModules($installInDir."/".$module->name."/package.json", $indent + 2);
                         }
