@@ -1,0 +1,11 @@
+[
+    {
+        "owner": "krasimir",
+        "repository": "fabrico",
+        "branch": "master",
+        "modules": [
+            { "path": "core/ErrorHandler" },
+        ],
+        "commit": "f43adca84f6c882236e208a874fb6acb27908457"
+    }
+]

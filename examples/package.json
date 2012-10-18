@@ -1,0 +1,12 @@
+[
+    {
+        "owner": "krasimir",
+        "repository": "fabrico",
+        "branch": "master",
+        "modules": [
+            { "path": "core/ErrorHandler" },
+            { "path": "core/View" },
+            { "path": "core/Router" }
+        ]
+    }
+]
