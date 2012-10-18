@@ -41,7 +41,7 @@
             global $APP_ROOT;
             if($this->shouldContain($module, array("path"))) {
                 $this->formatModule($module);
-                if(isset($this->installedModules->{$module->name})) {
+                if(isset($this->installedModules->{$module->path})) {
                     $this->log($module->name." module is skipped (it is already installed)", "", $indent + 2);
                     return;
                 }
@@ -92,7 +92,7 @@
                         } else {
                             $this->error($module->name."/commit.sha file is node added", "", $indent + 2);
                         }
-                        $this->installedModules->{$module->name} = true;
+                        $this->installedModules->{$module->path} = true;
                         if(file_exists($installInDir."/".$module->name."/package.json")) {
                             $this->installModules($installInDir."/".$module->name."/package.json", $indent + 2);
                         }
@@ -119,8 +119,10 @@
         // formatting
         private function formatModule(&$module) {
             $module->path = substr($module->path, strlen($module->path)-1, 1) == "/" ? substr($module->path, 0, strlen($module->path)-1) : $module->path;
-            $pathParts = explode("/", $module->path);
-            $module->name = $pathParts[count($pathParts)-1];
+            if(!isset($module->name)) {
+                $pathParts = explode("/", $module->path);
+                $module->name = $pathParts[count($pathParts)-1];
+            }
         }
 
         // requesting

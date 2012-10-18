@@ -54,6 +54,17 @@ Format of **package.json**
 
 **commit** property is not mandatory. If you don't specify it the manager will fetch the latest commit. Once the manager finishes its job a file **commit.sha** will be created in the module's directory. You can use it to get the commit's sha and place it in **package.json**. Following this approach you will be sure that you will fetch the exact version of the files that you are currently using.
 
+**name** property of the module is also not mandatory. By default the name comes from the **path** property and if you don't like it you can change it
+
+    {
+        "owner": "ownername",
+        "repository": "reponame",
+        "branch": "master",
+        "modules": [
+            { "path": "core/ErrorHandler", "name": "MyCustomModuleName" }
+        ]
+    },
+
 At the end you should have the following structure:
 
     site
