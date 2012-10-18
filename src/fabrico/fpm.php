@@ -23,11 +23,12 @@
                 foreach($sets as $set) {                    
                     if($this->shouldContain($set, array("owner", "repository", "modules", "branch")) && $this->shouldBeNonEmptyArray($set->modules)) {
                         $this->log("/".$set->owner."/".$set->repository, "", 1);
-                        if(!file_exists($APP_ROOT.$this->modulesDir)) {
-                            mkdir($APP_ROOT.$this->modulesDir, 0777);
+                        $dir = dirname($packageFile)."/".$this->modulesDir;
+                        if(!file_exists($dir)) {
+                            mkdir($dir, 0777);
                         }
                         foreach($set->modules as $module) {
-                            $this->installModule($module, $set, $APP_ROOT.$this->modulesDir);
+                            $this->installModule($module, $set, $dir);
                         }
                     }
                 }
@@ -40,7 +41,11 @@
             if($this->shouldContain($module, array("path"))) {
                 $this->formatModule($module);
                 if(!file_exists($installInDir."/".$module->name)) {
-                    mkdir($installInDir."/".$module->name, 0777);
+                    if(mkdir($installInDir."/".$module->name, 0777)) {
+                        $this->log($module->name." directory created", "", 2);
+                    } else {
+                        $this->error($module->name." directory is no created", "", 2);
+                    }
                 }
                 $tree = $this->readRepository($set);
                 $found = false;
@@ -81,6 +86,9 @@
                             $this->log($module->name."/commit.sha file added (".$tree->sha.")", "", 2);
                         } else {
                             $this->error($module->name."/commit.sha file is node added", "", 2);
+                        }
+                        if(file_exists($installInDir."/".$module->name."/package.json")) {
+                            $this->installModules($installInDir."/".$module->name."/package.json");
                         }
                     }
                 }
