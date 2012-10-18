@@ -4,9 +4,9 @@
         "repository": "fabrico",
         "branch": "master",
         "modules": [
-            { "path": "core/ErrorHandler" },
-            { "path": "core/View" },
-            { "path": "core/Router" }
+            { "path": "src/core/ErrorHandler" },
+            { "path": "src/core/View" },
+            { "path": "src/core/Router" }
         ]
     }
 ]
