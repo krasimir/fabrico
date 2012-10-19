@@ -21,7 +21,7 @@
             if(file_exists($packageFile)) {
                 $this->log("/".str_replace($APP_ROOT, "", $packageFile), "CYAN", $indent);
                 $sets = json_decode(file_get_contents($packageFile));
-                foreach($sets as $set) {                    
+                foreach($sets as $set) {
                     if($this->shouldContain($set, array("owner", "repository", "modules", "branch")) && $this->shouldBeNonEmptyArray($set->modules)) {
                         $this->log("/".$set->owner."/".$set->repository, "", $indent + 1);
                         $dir = dirname($packageFile)."/".$this->modulesDir;
@@ -43,9 +43,11 @@
                 $this->formatModule($module);
                 $tree = $this->readRepository($set);
                 $found = false;
-                if(isset($this->installedModules->{$module->path}) && $this->installedModules->{$module->path}->sha === $tree->sha) {
-                    $this->log($module->name." module skipped", "BLUE", $indent + 2);
-                    return;
+                if(isset($this->installedModules->{$module->path})) {
+                    if($this->installedModules->{$module->path}->sha === $tree->sha) {
+                        $this->log($module->name." module skipped", "BLUE", $indent + 2);
+                        return;
+                    }
                 }
                 if(!file_exists($installInDir."/".$module->name)) {
                     if(mkdir($installInDir."/".$module->name, 0777)) {
@@ -103,7 +105,9 @@
         private function readRepository(&$set) {
             $repoPath = $set->owner."/".$set->repository."/branches/".$set->branch;
             if(isset($this->gitRepos->{$repoPath})) {
-                return $this->gitRepos->{$repoPath};
+                if(isset($set->commit) && $set->commit == $this->gitRepos->{$repoPath}->sha) {
+                    return $this->gitRepos->{$repoPath};
+                }
             }
             if(!isset($set->commit)) {
                 $masterBranchURL = $this->gitEndPoint."repos/".$set->owner."/".$set->repository."/branches/".$set->branch;

@@ -5,7 +5,6 @@
         "branch": "master",
         "modules": [
             { "path": "src/core/ErrorHandler" }
-        ],
-        "commit": "272e3660b516fe32d04bd3dce2fd93e2cb457a71"
+        ]
     }
 ]
