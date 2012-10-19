@@ -7,7 +7,6 @@
             { "path": "src/core/ErrorHandler" },
             { "path": "src/core/View" },
             { "path": "src/core/Router" }
-        ],
-        "commit": "272e3660b516fe32d04bd3dce2fd93e2cb457a71"
+        ]
     }
 ]
