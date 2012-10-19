@@ -6,7 +6,7 @@ Fabrico is a php micro framework. It's purpose is to provide really basic functi
 
 # Package manager
 
-Inspired by [npm](https://npmjs.org/) and [bundler](http://gembundler.com/), the manager could download content from GitHub. It is not meant to be only for PHP based application, but for any other kind of software, which uses GitHub's repositories. You can install modules which by specifying owner, repository, branch, directory and commit.
+Inspired by [npm](https://npmjs.org/) and [bundler](http://gembundler.com/), the manager could download content from GitHub. It is not meant to be only for PHP based application, but for any other kind of software, which uses GitHub's repositories. You can install modules by specifying owner, repository, branch, directory and commit.
 
 *There is no any special kind of files which you have to add to define a module. Basically every directory is a separated module.*
 

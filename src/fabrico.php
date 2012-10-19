@@ -41,8 +41,10 @@
             global $APP_ROOT;
             if($this->shouldContain($module, array("path"))) {
                 $this->formatModule($module);
-                if(isset($this->installedModules->{$module->path})) {
-                    $this->log($module->name." module skipped (it is already installed)", "", $indent + 2);
+                $tree = $this->readRepository($set);
+                $found = false;
+                if(isset($this->installedModules->{$module->path}) && $this->installedModules->{$module->path}->sha === $tree->sha) {
+                    $this->log($module->name." module skipped", "BLUE", $indent + 2);
                     return;
                 }
                 if(!file_exists($installInDir."/".$module->name)) {
@@ -52,8 +54,6 @@
                         $this->error($module->name." directory is no created", "", $indent + 2);
                     }
                 }
-                $tree = $this->readRepository($set);
-                $found = false;
                 if(isset($tree->tree)) {
                     foreach($tree->tree as $item) {
                         if(strpos($item->path, $module->path) === 0 && $item->path !== $module->path) {
@@ -92,7 +92,7 @@
                         } else {
                             $this->error($module->name."/commit.sha file is node added", "", $indent + 2);
                         }
-                        $this->installedModules->{$module->path} = true;
+                        $this->installedModules->{$module->path} = (object) array("sha" => $tree->sha);
                         if(file_exists($installInDir."/".$module->name."/package.json")) {
                             $this->installModules($installInDir."/".$module->name."/package.json", $indent + 2);
                         }
