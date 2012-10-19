@@ -1,8 +1,12 @@
-# Fabrico PHP Framework
+# Fabrico
+
+Fabrico is a php micro framework. It's purpose is to provide really basic functionalities for building web applications. 
 
 ***
 
-# Fabrico PHP Package Manager
+# Package manager
+
+Inspired by [npm](https://npmjs.org/) and [bundler](http://gembundler.com/), the manager could download content from github. It is not meant to be only for PHP based application. Basically you can link your project to a specific repository, branch, directory or commit. 
 
 ### Usage
 
@@ -10,23 +14,68 @@ Let's say that you have the following structure:
 
     site
       └ libs
-        └ fabrico
+        └ something
       └ assets
         └ css
         └ js
       └ controllers
       └ views
 
-And you want to add your modules in **/site/libs/fabrico**. Then you should create a php file there with the following content:
+And you want to add your modules in */site/libs/something*. There are two things that you should do:
+
+Create a .php file and add the following code
 
     <?php
-        require("[path to fabrico]/index.php");     
+        require("[path to fabrico]/fabrico.php");     
     ?>
 
-I.e. simply to include the **index.php* of  fabrico.
-The next step is to create your **package.json**, where you will describe what modules you want to have. The json file should be create in the same place.
+I.e. simply include fabrico.
+The next step is to create your *package.json*, where you will describe what modules you want to add. The json file should be created in the same directory.
 
-Format of **package.json**
+    [
+        {
+            "owner": "krasimir",
+            "repository": "fabrico",
+            "branch": "master",
+            "modules": [
+                { "path": "core/ErrorHandler", "name": "MyCustomModuleName" },
+                { "path": "console" }
+            ],
+            "commit": "f43adca84f6c882236e208a874fb6acb27908457"
+        }
+        ...
+    ]
+
+- owner /required/ - the owner of the repository
+- repository /required/ - the name of the repository
+- branch /required/- the name of the branch
+- modules /required/ - array of objects
+    - path /required/ - directory path of the module in the repository
+    - name /optional/ - by default the name of the directory container is used, but you can specify your own name. For example if the path is *core/ErrorHandler* the name of the module will be *ErrorHandler*.
+- commit /optional/ - by default the manager gets the latest commit, but you can specify a strict commit which you want to use 
+
+At the end you should have the following structure:
+
+    site
+      └ libs
+        └ something
+          └ install.php
+          └ package.json
+      └ assets
+        └ css
+        └ js
+      └ controllers
+      └ views
+
+Navigate to your php file (*install.php* in our case) and then just execute it via the command line
+
+    php install.php
+
+The manager will create directory *modules* and will place everything there.
+
+### Versioning
+
+Fabrico package manager doesn't have a central registry/storage, which means that it can't use version numbers during the downloading of the modules. The good thing is that it searches modules in GitHub, where every commit has its own hash. So, basically if you know the owner, repository, branch and the *sha* of a specific commit you can stick to specific version of the files. Every downloaded module has commit.sha file generated in its folder, which contains the *sha* of the fetched commit. You can grab that value and add it to your package.json file like:
 
     [
         {
@@ -38,48 +87,12 @@ Format of **package.json**
                 { "path": "console" }
             ],
             "commit": "f43adca84f6c882236e208a874fb6acb27908457"
-        },
-        {
-            "owner": "ownername",
-            "repository": "reponame",
-            "branch": "master",
-            "modules": [
-                { "path": "path/to/directory" },
-                { "path": "path/to/directory" },
-                { "path": "path/to/directory" }
-            ]
-        },
+        }
         ...
     ]
 
-**commit** property is not mandatory. If you don't specify it the manager will fetch the latest commit. Once the manager finishes its job a file **commit.sha** will be created in the module's directory. You can use it to get the commit's sha and place it in **package.json**. Following this approach you will be sure that you will fetch the exact version of the files that you are currently using.
+(If you don't set *commit* property the manager will download the latest one)
 
-**name** property of the module is also not mandatory. By default the name comes from the **path** property and if you don't like it you can change it
+### Nesting of modules
 
-    {
-        "owner": "ownername",
-        "repository": "reponame",
-        "branch": "master",
-        "modules": [
-            { "path": "core/ErrorHandler", "name": "MyCustomModuleName" }
-        ]
-    },
-
-At the end you should have the following structure:
-
-    site
-      └ libs
-        └ fabrico
-          └ install.php
-          └ package.json
-      └ assets
-        └ css
-        └ js
-      └ controllers
-      └ views
-
-Navigate to your php file and then just execute it via the command line
-
-    php install.php
-
-Fabrico package manager will creates directory **modules** and will place everything there.
+Feel free to place a package.json file in some of your modules. The manager will parse it and will install the necessary dependencies in the module's directory. Modules, which are already installed are skipped.

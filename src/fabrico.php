@@ -42,7 +42,7 @@
             if($this->shouldContain($module, array("path"))) {
                 $this->formatModule($module);
                 if(isset($this->installedModules->{$module->path})) {
-                    $this->log($module->name." module is skipped (it is already installed)", "", $indent + 2);
+                    $this->log($module->name." module skipped (it is already installed)", "", $indent + 2);
                     return;
                 }
                 if(!file_exists($installInDir."/".$module->name)) {
@@ -180,6 +180,15 @@
             echo $colors[$color].$indentStr."> ".$str."\033[39m\n";
         }
 
+    }
+
+    // defining global variables
+    $FABRICO_ROOT = dirname(__FILE__)."/";
+    $APP_ROOT = getcwd()."/";
+
+    // running the package manager
+    if(php_sapi_name() === "cli") {
+        $manager = new FabricoPackageManager();
     }
 
 ?>

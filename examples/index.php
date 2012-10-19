@@ -1,5 +1,5 @@
 <?php
 
-    require(dirname(__FILE__)."/../src/fabrico/index.php");
+    require(dirname(__FILE__)."/../src/fabrico.php");
  
 ?>
