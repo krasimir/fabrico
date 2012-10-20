@@ -98,3 +98,46 @@ Fabrico package manager doesn't have a central registry/storage, which means tha
 ### Nesting of modules
 
 Feel free to place a package.json file in some of your modules. The manager will parse it and will install the necessary dependencies in the module's directory. Modules, which are already installed are skipped.
+
+### Flexibility 
+
+The main job of the manager is really simple - to download files from Github. This means that you can use it to grab every single directory, from every public repository. For example if you need the html5-boilerplate in your project you should add it to your *package.json* file:
+
+    [
+        {
+            "owner": "krasimir",
+            "repository": "fabrico",
+            "branch": "master",
+            "modules": [
+                { "path": "src/core/ErrorHandler" },
+                { "path": "src/core/View" },
+                { "path": "src/core/Router" }
+            ]
+        },
+        {
+            "owner": "h5bp",
+            "repository": "html5-boilerplate",
+            "branch": "master",
+            "modules": [
+                { "path": "", "name": "Boilerplate" }
+            ]
+        }
+    ]
+
+And when the manager finishes its job you will have the following file structure:
+
+    site
+      └ libs
+        └ something
+          └ modules  
+            └ Boilerplate
+            └ ErrorHandler
+            └ Router
+            └ View
+          └ install.php
+          └ package.json
+      └ assets
+        └ css
+        └ js
+      └ controllers
+      └ views

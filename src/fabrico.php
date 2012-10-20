@@ -15,15 +15,16 @@
             $this->gitRepos = (object) array();
             $this->installedModules = (object) array();
             $this->installModules($APP_ROOT.$this->packageFileName);
+            $this->reportResults();
         }
         private function installModules($packageFile, $indent = 0) {
             global $APP_ROOT;
             if(file_exists($packageFile)) {
-                $this->log("/".str_replace($APP_ROOT, "", $packageFile), "CYAN", $indent);
+                $this->log("---------------------------- Fabrico Package Manager", "GREEN");
                 $sets = json_decode(file_get_contents($packageFile));
                 foreach($sets as $set) {
                     if($this->shouldContain($set, array("owner", "repository", "modules", "branch")) && $this->shouldBeNonEmptyArray($set->modules)) {
-                        $this->log("/".$set->owner."/".$set->repository, "", $indent + 1);
+                        $this->log("/".$set->owner."/".$set->repository, "", $indent);
                         $dir = dirname($packageFile)."/".$this->modulesDir;
                         if(!file_exists($dir)) {
                             mkdir($dir, 0777);
@@ -34,7 +35,7 @@
                     }
                 }
             } else {
-                $this->warning("Directory '".dirname($packageFile)."' doesn't contain ".$this->packageFileName." file.", "", $indent + 1);
+                $this->warning("Directory '".dirname($packageFile)."' doesn't contain ".$this->packageFileName." file.", "", $indent);
             }
         }
         private function installModule($module, $set, $installInDir, $indent) {
@@ -43,40 +44,41 @@
                 $this->formatModule($module);
                 $tree = $this->readRepository($set);
                 $found = false;
-                if(isset($this->installedModules->{$module->path})) {
-                    if($this->installedModules->{$module->path}->sha === $tree->sha) {
-                        $this->log($module->name." module skipped", "BLUE", $indent + 2);
+                if(isset($this->installedModules->{$set->owner."/".$set->repository."/".$module->path})) {
+                    if($this->installedModules->{$set->owner."/".$set->repository."/".$module->path}->sha === $tree->sha) {
+                        $this->log($module->name." module skipped", "BLUE", $indent + 1);
                         return;
                     }
                 }
-                if(!file_exists($installInDir."/".$module->name)) {
-                    if(mkdir($installInDir."/".$module->name, 0777)) {
-                        $this->log($module->name." directory created", "", $indent + 2);
-                    } else {
-                        $this->error($module->name." directory is no created", "", $indent + 2);
-                    }
+                if(file_exists($installInDir."/".$module->name)) {
+                    $this->rmdir_recursive($installInDir."/".$module->name);
+                }
+                if(mkdir($installInDir."/".$module->name, 0777)) {
+                    $this->log("/".$module->name." directory created", "", $indent + 1);
+                } else {
+                    $this->error("/".$module->name." directory is no created", "", $indent + 1);
                 }
                 if(isset($tree->tree)) {
                     foreach($tree->tree as $item) {
-                        if(strpos($item->path, $module->path) === 0 && $item->path !== $module->path) {
+                        if(($module->path == "" || $module->path == "/" || strpos($item->path, $module->path) === 0) && $item->path !== $module->path) {
                             $found = true;
                             if($item->type == "blob") {
                                 $content = $this->request($this->gitEndPointRaw.$set->owner."/".$set->repository."/".$tree->sha."/".$item->path, false);
-                                $path = str_replace($module->path."/", "", $item->path);
+                                $path = $module->path != "" ? str_replace($module->path."/", "", $item->path) : $item->path;
                                 $fileToBeSaved = $installInDir."/".$module->name."/".$path;
                                 if(file_put_contents($fileToBeSaved, $content) !== false) {
-                                    $this->log($item->path." file added", "", $indent + 2);
+                                    $this->log("/".$item->path." file added", "", $indent + 1);
                                 } else {
-                                    $this->error($item->path." file is not added", "", $indent + 2);
+                                    $this->error("/".$item->path." file is not added", "", $indent + 1);
                                 }
                             } else if($item->type == "tree") {
-                                $path = str_replace($module->path."/", "", $item->path);
+                                $path = $module->path != "" ? str_replace($module->path."/", "", $item->path) : $item->path;
                                 $directoryToBeCreated = $installInDir."/".$module->name."/".$path;
                                 if(!file_exists($directoryToBeCreated)) {
                                     if(mkdir($directoryToBeCreated, 0777)) {
-                                        $this->log($path." directory created", "", $indent + 2);
+                                        $this->log("/".$path." directory created", "", $indent + 1);
                                     } else {
-                                        $this->error($path." directory is no created", "", $indent + 2);
+                                        $this->error("/".$path." directory is no created", "", $indent + 1);
                                     }
                                 }
                             }
@@ -84,19 +86,19 @@
                     }
                 }
                 if(!$found) {
-                    $this->error("'".$module->path."' was not found in repository '".$set->owner."/".$set->repository."' (branch: '".$set->branch."')", $indent + 2);
+                    $this->error("'".$module->path."' was not found in repository '".$set->owner."/".$set->repository."' (branch: '".$set->branch."')", $indent + 1);
                     rmdir($installInDir."/".$module->name);
                 } else {
                     if(isset($tree->sha)) {
                         $fileToBeSaved = $installInDir."/".$module->name."/commit.sha";
                         if(file_put_contents($fileToBeSaved, $tree->sha) !== false) {
-                            $this->log($module->name."/commit.sha file added (".$tree->sha.")", "", $indent + 2);
+                            $this->log($module->name."/commit.sha file added (".$tree->sha.")", "", $indent + 1);
                         } else {
-                            $this->error($module->name."/commit.sha file is node added", "", $indent + 2);
+                            $this->error($module->name."/commit.sha file is node added", "", $indent + 1);
                         }
-                        $this->installedModules->{$module->path} = (object) array("sha" => $tree->sha);
+                        $this->installedModules->{$set->owner."/".$set->repository."/".$module->path} = (object) array("sha" => $tree->sha);
                         if(file_exists($installInDir."/".$module->name."/package.json")) {
-                            $this->installModules($installInDir."/".$module->name."/package.json", $indent + 2);
+                            $this->installModules($installInDir."/".$module->name."/package.json", $indent + 1);
                         }
                     }
                 }
@@ -123,6 +125,7 @@
         // formatting
         private function formatModule(&$module) {
             $module->path = substr($module->path, strlen($module->path)-1, 1) == "/" ? substr($module->path, 0, strlen($module->path)-1) : $module->path;
+            $module->path = substr($module->path, 0, 1) == "/" ? substr($module->path, 1, strlen($module->path)) : $module->path;
             if(!isset($module->name)) {
                 $pathParts = explode("/", $module->path);
                 $module->name = $pathParts[count($pathParts)-1];
@@ -181,7 +184,33 @@
             for($i=0; $i<$indent; $i++) {
                 $indentStr .= "   ";
             }
-            echo $colors[$color].$indentStr."> ".$str."\033[39m\n";
+            echo $colors[$color].$indentStr.$str."\033[39m\n";
+        }
+
+        // reporting
+        private function reportResults() {
+            $this->log("---------------------------- Installed Modules", "GREEN");
+            foreach($this->installedModules as $key => $value) {
+                $this->log($key, "GREEN", 1);
+            }
+        }
+
+        // removing directory and its content
+        private function rmdir_recursive($dir) {
+            $files = scandir($dir);
+            array_shift($files);    // remove '.' from array
+            array_shift($files);    // remove '..' from array
+           
+            foreach ($files as $file) {
+                $file = $dir . '/' . $file;
+                if (is_dir($file)) {
+                    $this->rmdir_recursive($file);
+                    @rmdir($file);
+                } else {
+                    @unlink($file);
+                }
+            }
+            @rmdir($dir);
         }
 
     }
