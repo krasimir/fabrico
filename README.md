@@ -53,8 +53,8 @@ The next step is to create your *package.json*, where you will describe what mod
 - owner /required/ - the owner of the repository
 - repository /required/ - the name of the repository
 - branch /required/- the name of the branch
-- modules /optional/ - array of objects. If you miss this property all the repository will be downloaded. The name of the module will be same as the name of the repository.
-    - path /optional/ - directory path of the module in the repository. Could be also an empty string or just */*. If you miss this property all the repository will be downloaded. The name of the module will be same as the name of the repository.
+- modules /optional/ - array of objects. If you miss this property the whole repository will be downloaded. The name of the module will be same as the name of the repository.
+    - path /optional/ - directory path of the module in the repository. Could be also an empty string or just */*. If you miss this property the whole repository will be downloaded. The name of the module will be same as the name of the repository.
     - name /optional/ - by default the name of the directory container is used, but you can specify your own name. For example if the path is *core/ErrorHandler* the name of the module will be *ErrorHandler*.
 - commit /optional/ - by default the manager gets the latest commit, but you can specify a strict commit which you want to use 
 
