@@ -28,11 +28,13 @@ And you want to add a module in */site/libs/something*. There are two things tha
 Create a .php file and add the following code
 
     <?php
-        require("[path to fabrico]/fabrico.php");     
+        $APP_ROOT = dirname(__FILE__)."/";
+        require(dirname(__FILE__)."/../src/fabrico.php");
     ?>
 
-I.e. simply include fabrico.
-The next step is to create your *package.json*, where you will describe what modules you want to add. The json file should be created in the same directory.
+I.e. simply include fabrico. It is important to define *$APP_ROOT* variable. It tells to fabrico where to search *package.json* and where to put the modules.
+
+The next step is to create your *package.json*, where you will describe what modules you want to add. The json file should be created in the same directory as the php file.
 
     [
         {
@@ -51,8 +53,8 @@ The next step is to create your *package.json*, where you will describe what mod
 - owner /required/ - the owner of the repository
 - repository /required/ - the name of the repository
 - branch /required/- the name of the branch
-- modules /required/ - array of objects
-    - path /required/ - directory path of the module in the repository
+- modules /optional/ - array of objects. If you miss this property all the repository will be downloaded. The name of the module will be same as the name of the repository.
+    - path /optional/ - directory path of the module in the repository. Could be also an empty string or just */*. If you miss this property all the repository will be downloaded. The name of the module will be same as the name of the repository.
     - name /optional/ - by default the name of the directory container is used, but you can specify your own name. For example if the path is *core/ErrorHandler* the name of the module will be *ErrorHandler*.
 - commit /optional/ - by default the manager gets the latest commit, but you can specify a strict commit which you want to use 
 
@@ -69,11 +71,11 @@ At the end you should have the following structure:
       └ controllers
       └ views
 
-Navigate to your php file (*install.php* in our case) and then just execute it via the command line
+And just execute your php file via the command line
 
-    php install.php
+    php ./site/libs/something/install.php
 
-The manager will create directory *modules* and will place everything there.
+The manager will create directory *modules* in *./site/libs/something* and will place everything there.
 
 ### Versioning
 
