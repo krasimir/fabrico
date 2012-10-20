@@ -40,8 +40,7 @@
         }
         private function installModule($module, $set, $installInDir, $indent) {
             global $APP_ROOT;
-            if($this->shouldContain($module, array("path"))) {
-                $this->formatModule($module);
+            if($this->shouldContain($module, array("path")) && $this->formatModule($module)) {
                 $tree = $this->readRepository($set);
                 $found = false;
                 if(isset($this->installedModules->{$set->owner."/".$set->repository."/".$module->path})) {
@@ -127,9 +126,15 @@
             $module->path = substr($module->path, strlen($module->path)-1, 1) == "/" ? substr($module->path, 0, strlen($module->path)-1) : $module->path;
             $module->path = substr($module->path, 0, 1) == "/" ? substr($module->path, 1, strlen($module->path)) : $module->path;
             if(!isset($module->name)) {
-                $pathParts = explode("/", $module->path);
-                $module->name = $pathParts[count($pathParts)-1];
+                if($module->path === "") {
+                    $this->error("When the path of a module is an empty string or '/' you should specify 'name' property.");
+                    return false;
+                } else {
+                    $pathParts = explode("/", $module->path);
+                    $module->name = $pathParts[count($pathParts)-1];
+                }
             }
+            return true;
         }
 
         // requesting
