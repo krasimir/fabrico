@@ -1,5 +1,6 @@
 # Fabrico
-## Fabrico is very small PHP micro framework. 
+
+Fabrico is very small PHP micro framework. 
 
 It's purpose is to provide really basic functionalities for building web applications. Actually, there is only one file that you have to include - fabrico.php. It contains two classes:
 
