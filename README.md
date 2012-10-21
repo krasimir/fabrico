@@ -63,7 +63,7 @@ At the end you should have the following structure:
       └ fabrico
         └ fabrico.php
 
-Run fabrico.php via the command like and provide a path to your json file.
+Run fabrico.php via the command line and provide a path to your json file.
 
     php [path to fabrico.php] [path to .json file]
 
