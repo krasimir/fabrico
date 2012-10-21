@@ -8,7 +8,7 @@ Fabrico is a php micro framework. It's purpose is to provide really basic functi
 
 Inspired by [npm](https://npmjs.org/) and [bundler](http://gembundler.com/), the manager could download content from GitHub. It is not meant to be only for PHP based application, but for any other kind of software, which uses GitHub's repositories. You can install modules by specifying owner, repository, branch, directory and commit.
 
-*There is no any special kind of files which you have to add to define a module. Basically every directory is a separated module.*
+*There is no any special kind of file which you have to add to define a module. Basically every directory is a separated module.*
 
 ### Usage
 
@@ -22,19 +22,10 @@ Let's say that you have the following structure:
         └ js
       └ controllers
       └ views
+      └ fabrico
+        └ fabrico.php
 
-And you want to add a module in */site/libs/something*. There are two things that you should do:
-
-Create a .php file and add the following code
-
-    <?php
-        $APP_ROOT = dirname(__FILE__)."/";
-        require(dirname(__FILE__)."/../src/fabrico.php");
-    ?>
-
-I.e. simply include fabrico. It is important to define *$APP_ROOT* variable. It tells to fabrico where to search *package.json* and where to put the modules.
-
-The next step is to create your *package.json*, where you will describe what modules you want to add. The json file should be created in the same directory as the php file.
+Create a json file, which will store the information about your modules. It should contain something like that:
 
     [
         {
@@ -63,17 +54,22 @@ At the end you should have the following structure:
     site
       └ libs
         └ something
-          └ install.php
           └ package.json
       └ assets
         └ css
         └ js
       └ controllers
       └ views
+      └ fabrico
+        └ fabrico.php
 
-And just execute your php file via the command line
+At the end just run fabrico.php via the command like and provide a path to your json file.
 
-    php ./site/libs/something/install.php
+    php [path to fabrico.php] [path to .json file]
+
+In this case:
+
+    php ./site/fabrico/fabrico.php ./site/libs/something/package.json
 
 The manager will create directory *modules* in *./site/libs/something* and will place everything there.
 
@@ -143,3 +139,5 @@ And when the manager finishes its job you will have the following file structure
         └ js
       └ controllers
       └ views
+      └ fabrico
+        └ fabrico.php
