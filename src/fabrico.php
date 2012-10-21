@@ -269,89 +269,82 @@
 
     } else {
 
-        // if(!class_exists("F")) {
-        //     class F {
+        if(!class_exists("F")) {
+            class F {
 
-        //         private static $files;
-        //         private static $injected;
+                private static $root;
+                private static $files;
+                private static $injected;
 
-        //         public static function init() {
-        //             global $APP_ROOT;
-        //             if(!isset($APP_ROOT)) {
-        //                 throw new Exception("\$APP_ROOT is not defined. Please add '\$APP_ROOT = dirname(__FILE__).\"/\";' to your php file.");                    
-        //                 return;
-        //             }
-        //             if(!isset(self::$files)) {
-        //                 self::$files = self::readDir($APP_ROOT);
-        //             }
-        //             if(!isset(self::$injected)) {
-        //                 self::$injected = (object) array();
-        //             }
-        //         }
-        //         public static function load($modules = "") {
-        //             global $APP_ROOT;
-        //             if(!is_array($modules)) {
-        //                 $modules = array($modules);
-        //             }
-        //             foreach($modules as $module) {
-        //                 $files = self::$files;
-        //                 if($module !== "/" && $module !== "") {
-        //                     foreach($files as $file) {
-        //                         $fileAppPath = str_replace($APP_ROOT, "", $file);
-        //                         $add = false;
-        //                         if($fileAppPath != "/index.php" && strpos($file, $module."/index.php") !== FALSE) {
-        //                             $add = true;
-        //                         }
-        //                         if(strpos($module, ".php") !== FALSE && strpos($file, $module) !== FALSE) {
-        //                             $add = true;
-        //                         }
-        //                         if($add) {
-        //                             if(!isset(self::$injected->{self::getModuleKey($file)})) {
-        //                                 require_once($file);
-        //                                 self::$injected->{self::getModuleKey($file)} = true;
-        //                             }
-        //                             break;
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //         public static function dumpFiles() {
-        //             var_dump(self::$files);
-        //         }
-        //         public static function dumpInjected() {
-        //             var_dump(self::$injected);   
-        //         }
-        //         private static function readDir($dir) {
-        //             $files = array();
-        //             if ($handle = @opendir($dir)) {
-        //                 while (false !== ($entry = readdir($handle))) {
-        //                     if ($entry != "." && $entry != "..") {
-        //                         if(is_dir($dir."/".$entry)) {
-        //                             $files = array_merge($files, self::readDir($dir."/".$entry));
-        //                         } else if(is_file($dir."/".$entry)) {
-        //                             if(strpos($entry, ".php") !== FALSE) {
-        //                                 $files []= $dir."/".$entry;
-        //                             }
-        //                         }
-        //                     }
-        //                 }
-        //                 closedir($handle);
-        //             }
-        //             return $files;
-        //         }
-        //         private static function getModuleKey($file) {
-        //             $tmp = explode("/", $file);
-        //             if(count($tmp) > 1) {
-        //                 return $tmp[count($tmp)-2]."/".$tmp[count($tmp)-1];
-        //             } else {
-        //                 return $tmp[0];
-        //             }
-        //         }
-        //     }
-        // }
+                public static function init() {
+                    self::$root = dirname($_SERVER["SCRIPT_FILENAME"]);
+                    if(!isset(self::$files)) {
+                        self::$files = self::readDir(self::$root);
+                    }
+                    if(!isset(self::$injected)) {
+                        self::$injected = (object) array();
+                    }
+                }
+                public static function load($modules = "", $modulesPath = false) {
+                    if($modulesPath !== false) {
+                        self::modules($modulesPath);
+                    }
+                    if(!is_array($modules)) {
+                        $modules = array($modules);
+                    }
+                    foreach($modules as $module) {
+                        $files = self::$files;
+                        if($module !== "/" && $module !== "") {
+                            $inject = false;
+                            foreach($files as $file) {
+                                if(strpos($file, self::$root) !== false && strpos($file, $module."/index.php") != false) {
+                                    $inject = true;
+                                    break;
+                                }
+                            }
+                            if(!$inject) {
+                                foreach($files as $file) {
+                                    if(strpos($file, $module."/index.php") !== FALSE) {
+                                        $inject = true;
+                                        break;
+                                    }
+                                }  
+                            }
+                            if($inject) {
+                                self::$injected->{$file} = true;
+                                require($file);
+                            }
+                        }
+                    }
+                }
+                public static function getInjected() {
+                    return self::$injected;
+                }
+                public static function modules($path) {
+                    self::$root = $path;
+                }
+                private static function readDir($dir) {
+                    $files = array();
+                    if ($handle = @opendir($dir)) {
+                        while (false !== ($entry = readdir($handle))) {
+                            if ($entry != "." && $entry != "..") {
+                                if(is_dir($dir."/".$entry)) {
+                                    $files = array_merge($files, self::readDir($dir."/".$entry));
+                                } else if(is_file($dir."/".$entry)) {
+                                    if(strpos($entry, ".php") !== FALSE) {
+                                        $files []= $dir."/".$entry;
+                                    }
+                                }
+                            }
+                        }
+                        closedir($handle);
+                    }
+                    return $files;
+                }
+            }
+        }
 
-        // F::init();
+        F::init();
 
     }
 

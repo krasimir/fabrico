@@ -1,14 +1,67 @@
 # Fabrico
 
-Fabrico is a php micro framework. It's purpose is to provide really basic functionalities for building web applications. 
+Fabrico is a PHP micro framework. It's purpose is to provide really basic functionalities for building web applications. Initially, there is only one file that you have to include - fabrico.php. It contains two classes:
+
+  - loader - injects the needed modules
+  - package manager - downloads modules from GitHub
+
+## Loader
+
+The loader parses the file structure and searches for *[module name]/index.php*. There are two static methods, which you can use:
+
+  - load - accepts string or array of strings, the name of the modules. There is also a second, optional parameter which is module's path. I.e. you can specify the search path.
+  - modules - accepts string, path to the installed modules
+
+Firstly, fabrico searches for modules in a provided path. If there is no such a path, it starts to search in the global directory. Here are few examples:
+
+    // search in the global project's directory
+    F::load("Router");
+
+    // injecting of several modules
+    F::load(array("View", "Parser", "ErrorHandler"));
+
+    // start the search in the current directory and if there are no results continue with the global
+    F::load("View", dirname(__FILE__)); // useful if you have nested modules
+
+    // setting a local path for seaching. Every next call of the load method
+    // will search in the current directory first.
+    F::modules(dirname(__FILE__));
+    // or for example
+    F::modules("../../modules");
+
+A valid module is a directory, which matches the name that you pass and contains *index.php*. For example:
+
+Valid module with name *View*:
+
+    site
+      └ libs
+        └ modules
+          └ View
+            └ index.php
+            └ logic.php
+      └ assets
+        └ css
+        └ js
+
+Invalid module with name *View*:
+
+    site
+      └ libs
+        └ modules
+          └ View
+            └ main.php
+            └ logic.php
+      └ assets
+        └ css
+        └ js
 
 ***
 
-# Package manager
+## Package manager
 
 Inspired by [npm](https://npmjs.org/) and [bundler](http://gembundler.com/), the manager could download content from GitHub. It is not meant to be only for PHP based application, but for any other kind of software, which uses GitHub's repositories. You can install modules by specifying owner, repository, branch, directory and commit.
 
-*There is no any special kind of file which you have to add to define a module. Basically every directory is a separated module.*
+*There is no any special kind of file which you have to add to define a module. Basically every directory is a separated module. However if you want to use the fabrico's loader you will have to add index.php in the main module's directory.*
 
 ### Usage
 

@@ -1,5 +1,9 @@
 <?php
 
+    require(dirname(__FILE__)."/../../../src/fabrico.php");
+    F::modules(dirname(__FILE__));
+    F::load("View");
+
     class Router {
 
         private $rules;
