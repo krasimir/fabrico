@@ -50,12 +50,6 @@
                 private function installModule($module, $set, $installInDir, $indent) {
                     $tree = $this->readRepository($set);
                     $found = false;
-                    if(isset($this->installedModules->{$set->owner."/".$set->repository."/".$module->path})) {
-                        if($this->installedModules->{$set->owner."/".$set->repository."/".$module->path}->sha === $tree->sha) {
-                            $this->log($module->name." module skipped", "BLUE", $indent + 1);
-                            return;
-                        }
-                    }
                     if(file_exists($installInDir."/".$module->name)) {
                         $this->rmdir_recursive($installInDir."/".$module->name);
                     }
@@ -292,30 +286,65 @@
                     if(!is_array($modules)) {
                         $modules = array($modules);
                     }
-                    foreach($modules as $module) {
-                        $files = self::$files;
-                        if($module !== "/" && $module !== "") {
-                            $inject = false;
-                            foreach($files as $file) {
-                                if(strpos($file, self::$root) !== false && strpos($file, $module."/index.php") != false) {
-                                    $inject = true;
-                                    break;
-                                }
-                            }
-                            if(!$inject) {
-                                foreach($files as $file) {
-                                    if(strpos($file, $module."/index.php") !== FALSE) {
-                                        $inject = true;
-                                        break;
-                                    }
-                                }  
-                            }
-                            if($inject) {
-                                self::$injected->{$file} = true;
-                                require($file);
+                    $matches = (object) array();
+                    $files = self::$files;
+                    sort($files);
+                    var_dump("--------------- load ------------- ", $modules);
+
+                    // getting all matches
+                    foreach($files as $file) {
+                        foreach($modules as $module) {
+                            if(!isset($matches->{$module})) $matches->{$module} = array();
+                            if(strpos($file, $module) !== false) {
+                                array_push($matches->{$module}, $file);
                             }
                         }
+                    }   
+
+                    // injecting
+                    var_dump("Matches: ", $matches);
+                    foreach($matches as $module => $files) {
+                        if(!self::inject($module, $files, "local")) {
+                            self::inject($module, $files);
+                        }
                     }
+
+                }
+                private static function inject($module, $files, $mode = "global") {
+                    var_dump("+++ ".$module." mode=".$mode);
+
+                    // check if the file is not injected already
+                    if(isset(self::$injected->{$module}) && self::$injected->{$module}->root == self::$root) {
+                        return false;
+                    }
+
+                    // separate global of local paths
+                    $localPaths = array();
+                    $globalPaths = array();
+                    foreach($files as $file) {
+                        if(strpos($file, self::$root) !== false) {
+                            $localPaths []= $file;
+                        } else {
+                            $globalPaths []= $file;
+                        }
+                    }
+                    $files = $mode == "local" ? $localPaths : $globalPaths;
+
+                    foreach($files as $file) {
+                        $injectIt = false;
+                        if(strpos($file, $module."/index.php") !== false) {
+                            $injectIt = true;
+                        } else if(strpos($module, ".php") !== false && strpos($file, $module) !== false) {
+                            $injectIt = true;
+                        }
+                        if($injectIt) {
+                            self::$injected->{$module} = (object) array("root" => self::$root, "file" => $file);
+                            require($file);
+                            return true;
+                        }
+                    }
+                    
+                    
                 }
                 public static function getInjected() {
                     return self::$injected;
