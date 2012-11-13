@@ -54,10 +54,10 @@
                 private function installModule($module, $set, $installInDir, $indent) {
                     $tree = $this->readRepository($set);
                     $found = false;
-                    if(isset($this->installedModules->{$set->owner."/".$set->repository."/".$module->path}) && $this->installedModules->{$set->owner."/".$set->repository."/".$module->path}->sha === $tree->sha) {
-                        $this->log("/".$module->name." already installed", "", $indent + 1);
-                        return;
-                    }
+                    // if(isset($this->installedModules->{$set->owner."/".$set->repository."/".$module->path}) && $this->installedModules->{$set->owner."/".$set->repository."/".$module->path}->sha === $tree->sha) {
+                    //     $this->log("/".$module->name." already installed", "", $indent + 1);
+                    //     return;
+                    // }
                     if(file_exists($installInDir."/".$module->name)) {
                         $this->rmdir_recursive($installInDir."/".$module->name);
                     }
@@ -283,7 +283,7 @@
                 if(isset($_SERVER["SCRIPT_FILENAME"])) {
                     $this->root = dirname($_SERVER["SCRIPT_FILENAME"]);
                 }
-                if(!file_exists(__DIR__."/".FABRICO_LOADER_CACHE_FILE)) {
+                if(!file_exists(__DIR__."/".FABRICO_LOADER_CACHE_FILE) || true) {
                     $this->updateCache();
                 }
                 $this->loaded = (object) array();
@@ -297,14 +297,14 @@
                 foreach($modules as $module) {
                     if(!isset($this->loaded->{$module})) {
                         $success = true;
-                        if(!$this->findFile($module)) {
+                        if(!$this->resolvePath("modules/".$module."/index.php")) {
                             $this->updateCache();
-                            if(!$this->findFile($module)) {
+                            if(!$this->resolvePath("modules/".$module."/index.php")) {
                                 $success = false;
                             }                            
                         }
                         if(!$success) {
-                            throw new Exception ("Missing module '".$moduleFile."'.");
+                            throw new Exception ("Missing module '".$module."'.");
                         }
                     }
                 }
@@ -312,8 +312,8 @@
             }
             public function updateCache() {
                 global $FABRICO_TREE;
-                $files = $this->readDir($this->root);
-                sort($files);
+                $files = (object) array();
+                $this->readDir($this->root, &$files);
                 $FABRICO_TREE = $files;
                 $content = '<?php ';
                 $content .= 'global $FABRICO_TREE; ';
@@ -325,18 +325,16 @@
             public function loaded() {
                 return $this->loaded;
             }
-            private function readDir($dir) {
-                $obj = array();
+            private function readDir($dir, $obj) {
                 if ($handle = @opendir($dir)) {
                     while (false !== ($entry = readdir($handle))) {
                         if ($entry != "." && $entry != "..") {
                             if(is_dir($dir."/".$entry)) {
                                 $dirPath = str_replace($this->root, "", $dir."/".$entry);
-                                $obj = array_merge($obj, $this->readDir($dir."/".$entry));
+                                $this->readDir($dir."/".$entry, $obj->$entry = (object) array());
                             } else if(is_file($dir."/".$entry)) {
                                 if(strpos($entry, ".php") !== FALSE) {
-                                    $filePath = str_replace($this->root, "", $dir."/".$entry);
-                                    $obj []= $filePath;
+                                    $obj->$entry = true;
                                 }
                             }
                         }
@@ -345,19 +343,29 @@
                 }
                 return $obj;
             }
-            private function findFile($module) {
-                global $FABRICO_TREE;
-                foreach ($FABRICO_TREE as $file) {
-                    if(strpos($file, "/".$module."/index.php") !== false) {
-                        require($this->root.$file);
-                        $this->loaded->{$module} = $this->root.$file;
-                        return true;
-                    }
+            private function resolvePath($path, $tree = null) {
+                if(is_string($path)) {
+                    $path = explode("/", $path);
                 }
-                return false;
+                if($tree === null) {
+                    global $FABRICO_TREE;
+                    $tree = $FABRICO_TREE;
+                }
+                $entry = array_shift($path);
+                if(isset($tree->$entry)) {
+                    if(is_bool($tree->$entry)) {
+                        
+                        return true;
+                    } else {
+                        return $this->resolvePath($path, $tree->$entry);
+                    }
+                } else {
+                    return false;
+                }
             }
         }
 
+        global $F;
         $F = new FabricoLoader();
 
     }
