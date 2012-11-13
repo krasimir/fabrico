@@ -5,7 +5,6 @@
         "branch": "master",
         "modules": [
             { "path": "src/core/View" }
-        ],
-        "commit": "322213f4f13711d5666e02e3cce75844c74ca5b7"
+        ]
     }
 ]

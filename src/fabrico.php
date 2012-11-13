@@ -1,5 +1,8 @@
 <?php
 
+    if(!defined("FABRICO_MODULES_DIR")) define("FABRICO_MODULES_DIR", "modules");
+    if(!defined("FABRICO_LOADER_CACHE_FILE")) define("FABRICO_LOADER_CACHE_FILE", "fabrico.loader.cache.php");
+
     /*************************************************************************************/
     /*                                                                                   */
     /* Fabrico Package Manager                                                           */
@@ -17,18 +20,19 @@
                 private $installedModules;
 
                 private $packageFile = "";
-                private $modulesDir = "modules";
+                private $modulesDir = "";
 
                 public function __construct() {
+                    $this->modulesDir = FABRICO_MODULES_DIR;
                     $this->validatePackageJSON();
-                    $this->log("Fabrico Package Manager started", "GREEN");
+                    $this->log("\nFabrico Package Manager started\n", "GREEN");
                     $this->gitRepos = (object) array();
                     $this->installedModules = (object) array();
                     $this->installModules($this->packageFile);
                     $this->reportResults();
                 }
                 private function installModules($packageFile, $indent = 0) {
-                    $this->log("Working in: ".dirname($packageFile), "GREEN");
+                    $this->log("Operating in: ".dirname($packageFile), "GREEN", $indent);
                     $sets = json_decode(file_get_contents($packageFile));
                     if(!$this->validateSets($sets, $packageFile)) {
                         return;
@@ -50,6 +54,10 @@
                 private function installModule($module, $set, $installInDir, $indent) {
                     $tree = $this->readRepository($set);
                     $found = false;
+                    if(isset($this->installedModules->{$set->owner."/".$set->repository."/".$module->path}) && $this->installedModules->{$set->owner."/".$set->repository."/".$module->path}->sha === $tree->sha) {
+                        $this->log("/".$module->name." already installed", "", $indent + 1);
+                        return;
+                    }
                     if(file_exists($installInDir."/".$module->name)) {
                         $this->rmdir_recursive($installInDir."/".$module->name);
                     }
@@ -185,6 +193,18 @@
                         die();
                     }
                 }
+                private function validateSets($sets, $packageFile) {
+                    if(gettype($sets) == "array") {
+                        if(count($sets) === 0) {
+                            $this->error($packageFile." has not defined modules.");
+                            return false;
+                        }
+                    } else {
+                        $this->warning($packageFile." has not a valid format.");
+                        return false;
+                    }
+                    return true;
+                }
 
                 // output
                 private function error($str, $indent = 0) {
@@ -211,25 +231,14 @@
                     }
                     echo $colors[$color].$indentStr.$str."\033[39m\n";
                 }
-                private function validateSets($sets, $packageFile) {
-                    if(gettype($sets) == "array") {
-                        if(count($sets) === 0) {
-                            $this->error($packageFile." has not defined modules.");
-                            return false;
-                        }
-                    } else {
-                        $this->warning($packageFile." has not a valid format.");
-                        return false;
-                    }
-                    return true;
-                }
 
                 // reporting
                 private function reportResults() {
-                    $this->log("Installed Modules", "GREEN");
+                    $this->log("\nInstalled Modules", "GREEN");
                     foreach($this->installedModules as $key => $value) {
                         $this->log($key, "GREEN", 1);
                     }
+                    $this->log("\n");
                 }
 
                 // removing directory and its content
@@ -253,127 +262,103 @@
             }
         }
         
-        $manager = new FabricoPackageManager();
+        new FabricoPackageManager();
+
+    }
 
     /*************************************************************************************/
     /*                                                                                   */
-    /* Fabrico                                                                           */
+    /* Fabrico loader                                                                    */
     /*                                                                                   */
     /*************************************************************************************/
 
-    } else {
+    if(!class_exists("FabricoLoader")) {
 
-        if(!class_exists("F")) {
-            class F {
+        class FabricoLoader {
 
-                private static $root;
-                private static $files;
-                private static $injected;
+            private $root = "";
+            private $loaded;
 
-                public static function init() {
-                    self::$root = dirname($_SERVER["SCRIPT_FILENAME"]);
-                    if(!isset(self::$files)) {
-                        self::$files = self::readDir(self::$root);
-                    }
-                    if(!isset(self::$injected)) {
-                        self::$injected = (object) array();
-                    }
+            public function __construct() {
+                if(isset($_SERVER["SCRIPT_FILENAME"])) {
+                    $this->root = dirname($_SERVER["SCRIPT_FILENAME"]);
                 }
-                public static function load($modules = "", $modulesPath = false) {
-                    if($modulesPath !== false) {
-                        self::modules($modulesPath);
-                    }
-                    if(!is_array($modules)) {
-                        $modules = array($modules);
-                    }
-                    $matches = (object) array();
-                    $files = self::$files;
-                    sort($files);
-                    var_dump("--------------- load ------------- ", $modules);
-
-                    // getting all matches
-                    foreach($files as $file) {
-                        foreach($modules as $module) {
-                            if(!isset($matches->{$module})) $matches->{$module} = array();
-                            if(strpos($file, $module) !== false) {
-                                array_push($matches->{$module}, $file);
-                            }
+                if(!file_exists(__DIR__."/".FABRICO_LOADER_CACHE_FILE)) {
+                    $this->updateCache();
+                }
+                $this->loaded = (object) array();
+                require(__DIR__."/".FABRICO_LOADER_CACHE_FILE);
+            }            
+            public function loadModule() {
+                if(func_num_args() === 0) {
+                    throw new Exception ("Invalid arguments of 'loadModule' method.");
+                }
+                $modules = func_get_args();
+                foreach($modules as $module) {
+                    if(!isset($this->loaded->{$module})) {
+                        $success = true;
+                        if(!$this->findFile($module)) {
+                            $this->updateCache();
+                            if(!$this->findFile($module)) {
+                                $success = false;
+                            }                            
                         }
-                    }   
-
-                    // injecting
-                    var_dump("Matches: ", $matches);
-                    foreach($matches as $module => $files) {
-                        if(!self::inject($module, $files, "local")) {
-                            self::inject($module, $files);
+                        if(!$success) {
+                            throw new Exception ("Missing module '".$moduleFile."'.");
                         }
                     }
-
                 }
-                private static function inject($module, $files, $mode = "global") {
-                    var_dump("+++ ".$module." mode=".$mode);
-
-                    // check if the file is not injected already
-                    if(isset(self::$injected->{$module}) && self::$injected->{$module}->root == self::$root) {
-                        return false;
-                    }
-
-                    // separate global of local paths
-                    $localPaths = array();
-                    $globalPaths = array();
-                    foreach($files as $file) {
-                        if(strpos($file, self::$root) !== false) {
-                            $localPaths []= $file;
-                        } else {
-                            $globalPaths []= $file;
-                        }
-                    }
-                    $files = $mode == "local" ? $localPaths : $globalPaths;
-
-                    foreach($files as $file) {
-                        $injectIt = false;
-                        if(strpos($file, $module."/index.php") !== false) {
-                            $injectIt = true;
-                        } else if(strpos($module, ".php") !== false && strpos($file, $module) !== false) {
-                            $injectIt = true;
-                        }
-                        if($injectIt) {
-                            self::$injected->{$module} = (object) array("root" => self::$root, "file" => $file);
-                            require($file);
-                            return true;
-                        }
-                    }
-                    
-                    
-                }
-                public static function getInjected() {
-                    return self::$injected;
-                }
-                public static function modules($path) {
-                    self::$root = $path;
-                }
-                private static function readDir($dir) {
-                    $files = array();
-                    if ($handle = @opendir($dir)) {
-                        while (false !== ($entry = readdir($handle))) {
-                            if ($entry != "." && $entry != "..") {
-                                if(is_dir($dir."/".$entry)) {
-                                    $files = array_merge($files, self::readDir($dir."/".$entry));
-                                } else if(is_file($dir."/".$entry)) {
-                                    if(strpos($entry, ".php") !== FALSE) {
-                                        $files []= $dir."/".$entry;
-                                    }
+                return $this;
+            }
+            public function updateCache() {
+                global $FABRICO_TREE;
+                $files = $this->readDir($this->root);
+                sort($files);
+                $FABRICO_TREE = $files;
+                $content = '<?php ';
+                $content .= 'global $FABRICO_TREE; ';
+                $content .= '$FABRICO_TREE = json_decode(\''.json_encode($files).'\');';
+                $content .= ' ?>';
+                file_put_contents(__DIR__."/".FABRICO_LOADER_CACHE_FILE, $content);
+                chmod(__DIR__."/".FABRICO_LOADER_CACHE_FILE, 0777);
+            }
+            public function loaded() {
+                return $this->loaded;
+            }
+            private function readDir($dir) {
+                $obj = array();
+                if ($handle = @opendir($dir)) {
+                    while (false !== ($entry = readdir($handle))) {
+                        if ($entry != "." && $entry != "..") {
+                            if(is_dir($dir."/".$entry)) {
+                                $dirPath = str_replace($this->root, "", $dir."/".$entry);
+                                $obj = array_merge($obj, $this->readDir($dir."/".$entry));
+                            } else if(is_file($dir."/".$entry)) {
+                                if(strpos($entry, ".php") !== FALSE) {
+                                    $filePath = str_replace($this->root, "", $dir."/".$entry);
+                                    $obj []= $filePath;
                                 }
                             }
                         }
-                        closedir($handle);
                     }
-                    return $files;
+                    closedir($handle);
                 }
+                return $obj;
+            }
+            private function findFile($module) {
+                global $FABRICO_TREE;
+                foreach ($FABRICO_TREE as $file) {
+                    if(strpos($file, "/".$module."/index.php") !== false) {
+                        require($this->root.$file);
+                        $this->loaded->{$module} = $this->root.$file;
+                        return true;
+                    }
+                }
+                return false;
             }
         }
 
-        F::init();
+        $F = new FabricoLoader();
 
     }
 

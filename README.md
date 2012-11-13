@@ -4,10 +4,12 @@ Fabrico is very small PHP micro framework.
 
 It's purpose is to provide really basic functionalities for building web applications. Actually, there is only one file that you have to include - fabrico.php. It contains two classes:
 
-  - loader - injects the needed modules
+  - loader - includes files
   - package manager - downloads modules from GitHub
 
 ## Loader
+
+Once you include *fabrico.php* into your page, the loader parses the file structure of your project and creates a cache file. 
 
 The loader parses the file structure and searches for *[module name]/index.php*. There are two static methods, which you can use:
 
