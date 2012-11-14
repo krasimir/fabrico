@@ -24,17 +24,17 @@ Fabrico searches for files based on the current directory. For example if you ha
           └ View
             └ index.php
             └ logic.php
-          └ start.php
         └ custom
           └ config.php
           └ logic.php
+        └ start.php
 
 And if you type the following code in **start.php**
 
     global $F;
     $F->loadModule("View");
 
-Fabrico will start to search for the module **View** in /site/libs/modules/ and all the inner folders.
+Fabrico will start to search for the module **View** in /site/libs/ and all the inner folders.
 
 Here are fiew examples:
 
@@ -50,7 +50,7 @@ Here are fiew examples:
     // requiring all the php files in a folder and its subfolders
     F::loadModule("libs/*");
 
-A valid module is a directory, which matches the name that you pass and contains *index.php*. For example:
+A valid module is a directory, which matches the name that you pass and contains *index.php*. All the modules should be placed in a subfolder **modules**. For example:
 
 Valid module with name *View*:
 
