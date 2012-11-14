@@ -4,34 +4,51 @@ Fabrico is very small PHP micro framework.
 
 It's purpose is to provide really basic functionalities for building web applications. Actually, there is only one file that you have to include - fabrico.php. It contains two classes:
 
-  - loader - includes files
+  - auto loader - includes files
   - package manager - downloads modules from GitHub
 
 ## Loader
 
 Once you include *fabrico.php* into your page, the loader parses the file structure of your project and creates a cache file. 
 
-The loader parses the file structure and searches for *[module name]/index.php*. There are two static methods, which you can use:
+The loader parses the file structure and searches for php files. There are two static methods, which you can use:
 
-  - load - accepts string or array of strings, the name of the modules. There is also a second, optional parameter which is module's path. I.e. you can specify the search path.
-  - modules - accepts string, path to the installed modules
+  - loadModule - accepts strings, names of the modules.
+  - loadResource - accepts strings, path to files or group of files
 
-Firstly, fabrico searches for modules in a provided path. If there is no such a path, it starts to search in the global directory. Here are few examples:
+Fabrico searches for files based on the current directory. For example if you have the following file structure:
 
-    // search in the global project's directory
-    F::load("Router");
+    site
+      └ libs
+        └ modules
+          └ View
+            └ index.php
+            └ logic.php
+          └ start.php
+        └ custom
+          └ config.php
+          └ logic.php
 
-    // injecting of several modules
-    F::load(array("View", "Parser", "ErrorHandler"));
+And if you type the following code in **start.php**
 
-    // start the search in the current directory and if there are no results continue with the global
-    F::load("View", dirname(__FILE__)); // useful if you have nested modules
+    global $F;
+    $F->loadModule("View");
 
-    // setting a local path for seaching. Every next call of the load method
-    // will search in the current directory first.
-    F::modules(dirname(__FILE__));
-    // or for example
-    F::modules("../../modules");
+Fabrico will start to search for the module **View** in /site/libs/modules/ and all the inner folders.
+
+Here are fiew examples:
+
+    // requiring Router
+    F::loadModule("Router");
+
+    // requiring more then one module
+    F::loadModule("Router", "View", "ErrorHandler", "MyCustomModule");
+
+    // requiring specific php file
+    F::loadModule("libs/configs.php", "external/emailsender.php");
+
+    // requiring all the php files in a folder and its subfolders
+    F::loadModule("libs/*");
 
 A valid module is a directory, which matches the name that you pass and contains *index.php*. For example:
 
