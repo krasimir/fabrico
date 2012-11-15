@@ -1,0 +1,1 @@
+<?php global $FABRICO_TREE; $FABRICO_TREE = json_decode('{"files":{"index.php":"file","modules":{"Bootstrap":{},"jquery":{}},"tpl":{}}}'); ?>

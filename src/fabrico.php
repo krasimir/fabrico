@@ -22,6 +22,10 @@
                 private $packageFile = "";
                 private $modulesDir = "";
 
+                private $gitHubUsername = false;
+                private $gitHubPassword = false;
+                private $gitHubRateLimit = false;
+
                 public function __construct() {
                     $this->modulesDir = FABRICO_MODULES_DIR;
                     $this->validatePackageJSON();
@@ -38,20 +42,37 @@
                         return;
                     }
                     foreach($sets as $set) {
+                        $dir = dirname($packageFile)."/".$this->modulesDir;
+                        if(!file_exists($dir)) {
+                            mkdir($dir, 0777);
+                        }
                         if($this->shouldContain($set, array("owner", "repository", "branch"))) {
                             $this->log("repository: /".$set->owner."/".$set->repository, "BLUE", $indent);
-                            $dir = dirname($packageFile)."/".$this->modulesDir;
-                            if(!file_exists($dir)) {
-                                mkdir($dir, 0777);
-                            }
                             $this->formatModules($set);
                             foreach($set->modules as $module) {
                                 $this->installModule($module, $set, $dir, $indent);
                             }
+                        } else if($this->shouldContain($set, array("path", "name"))) {
+                            $this->log("file: ".$set->path, "BLUE", $indent);
+                            $this->installFile($set, $dir, $indent);
                         }
                     }
                 }
                 private function installModule($module, $set, $installInDir, $indent) {
+
+                    // solving github rate limit problem
+                    if($this->gitHubRateLimit === false) {
+                        $gitHubRateLimit = $this->request($this->gitEndPoint."rate_limit");
+                    }
+                    if($gitHubRateLimit->rate->remaining <= 5) {
+                        $this->log("The GitHub rate limit is reached for you IP. Github credentials are needed:\nusername:");
+                        $handle = fopen ("php://stdin","r");
+                        $this->gitHubUsername = trim(fgets($handle));
+                        $this->log("password:");
+                        $handle = fopen ("php://stdin","r");
+                        $this->gitHubPassword = trim(fgets($handle));
+                    }
+
                     $tree = $this->readRepository($set);
                     $found = false;
                     // commenting the check for already installed module
@@ -112,6 +133,36 @@
                         }
                     }
                 }
+                private function installFile($set, $installInDir, $indent) {
+                    if(file_exists($installInDir."/".$set->name)) {
+                        $this->rmdir_recursive($installInDir."/".$set->name);
+                    }
+                    if(mkdir($installInDir."/".$set->name, 0777)) {
+                        $this->log("/".$set->name, "", $indent + 1);
+                    } else {
+                        $this->error("/".$set->name." directory is no created", "", $indent + 1);
+                    }
+                    $content = $this->request($set->path, false);
+                    $fileToBeSaved = $installInDir."/".$set->name."/".basename($set->path);
+                    if(file_put_contents($fileToBeSaved, $content) !== false) {
+                        if(strtolower(pathinfo($fileToBeSaved, PATHINFO_EXTENSION)) == "zip") {
+                            $zip = new ZipArchive;
+                            var_dump($fileToBeSaved, file_exists($fileToBeSaved));
+                            $res = $zip->open($fileToBeSaved);
+                            var_dump($res);
+                            if($res === TRUE) {
+                                $zip->extractTo($installInDir."/".$set->name);
+                                $zip->close();
+                                @unlink($fileToBeSaved);
+                            }
+                        }
+                        
+                        $this->installedModules->{$set->name} = (object) array("path" => $set->path);
+                        $this->log("/".$set->path, "", $indent + 2);
+                    } else {
+                        $this->error("/".$set->path." file is not added", "", $indent + 2);
+                    }
+                }
                 private function readRepository(&$set) {
                     $repoPath = $set->owner."/".$set->repository."/branches/".$set->branch;
                     if(isset($this->gitRepos->{$repoPath})) {
@@ -155,9 +206,13 @@
                 // requesting
                 private function request($url, $json = true) {
                     $ch = curl_init();
-                    curl_setopt($ch,CURLOPT_URL,$url);
+                    curl_setopt($ch,CURLOPT_URL, $url);
                     curl_setopt($ch,CURLOPT_RETURNTRANSFER,1); 
                     curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,0);
+                    if($this->gitHubUsername !== false && $this->gitHubPassword !== false) {
+                        curl_setopt($ch, CURLOPT_USERPWD, $this->gitHubUsername.":".$this->gitHubPassword);
+                        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                    }
                     $content = curl_exec($ch);
                     curl_close($ch);
                     if($json) {
@@ -168,10 +223,12 @@
                 }
 
                 // validation
-                private function shouldContain($ob, $properties, $message = "Missing property '{prop}'!") {
+                private function shouldContain($ob, $properties, $displayMessage = false) {
                     foreach($properties as $prop) {
                         if(!isset($ob->{$prop})) {
-                            $this->error(str_replace("{prop}", $prop, $message));
+                            if($displayMessage) {
+                                $this->error(str_replace("{prop}", $prop, "Missing property '{prop}'!"));
+                            }
                             return false;
                         }
                     }
@@ -273,7 +330,7 @@
     /*                                                                                   */
     /*************************************************************************************/
 
-    if(!class_exists("FabricoLoader")) {
+    if(!class_exists("FabricoLoader") && php_sapi_name() != "cli") {
 
         class FabricoLoader {
 
