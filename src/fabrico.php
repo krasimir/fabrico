@@ -147,9 +147,7 @@
                     if(file_put_contents($fileToBeSaved, $content) !== false) {
                         if(strtolower(pathinfo($fileToBeSaved, PATHINFO_EXTENSION)) == "zip") {
                             $zip = new ZipArchive;
-                            var_dump($fileToBeSaved, file_exists($fileToBeSaved));
                             $res = $zip->open($fileToBeSaved);
-                            var_dump($res);
                             if($res === TRUE) {
                                 $zip->extractTo($installInDir."/".$set->name);
                                 $zip->close();

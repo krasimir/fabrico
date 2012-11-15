@@ -80,7 +80,7 @@ Invalid module with name *View*:
 
 ## Package manager
 
-Inspired by [npm](https://npmjs.org/) and [bundler](http://gembundler.com/), the manager could download content from GitHub. It is not meant to be only for PHP based application, but for any other kind of software, which uses GitHub's repositories. You can install modules by specifying owner, repository, branch, directory and commit.
+Inspired by [npm](https://npmjs.org/) and [bundler](http://gembundler.com/), the manager could download content from any source, including GitHub. It is not meant to be only for PHP based application, but for any other kind of software. You can install modules by specifying owner, repository, branch, directory and commit. You can also use the manager to download just a file or a zip archive.
 
 *There is no any special kind of file which you have to add to define a module. Basically every directory is a separated module. However if you want to use the fabrico's loader you will have to add index.php in the main module's directory.*
 
@@ -115,6 +115,7 @@ Create a json file, which will store the information about your modules. It shou
         ...
     ]
 
+#### Fetching content from GitHub
 - owner /required/ - the owner of the repository
 - repository /required/ - the name of the repository
 - branch /required/- the name of the branch
@@ -122,6 +123,10 @@ Create a json file, which will store the information about your modules. It shou
     - path /optional/ - directory path of the module in the repository. Could be also an empty string or just */*. If you miss this property the whole repository will be downloaded. The name of the module will be same as the name of the repository.
     - name /optional/ - by default the name of the directory container is used, but you can specify your own name. For example if the path is *core/ErrorHandler* the name of the module will be *ErrorHandler*.
 - commit /optional/ - by default the manager gets the latest commit, but you can specify a strict commit which you want to use 
+
+#### Fetching content from other source
+- path /required/ - the url of the file or zip archive
+- name /required/ - the name of the folder, which will be created in /modules directory
 
 At the end you should have the following structure:
 
@@ -173,7 +178,7 @@ Feel free to place a package.json file in some of your modules. The manager will
 
 ### Flexibility 
 
-The main job of the manager is really simple - to download files from Github. This means that you can use it to grab every single directory, from every public repository. For example if you need the html5-boilerplate in your project you should add it to your *package.json* file:
+The main job of the manager is really simple - to download files. This means that you can use it to grab every single directory, from every public repository or just a simple file which is availble via GET request. For example if you need the html5-boilerplate, jquery and bootstrap in your project you should add them to your *package.json* file:
 
     [
         {
@@ -193,6 +198,12 @@ The main job of the manager is really simple - to download files from Github. Th
             "modules": [
                 { "path": "", "name": "Boilerplate" }
             ]
+        },
+        {
+            "path": "http://code.jquery.com/jquery-1.8.2.min.js", "name": "jQuery"
+        },
+        {
+            "path": "http://twitter.github.com/bootstrap/assets/bootstrap.zip", "name": "Bootstrap"
         }
     ]
 
@@ -203,6 +214,8 @@ And when the manager finishes its job you will have the following file structure
         └ something
           └ modules  
             └ Boilerplate
+            └ jQuery
+            └ Bootstrap
             └ ErrorHandler
             └ Router
             └ View

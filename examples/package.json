@@ -1,11 +1,5 @@
 [
     {
-        "path": "http://code.jquery.com/jquery-1.8.2.min.js", "name": "jquery"
-    },
-    {
-        "path": "https://github.com/twitter/bootstrap/archive/master.zip", "name": "Bootstrap"
-    },
-    {
         "owner": "krasimir",
         "repository": "fabrico",
         "branch": "master",
@@ -14,5 +8,11 @@
             { "path": "src/core/View" },
             { "path": "src/core/Router" }
         ]
-    }   
+    },
+    {
+        "path": "http://code.jquery.com/jquery-1.8.2.min.js", "name": "jquery"
+    },
+    {
+        "path": "http://twitter.github.com/bootstrap/assets/bootstrap.zip", "name": "Bootstrap"
+    }
 ]
