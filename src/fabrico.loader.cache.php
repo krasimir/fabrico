@@ -1,1 +1,1 @@
-<?php global $FABRICO_TREE; $FABRICO_TREE = json_decode('{"files":{"index.php":"file","modules":{"Bootstrap":{},"jquery":{}},"tpl":{}}}'); ?>
+<?php global $FABRICO_TREE; $FABRICO_TREE = json_decode('{"files":{"index.php":"file","modules":{"Bootstrap":{"bootstrap":{"css":{},"img":{},"js":{}}},"ErrorHandler":{"index.php":"file"},"Router":{"index.php":"file","modules":{"View":{"index.php":"file"}}},"View":{"index.php":"file"},"jquery":{}},"tpl":{}}}'); ?>

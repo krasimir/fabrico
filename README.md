@@ -48,7 +48,7 @@ Here are fiew examples:
     F::loadResource("libs/configs.php", "external/emailsender.php");
 
     // requiring all the php files in a folder and its subfolders
-    F::loadResource("libs/*"); 
+    F::loadResource("libs/*");
 
 A valid module is a directory, which matches the name that you pass and contains *index.php*. All the modules should be placed in a subfolder **modules**. For example:
 

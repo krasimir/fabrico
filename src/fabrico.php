@@ -339,7 +339,7 @@
             public function __construct() {
                 $this->loaded = (object) array();
                 $this->rootPath = $this->getPath(2);
-                if(!file_exists(__DIR__."/".FABRICO_LOADER_CACHE_FILE) || true) {
+                if(!file_exists(__DIR__."/".FABRICO_LOADER_CACHE_FILE)) {
                     $this->updateCache();
                 }
                 require(__DIR__."/".FABRICO_LOADER_CACHE_FILE);

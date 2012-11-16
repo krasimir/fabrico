@@ -2,9 +2,7 @@
 
     require(dirname(__FILE__)."/../src/fabrico.php");
 
-    $F->loadModule("Router");
+    $F->loadModule("ErrorHandler", "Router", "View");
     var_dump($F->loaded());
-    
-    // new Router();
 
 ?>
