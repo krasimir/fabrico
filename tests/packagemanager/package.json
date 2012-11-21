@@ -14,5 +14,13 @@
     },
     {
         "path": "http://twitter.github.com/bootstrap/assets/bootstrap.zip", "name": "Bootstrap"
+    },
+    {
+        "owner": "krasimir",
+        "repository": "fabrico",
+        "branch": "master",
+        "modules": [
+            { "path": "tests/packagemanager/TestWidget" }
+        ]
     }
 ]
