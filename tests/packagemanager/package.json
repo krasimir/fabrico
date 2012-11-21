@@ -20,7 +20,7 @@
         "repository": "fabrico",
         "branch": "master",
         "modules": [
-            { "path": "tests/packagemanager/TestWidget" }
+            { "path": "tests/packagemanager/custom/TestWidget" }
         ]
     }
 ]
