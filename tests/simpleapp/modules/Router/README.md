@@ -1,0 +1,1 @@
+Copy the .htaccess file in your root directory.
