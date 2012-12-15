@@ -80,7 +80,7 @@
                     //     $this->log("/".$module->name." already installed", "", $indent + 1);
                     //     return;
                     // }
-                    if(isset($module->ignoreIfAvailable) && $module->ignoreIfAvailable) {
+                    if(isset($module->ignoreIfAvailable) && $module->ignoreIfAvailable && file_exists($installInDir."/".$module->name)) {
                         $this->log("/".$module->name." already installed", "", $indent + 1);
                         return;
                     }
@@ -131,8 +131,15 @@
                                 $this->error("/".$module->name."/commit.sha file is node added", "", $indent + 2);
                             }
                             $this->installedModules->{$set->owner."/".$set->repository."/".$module->path} = (object) array("sha" => $tree->sha);
-                            if(file_exists($installInDir."/".$module->name."/package.json")) {
-                                $this->installModules($installInDir."/".$module->name."/package.json", $indent + 1);
+                            // checking for .json files
+                            if ($handle = @opendir($installInDir."/".$module->name)) {
+                                $entries = array();
+                                while (false !== ($entry = readdir($handle))) {
+                                    if(is_file($installInDir."/".$module->name."/".$entry) && strpos($entry, ".json") !== FALSE) {
+                                        $this->installModules($installInDir."/".$module->name."/".$entry, $indent + 1);
+                                    }
+                                }
+                                closedir($handle);
                             }
                         }
                     }
