@@ -122,18 +122,20 @@ Create a json file, which will store the information about your modules. It shou
 - modules /optional/ - array of objects. If you miss this property the whole repository will be downloaded. The name of the module will be same as the name of the repository.
     - path /optional/ - directory path of the module in the repository. Could be also an empty string or just */*. If you miss this property the whole repository will be downloaded. The name of the module will be same as the name of the repository.
     - name /optional/ - by default the name of the directory container is used, but you can specify your own name. For example if the path is *core/ErrorHandler* the name of the module will be *ErrorHandler*.
+    - ignoreIfAvailable /optional/ - true or false. If it is true then the module will be installed only if it's missing
 - commit /optional/ - by default the manager gets the latest commit, but you can specify a strict commit which you want to use 
 
 #### Fetching content from other source
 - path /required/ - the url of the file or zip archive
 - name /required/ - the name of the folder, which will be created in /modules directory
+- ignoreIfAvailable /optional/ - true or false. If it is true then the module will be installed only if it's missing
 
 At the end you should have the following structure:
 
     site
       └ libs
         └ something
-          └ package.json
+          └ fabrico.json
       └ assets
         └ css
         └ js
@@ -148,13 +150,13 @@ Run fabrico.php via the command line and provide a path to your json file.
 
 In this case:
 
-    php ./site/fabrico/fabrico.php ./site/libs/something/package.json
+    php ./site/fabrico/fabrico.php ./site/libs/something/fabrico.json
 
 The manager will create directory *modules* in *./site/libs/something* and will place everything there.
 
 ### Versioning
 
-Fabrico package manager doesn't have a central registry/storage, which means that it can't use version numbers during the downloading of the modules. The good thing is that it searches modules in GitHub, where every commit has its own hash. So, basically if you know the owner, repository, branch and the *sha* of a specific commit you can stick to specific version of the files. Every downloaded module has commit.sha file generated in its folder, which contains the *sha* of the fetched commit. You can grab that value and add it to your package.json file like:
+Fabrico package manager doesn't have a central registry/storage, which means that it can't use version numbers during the downloading of the modules. The good thing is that it searches modules in GitHub, where every commit has its own hash. So, basically if you know the owner, repository, branch and the *sha* of a specific commit you can stick to specific version of the files. Every downloaded module has commit.sha file generated in its folder, which contains the *sha* of the fetched commit. You can grab that value and add it to your fabrico.json file like:
 
     [
         {
@@ -174,11 +176,11 @@ Fabrico package manager doesn't have a central registry/storage, which means tha
 
 ### Nesting of modules
 
-Feel free to place a package.json file in some of your modules. The manager will parse it and will install the necessary dependencies in the module's directory. Modules, which are already installed are skipped.
+Feel free to place a fabrico.json file in some of your modules. The manager will parse it and will install the necessary dependencies in the module's directory. Modules, which are already installed are skipped.
 
 ### Flexibility 
 
-The main job of the manager is really simple - to download files. This means that you can use it to grab every single directory, from every public repository or just a simple file which is availble via GET request. For example if you need the html5-boilerplate, jquery and bootstrap in your project you should add them to your *package.json* file:
+The main job of the manager is really simple - to download files. This means that you can use it to grab every single directory, from every public repository or just a simple file which is availble via GET request. For example if you need the html5-boilerplate, jquery and bootstrap in your project you should add them to your *fabrico.json* file:
 
     [
         {
@@ -220,7 +222,7 @@ And when the manager finishes its job you will have the following file structure
             └ Router
             └ View
           └ install.php
-          └ package.json
+          └ fabrico.json
       └ assets
         └ css
         └ js

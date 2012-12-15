@@ -80,6 +80,10 @@
                     //     $this->log("/".$module->name." already installed", "", $indent + 1);
                     //     return;
                     // }
+                    if(isset($module->ignoreIfAvailable) && $module->ignoreIfAvailable) {
+                        $this->log("/".$module->name." already installed", "", $indent + 1);
+                        return;
+                    }
                     if(file_exists($installInDir."/".$module->name)) {
                         $this->rmdir_recursive($installInDir."/".$module->name);
                     }
@@ -134,6 +138,10 @@
                     }
                 }
                 private function installFile($set, $installInDir, $indent) {
+                    if(isset($set->ignoreIfAvailable) && $set->ignoreIfAvailable) {
+                        $this->log("/".$set->name." already installed", "", $indent + 1);
+                        return;
+                    }
                     if(file_exists($installInDir."/".$set->name)) {
                         $this->rmdir_recursive($installInDir."/".$set->name);
                     }

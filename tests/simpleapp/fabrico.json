@@ -1,0 +1,26 @@
+[
+    {
+        "owner": "krasimir",
+        "repository": "fabrico",
+        "branch": "master",
+        "modules": [
+            { "path": "src/core/ErrorHandler", "ignoreIfAvailable": true },
+            { "path": "src/core/View", "ignoreIfAvailable": true },
+            { "path": "src/core/Router", "ignoreIfAvailable": true }
+        ]
+    },
+    {
+        "path": "http://code.jquery.com/jquery-1.8.2.min.js", "name": "jquery", "ignoreIfAvailable": true
+    },
+    {
+        "path": "http://twitter.github.com/bootstrap/assets/bootstrap.zip", "name": "Bootstrap", "ignoreIfAvailable": true
+    },
+    {
+        "owner": "krasimir",
+        "repository": "fabrico",
+        "branch": "master",
+        "modules": [
+            { "path": "tests/simpleapp/custom/TestWidget", "ignoreIfAvailable": true }
+        ]        
+    }
+]
