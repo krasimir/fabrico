@@ -29,7 +29,12 @@
             { 
                 "path": "tests/simpleapp/custom/TestWidget",
                 "actionsAfter": [
-                    {"type": "replace", "file": "config.php", "searchFor": "DB_HOST_VALUE", "replaceWith": "mydbhost.com"}
+                    {"type": "replace", "file": "config.php", "searchFor": "DB_HOST_VALUE", "replaceWith": "mydbhost.com"},
+                    {"type": "copy", "path": "config.php", "to": "config_backup"},
+                    {"type": "copy", "path": "modules.json", "to": "config_backup"},
+                    {"type": "copy", "path": "modules", "to": "config_backup"},
+                    {"type": "delete", "path": "config_backup/modules.json"},
+                    {"type": "delete", "path": "config_backup/modules"}
                 ]
             }
         ]        

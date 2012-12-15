@@ -374,10 +374,37 @@
                                             $fileContent = file_get_contents($dir."/".$action->file);
                                             $fileContent = str_replace($action->searchFor, $action->replaceWith, $fileContent);
                                             file_put_contents($dir."/".$action->file, $fileContent);
-                                            $this->log("file ".$dir."/".$action->file." updated", "MAGENTA", $indent+3);
+                                            $this->log("> file ".$dir."/".$action->file." updated", "MAGENTA", $indent+3);
                                         }
                                     break;
-                                    
+                                    case "copy": 
+                                        if($this->shouldContain($action, array("path", "to"), true, $indent+3)) {
+                                            if(!file_exists($dir."/".$action->to)) {
+                                                mkdir($dir."/".$action->to, 0777);
+                                            }
+                                            $output = array();
+                                            exec("cp -r ".$dir."/".$action->path." ".$dir."/".$action->to);
+                                            $this->log("> coping ".$action->path." to ".$action->to, "MAGENTA", $indent+3); 
+                                            foreach ($output as $line) {
+                                                $this->log("| ".$line, "MAGENTA", $indent+3); 
+                                            }
+                                        }
+                                    break;  
+                                    case "delete":
+                                        if($this->shouldContain($action, array("path"), true, $indent+3)) {
+                                            if(file_exists($dir."/".$action->path)) {
+                                                if(is_file($dir."/".$action->path)) {
+                                                    if(unlink($dir."/".$action->path)) {
+                                                        $this->log("> ".$action->path." deleted", "MAGENTA", $indent+3); 
+                                                    }
+                                                } else if(is_dir($dir."/".$action->path)) {
+                                                    $this->rmdir_recursive($dir."/".$action->path);
+                                                    $this->log("> ".$action->path." deleted", "MAGENTA", $indent+3); 
+                                                }
+                                                
+                                            }
+                                        }
+                                    break;                                
                                     default:
                                         $this->error("Wrong action type '".$action->type."'", $indent+3);
                                     break;

@@ -123,12 +123,26 @@ Create a json file, which will store the information about your modules. It shou
     - path /optional/ - directory path of the module in the repository. Could be also an empty string or just */*. If you miss this property the whole repository will be downloaded. The name of the module will be same as the name of the repository.
     - name /optional/ - by default the name of the directory container is used, but you can specify your own name. For example if the path is *core/ErrorHandler* the name of the module will be *ErrorHandler*.
     - ignoreIfAvailable /optional/ - true or false. If it is true then the module will be installed only if it's missing
+    - actionsAfter /optional/ - check *Actions after the download* section below
 - commit /optional/ - by default the manager gets the latest commit, but you can specify a strict commit which you want to use 
 
 #### Fetching content from other source
 - path /required/ - the url of the file or zip archive
 - name /required/ - the name of the folder, which will be created in /modules directory
 - ignoreIfAvailable /optional/ - true or false. If it is true then the module will be installed only if it's missing
+- actionsAfter /optional/ - check *Actions after the download* section below
+
+##### Actions after the download
+Fabrico gives you the ability to performe some actions after the module is downloaded. *actionsAfter* parameter could be an object or array of objects with the following format:
+
+    "actionsAfter": [
+        {"type": "replace", "file": "[file for the manipulation]", "searchFor": "[string]", "replaceWith": "[string]"},
+        {"type": "copy", "path": "[file or directory]", "to": "[directory]"},
+        {"type": "delete", "path": "[file or directory]"}
+    ]
+
+The code above illustrates the the three available types of objects. You can basically replace a string in a specific file, copy/delete files or directories.
+
 
 At the end you should have the following structure:
 
