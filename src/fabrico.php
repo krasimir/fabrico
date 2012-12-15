@@ -89,8 +89,10 @@
 
                     if($module->ignoreIfAvailable && file_exists($installInDir."/".$module->name)) {
                         $this->log("/".$module->name." already installed", "", $indent + 1);
+                        $this->actionsAfter($module, $installInDir."/".$module->name, $indent);
                         return;
                     }
+
                     if(file_exists($installInDir."/".$module->name)) {
                         $this->rmdir_recursive($installInDir."/".$module->name);
                     }
@@ -130,6 +132,7 @@
                         $this->error("'".$module->path."' was not found in repository '".$set->owner."/".$set->repository."' (branch: '".$set->branch."')", $indent + 1);
                         rmdir($installInDir."/".$module->name);
                     } else {
+                        $this->actionsAfter($module, $installInDir."/".$module->name, $indent);
                         if(isset($tree->sha)) {
                             $fileToBeSaved = $installInDir."/".$module->name."/commit.sha";
                             if(file_put_contents($fileToBeSaved, $tree->sha) !== false) {
@@ -160,6 +163,7 @@
 
                     if($set->ignoreIfAvailable && file_exists($installInDir."/".$set->name)) {
                         $this->log("/".$set->name." already installed", "", $indent + 1);
+                        $this->actionsAfter($set, $installInDir."/".$set->name, $indent);
                         return;
                     }
 
@@ -186,6 +190,7 @@
                         
                         $this->installedModules->{$set->name} = (object) array("path" => $set->path);
                         $this->log("/".$set->path, "", $indent + 2);
+                        $this->actionsAfter($set, $installInDir."/".$set->name, $indent);
                     } else {
                         $this->error("/".$set->path." file is not added", "", $indent + 2);
                     }
@@ -250,11 +255,11 @@
                 }
 
                 // validation
-                private function shouldContain($ob, $properties, $displayMessage = false) {
+                private function shouldContain($ob, $properties, $displayMessage = false, $indent = 1) {
                     foreach($properties as $prop) {
                         if(!isset($ob->{$prop})) {
                             if($displayMessage) {
-                                $this->error(str_replace("{prop}", $prop, "Missing property '{prop}'!"));
+                                $this->error(str_replace("{prop}", $prop, "Missing property '{prop}'!"), $indent);
                             }
                             return false;
                         }
@@ -342,6 +347,46 @@
                         }
                     }
                     @rmdir($dir);
+                }
+
+                // actions
+                private function actionsAfter($module, $dir, $indent) {
+                    if(isset($module->actionsAfter)) {
+                        $this->log("Executing actions for module ".$module->name.":", "MAGENTA", $indent+2); 
+                        if(!is_array($module->actionsAfter)) {
+                            $module->actionsAfter = array($module->actionsAfter);
+                        }
+                        foreach($module->actionsAfter as $action) {
+                            if(isset($action->type)) {
+                                switch ($action->type) {
+                                    case "cmd":
+                                        if($this->shouldContain($action, array("command"), true, $indent+3)) {
+                                            $output = array();
+                                            exec("cd ".$dir." && ".$action->command, $output);
+                                            $this->log("> ".$action->command, "MAGENTA", $indent+2); 
+                                            foreach ($output as $line) {
+                                                $this->log("| ".$line, "MAGENTA", $indent+2); 
+                                            }
+                                        }
+                                    break;
+                                    case "replace":
+                                        if($this->shouldContain($action, array("file", "searchFor", "replaceWith"), true, $indent+3)) {
+                                            $fileContent = file_get_contents($dir."/".$action->file);
+                                            $fileContent = str_replace($action->searchFor, $action->replaceWith, $fileContent);
+                                            file_put_contents($dir."/".$action->file, $fileContent);
+                                            $this->log("file ".$dir."/".$action->file." updated", "MAGENTA", $indent+3);
+                                        }
+                                    break;
+                                    
+                                    default:
+                                        $this->error("Wrong action type '".$action->type."'", $indent+3);
+                                    break;
+                                }
+                            } else {
+                                $this->error("Every action should have 'type' property.", $indent+3);
+                            }
+                        }
+                    }
                 }
 
             }

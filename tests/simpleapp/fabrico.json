@@ -4,7 +4,12 @@
         "repository": "fabrico",
         "branch": "master",
         "modules": [
-            { "path": "src/core/ErrorHandler" },
+            { 
+                "path": "src/core/ErrorHandler", 
+                "actionsAfter": [
+                    { "type": "cmd", "command": "ls"}
+                ]
+            },
             { "path": "src/core/View" },
             { "path": "src/core/Router" }
         ]
@@ -13,14 +18,20 @@
         "path": "http://code.jquery.com/jquery-1.8.2.min.js", "name": "jquery"
     },
     {
-        "path": "http://twitter.github.com/bootstrap/assets/bootstrap.zip", "name": "Bootstrap"
+        "path": "http://twitter.github.com/bootstrap/assets/bootstrap.zip", 
+        "name": "Bootstrap"
     },
     {
         "owner": "krasimir",
         "repository": "fabrico",
         "branch": "master",
         "modules": [
-            { "path": "tests/simpleapp/custom/TestWidget" }
+            { 
+                "path": "tests/simpleapp/custom/TestWidget",
+                "actionsAfter": [
+                    {"type": "replace", "file": "config.php", "searchFor": "DB_HOST_VALUE", "replaceWith": "mydbhost.com"}
+                ]
+            }
         ]        
     }
 ]
