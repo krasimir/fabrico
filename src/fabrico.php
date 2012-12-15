@@ -75,12 +75,19 @@
 
                     $tree = $this->readRepository($set);
                     $found = false;
+
                     // commenting the check for already installed module
                     // if(isset($this->installedModules->{$set->owner."/".$set->repository."/".$module->path}) && $this->installedModules->{$set->owner."/".$set->repository."/".$module->path}->sha === $tree->sha) {
                     //     $this->log("/".$module->name." already installed", "", $indent + 1);
                     //     return;
                     // }
-                    if(isset($module->ignoreIfAvailable) && $module->ignoreIfAvailable && file_exists($installInDir."/".$module->name)) {
+
+                    // set default value for ignoreIfAvailable
+                    if(!isset($module->ignoreIfAvailable)) {
+                        $module->ignoreIfAvailable = true;
+                    }
+
+                    if($module->ignoreIfAvailable && file_exists($installInDir."/".$module->name)) {
                         $this->log("/".$module->name." already installed", "", $indent + 1);
                         return;
                     }
@@ -145,10 +152,17 @@
                     }
                 }
                 private function installFile($set, $installInDir, $indent) {
-                    if(isset($set->ignoreIfAvailable) && $set->ignoreIfAvailable) {
+
+                    // set default value for ignoreIfAvailable
+                    if(!isset($set->ignoreIfAvailable)) {
+                        $set->ignoreIfAvailable = true;
+                    }
+
+                    if($set->ignoreIfAvailable && file_exists($installInDir."/".$set->name)) {
                         $this->log("/".$set->name." already installed", "", $indent + 1);
                         return;
                     }
+
                     if(file_exists($installInDir."/".$set->name)) {
                         $this->rmdir_recursive($installInDir."/".$set->name);
                     }
