@@ -138,10 +138,14 @@ Fabrico gives you the ability to performe some actions after the module is downl
     "actionsAfter": [
         {"type": "replace", "file": "[file for the manipulation]", "searchFor": "[string]", "replaceWith": "[string]"},
         {"type": "copy", "path": "[file or directory]", "to": "[directory]"},
-        {"type": "delete", "path": "[file or directory]"}
+        {"type": "delete", "path": "[file or directory]"},
+        {"type": "cmd", "command": "ls -l"}
     ]
 
-The code above illustrates the the three available types of objects. You can basically replace a string in a specific file, copy/delete files or directories.
+The code above illustrates the the three available types of objects. You can:
+- replace a string in a specific file
+- copy/delete files or directories.
+- execute command via shell
 
 
 At the end you should have the following structure:
