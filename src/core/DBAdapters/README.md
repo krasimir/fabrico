@@ -72,3 +72,8 @@ A wrapper around MySQL functions with friendly API. The module creates the datab
 ### To view all the queries executed
 
     var_dump($mysql->queries);
+
+### Freezing the adapter
+The adapter execute some mysql queries in the background to find out what is created and what is not in your database. By setting the *freeze* property to true, you will stop those queries. It will increase the performance of you application, but you will not get the automatically creation of database, tables and columns.
+
+    $mysql->freeze = true;

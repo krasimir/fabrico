@@ -20,6 +20,8 @@
         "bio" => "LONGTEXT"
     ));
 
+    $mysql->freeze = true;
+
     // adding a record
     $record = (object) array(
         "firstName" => "Krasimir",
