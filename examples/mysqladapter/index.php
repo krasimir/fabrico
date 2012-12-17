@@ -29,29 +29,31 @@
     );
     $mysql->users->save($record);
 
-    // // updating a record
-    // $record->lastName = "My-Custom-Last-Name";
-    // $mysql->users->save($record);
+    // updating a record
+    $record->lastName = "My-Custom-Last-Name";
+    $mysql->users->save($record);
 
-    // // deleting a record
+    // deleting a record
     // $mysql->users->trash($record);
 
-    // // getting records
-    // $allUsers = $mysql->users->get();
+    // getting records
+    $allUsers = $mysql->users->get();
 
-    // // getting user with id=2
-    // $user = $mysql->users->where("position=2")->get();
+    // getting user with id=2
+    $user = $mysql->users->where("position=2")->get();
 
-    // // getting user order by password value
-    // $user = $mysql->users->order("password")->get();
+    // getting user order by password value
+    $user = $mysql->users->order("password")->get();
 
-    // // getting user order by password value (ascending)
-    // $user = $mysql->users->order("password")->asc()->get();
+    // getting user order by password value (ascending)
+    $user = $mysql->users->order("password")->asc()->get();
 
-    // // getting user order by password value (descending)
-    // $user = $mysql->users->order("password")->desc()->get();
+    // getting user order by password value (descending)
+    $user = $mysql->users->order("password")->desc()->get();
 
     // execute custom mysql query
     $res = $mysql->action("SELECT * FROM users WHERE id > 30");
+
+    var_dump($mysql->queries);die();
     
 ?>

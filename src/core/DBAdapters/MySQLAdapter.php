@@ -3,13 +3,14 @@
     class MySQLAdapter {
         
         public $debug = false;
+        public $freeze = false;
+        public $queries = array();
 
         private $host;
         private $user;
         private $pass;
         private $dbname;
 
-        private $queries = array();
         private $currentContext;
         private $query;
         private $cache;
@@ -134,9 +135,9 @@
                 $this->queries []= $queryStr." (cached)";
                 return $this->cache[$queryStr];
             } else {
-                $this->queries []= $queryStr;
                 $res = mysql_query($queryStr);
                 if(is_resource($res)) {
+                    $this->queries []= $queryStr;
                     if(mysql_num_rows($res) === 0) {
                         return $this->cache[$queryStr] = mysql_fetch_object($res);
                     } else {
@@ -146,6 +147,8 @@
                         }
                         return $this->cache[$queryStr] = $rows;
                     }
+                } else if($res === true) {
+                    $this->queries []= $queryStr;
                 } else {
                     $this->queries []= $queryStr." (failed)";
                 }
@@ -185,13 +188,19 @@
 
         }
         private function checkContext() {
+            if($this->freeze) return;
             if($this->currentContext === null || $this->currentContext === "") {
                 $this->error("Missing context!");
             }            
             // checking/creating the table
             $queryStr = "SHOW TABLES LIKE '".$this->currentContext."'";
-            $res = mysql_query($queryStr);
-            $this->queries []= $queryStr;
+            if(isset($this->cache[$queryStr])) {
+                $this->queries []= $queryStr." (cached)";
+                $res = $this->cache[$queryStr];
+            } else {
+                $this->queries []= $queryStr;
+                $res = $this->cache[$queryStr] = mysql_query($queryStr);
+            }
             if($res === FALSE || mysql_num_rows($res) === 0) {
                 $queryStr = "
                     CREATE TABLE IF NOT EXISTS `".$this->currentContext."` (
@@ -204,7 +213,8 @@
                 $res = mysql_query($queryStr);
             }
         }
-        private function checkContextSchema() {            
+        private function checkContextSchema() {
+            if($this->freeze) return;            
             if(isset($this->contexts->{$this->currentContext})) {
                
                 // add columns to the table
@@ -259,9 +269,6 @@
         }
         private function error($str) {
             throw new Exception($this.": ".$str);
-        }
-        private function log($str, $color) {
-            echo '<div class="debug" style="background:'.$color.'">'.$str.'</div>';
         }
     
     }

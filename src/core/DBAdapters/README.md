@@ -68,3 +68,7 @@ A wrapper around MySQL functions with friendly API. The module creates the datab
 ### Executing custom mysql query
     
     $res = $mysql->action("SELECT * FROM users WHERE id > 30");
+
+### To view all the queries executed
+
+    var_dump($mysql->queries);
