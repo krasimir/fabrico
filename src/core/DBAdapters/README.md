@@ -1,6 +1,6 @@
 # Adapters
 
-A wrapper around MySQL functions with friendly API.
+A wrapper around MySQL functions with friendly API. The module creates the database, tables and columns automatically, based on definition.
 
 - - -
 
@@ -12,7 +12,7 @@ A wrapper around MySQL functions with friendly API.
         "host" => "localhost",
         "user" => "root",
         "pass" => "",
-        "dbname" => "fabrico_mysqlorm_test"
+        "dbname" => "fabrico_mysqladapter_test"
     ));
 
 ### Defining tables/contexts
@@ -26,7 +26,7 @@ A wrapper around MySQL functions with friendly API.
         "bio" => "LONGTEXT"
     ));
 
-### Adding a record
+### Adding record
 
     $record = (object) array(
         "firstName" => "Krasimir",
@@ -36,14 +36,14 @@ A wrapper around MySQL functions with friendly API.
     );
     $mysql->users->save($record);
 
-### Updating a record
+### Updating record
 
     $record->lastName = "My-Custom-Last-Name";
     $mysql->users->save($record);
 
-### Deleting a record
+### Deleting record
     
-    $mysql->trash($record);
+    $mysql->users->trash($record);
 
 ### Getting records
 

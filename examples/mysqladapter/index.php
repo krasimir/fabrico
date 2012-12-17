@@ -7,7 +7,7 @@
         "host" => "localhost",
         "user" => "root",
         "pass" => "",
-        "dbname" => "fabrico_mysqlorm_test"
+        "dbname" => "fabrico_mysqladapter_test"
     ));
 
     // defining tables/contexts
@@ -34,7 +34,7 @@
     $mysql->users->save($record);
 
     // deleting a record
-    // $mysql->trash($record);
+    $mysql->users->trash($record);
 
     // getting records
     $allUsers = $mysql->users->get();
