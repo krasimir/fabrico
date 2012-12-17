@@ -122,14 +122,14 @@
         public function action($queryStr = false, $useCache = true) {
 
             $this->checkDatabase();
-            $this->checkContext();
-            $this->checkContextSchema();
-
-            if($queryStr === FALSE) {
+            
+            if($queryStr === false) {
+                $this->checkContext();
+                $this->checkContextSchema();
                 $queryStr = $this->composeQueryStr();
             }
 
-            $queryStr = str_replace("{currentContext}", $this->currentContext, $queryStr);
+            $queryStr = str_replace("{currentContext}", $this->currentContext, $queryStr);            
             if($useCache && isset($this->cache[$queryStr])) {
                 $this->queries []= $queryStr." (cached)";
                 return $this->cache[$queryStr];
@@ -169,11 +169,11 @@
             }
             
             // connecting and select db
-            $res = @mysql_connect($this->host, $this->user, $this->pass);       
+            $res = @mysql_connect($this->host, $this->user, $this->pass);
             if($res === FALSE) {
                 $this->error("can't connect (check /config/config.json:adapters.".$this.")");
             } else {                
-                $res = @mysql_select_db($this->dbname, $res);                
+                $res = @mysql_select_db($this->dbname, $res);
                 if($res === FALSE) {
                     mysql_query("CREATE DATABASE ".$this->dbname.";");
                     $res = @mysql_select_db($this->dbname, $res);

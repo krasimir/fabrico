@@ -64,3 +64,7 @@ A wrapper around MySQL functions with friendly API. The module creates the datab
 ### Getting user order by password value (descending)
 
     $user = $mysql->users->order("password")->desc()->get();
+
+### Executing custom mysql query
+    
+    $res = $mysql->action("SELECT * FROM users WHERE id > 30");
