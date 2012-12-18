@@ -17,6 +17,10 @@ Copy /htaccess/.htaccess file in your root directory and simply create an instan
 
     $router->register("/users/@id", "ControllerUsers")->run();
 
+## Adding more then one controller for a route (middleware architecture)
+
+    $router->register("/users/@id", array("CheckSession", "ControllerUsers"))->run();
+
 ## Example
 Request:
 

@@ -47,6 +47,14 @@
                         $this->matchedRule = $rule;
                         if(is_callable($controller)) {
                             $controller($this->params);
+                        } else if(is_array($controller)) {
+                            foreach($controller as $controllerItem) {
+                                if(is_callable($controllerItem)) {
+                                    $controllerItem($this->params);
+                                } else {
+                                    $instance = new $controllerItem($this->params);
+                                }
+                            }
                         } else {
                             $instance = new $controller($this->params);
                         }

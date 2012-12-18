@@ -8,6 +8,12 @@
 
     View::$root = __DIR__;
 
+    class CheckSession {
+        public function __construct($params) {
+            var_dump("Controller CheckSession run");
+        }
+    }
+
     class ControllerHome {
         public function __construct($params) {
             die(view("/tpl/home.html", array(
@@ -31,7 +37,7 @@
 
     $router = new Router();
     $router
-    ->register("/users/@id", "ControllerUsers")
+    ->register("/users/@id", array("CheckSession", "ControllerUsers"))
     ->register("/users", "ControllerUsers")
     ->register("", "ControllerHome")
     ->run();
