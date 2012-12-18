@@ -7,6 +7,8 @@ It's purpose is to provide really basic functionalities for building web applica
   - auto-loader - includes files
   - package manager - downloads code
 
+- - -
+
 ## Loader
 
 Once you include *fabrico.php* into your page, the loader parses the file structure of your project and creates a cache file. 
@@ -76,7 +78,7 @@ Invalid module with name *View*:
         └ css
         └ js
 
-***
+- - -
 
 ## Package manager
 
@@ -248,3 +250,13 @@ And when the manager finishes its job you will have the following file structure
       └ views
       └ fabrico
         └ fabrico.php
+
+- - -
+
+## Core modules
+
+  - [Router](https://github.com/krasimir/fabrico/tree/master/src/core/Router)
+  - [Template engine](https://github.com/krasimir/fabrico/tree/master/src/core/View)
+  - [Database adapters](https://github.com/krasimir/fabrico/tree/master/src/core/DBAdapters)
+  - [Error handler](https://github.com/krasimir/fabrico/tree/master/src/core/ErrorHandler)
+  - [Application mode](https://github.com/krasimir/fabrico/tree/master/src/core/AppMode)
