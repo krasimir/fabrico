@@ -3,6 +3,7 @@
     require(__DIR__."/../../src/fabrico.php");
 
     $F->loadModule("ErrorHandler", "Router", "View", "TestWidget");
+    $F->loadResource("resources/*");
     
     /******************************************************/
 
@@ -34,6 +35,9 @@
             )));
         }   
     }
+
+    // test instance of custom resource
+    $config = new MyCustomConfig();
 
     $router = new Router();
     $router
