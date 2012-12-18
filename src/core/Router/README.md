@@ -11,20 +11,20 @@ Copy /htaccess/.htaccess file in your root directory and simply create an instan
 
     // register($pattern, $controller, $method = "ALL")
     // $method could be any valid request method or 'ALL'
-    $router->register("/users", "ControllerUsers", "GET");
+    $router->register("/users", "ControllerUsers", "GET")->run();
 
 ## Routing with parameter
 
-    $router->register("/users/@id", "ControllerUsers")
+    $router->register("/users/@id", "ControllerUsers")->run();
 
 ## Example
-Route:
-
-    $router->register("/users/@id", "ControllerUsers")
-
 Request:
 
     http://fabrico.dev/examples/simpleapp/users/20
+
+Route:
+
+    $router->register("/users/@id", "ControllerUsers")->run();
 
 Controller:
 
