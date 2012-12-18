@@ -2,7 +2,8 @@
 
 - - -
 
-## Initialization
+## Setup and initialization
+Copy /htaccess/.htaccess file in your root directory and simply create an instance of Router class.
 
     $router = new Router();
 
