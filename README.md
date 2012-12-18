@@ -260,3 +260,4 @@ And when the manager finishes its job you will have the following file structure
   - [Database adapters](https://github.com/krasimir/fabrico/tree/master/src/core/DBAdapters)
   - [Error handler](https://github.com/krasimir/fabrico/tree/master/src/core/ErrorHandler)
   - [Application mode](https://github.com/krasimir/fabrico/tree/master/src/core/AppMode)
+  - [Session manager](https://github.com/krasimir/fabrico/tree/master/src/core/SessionManager)
