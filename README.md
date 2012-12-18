@@ -7,6 +7,14 @@ It's purpose is to provide really basic functionalities for building web applica
   - auto-loader - includes files
   - package manager - downloads code
 
+Core modules:
+  - [Router](https://github.com/krasimir/fabrico/tree/master/src/core/Router)
+  - [Template engine](https://github.com/krasimir/fabrico/tree/master/src/core/View)
+  - [Database adapters](https://github.com/krasimir/fabrico/tree/master/src/core/DBAdapters)
+  - [Error handler](https://github.com/krasimir/fabrico/tree/master/src/core/ErrorHandler)
+  - [Application mode](https://github.com/krasimir/fabrico/tree/master/src/core/AppMode)
+  - [Session manager](https://github.com/krasimir/fabrico/tree/master/src/core/SessionManager)
+
 - - -
 
 ## Loader
@@ -250,14 +258,3 @@ And when the manager finishes its job you will have the following file structure
       └ views
       └ fabrico
         └ fabrico.php
-
-- - -
-
-## Core modules
-
-  - [Router](https://github.com/krasimir/fabrico/tree/master/src/core/Router)
-  - [Template engine](https://github.com/krasimir/fabrico/tree/master/src/core/View)
-  - [Database adapters](https://github.com/krasimir/fabrico/tree/master/src/core/DBAdapters)
-  - [Error handler](https://github.com/krasimir/fabrico/tree/master/src/core/ErrorHandler)
-  - [Application mode](https://github.com/krasimir/fabrico/tree/master/src/core/AppMode)
-  - [Session manager](https://github.com/krasimir/fabrico/tree/master/src/core/SessionManager)
