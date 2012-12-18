@@ -172,14 +172,14 @@
             }
             
             // connecting and select db
-            $res = @mysql_connect($this->host, $this->user, $this->pass);
-            if($res === FALSE) {
+            $resConnect = @mysql_connect($this->host, $this->user, $this->pass);
+            if($resConnect === FALSE) {
                 $this->error("can't connect (check /config/config.json:adapters.".$this.")");
             } else {                
-                $res = @mysql_select_db($this->dbname, $res);
+                $res = @mysql_select_db($this->dbname, $resConnect);
                 if($res === FALSE) {
                     mysql_query("CREATE DATABASE ".$this->dbname.";");
-                    $res = @mysql_select_db($this->dbname, $res);
+                    $res = @mysql_select_db($this->dbname, $resConnect);
                     if($res === FALSE) {
                         $this->error("can't select database");
                     }
@@ -191,7 +191,7 @@
             if($this->freeze) return;
             if($this->currentContext === null || $this->currentContext === "") {
                 $this->error("Missing context!");
-            }            
+            }
             // checking/creating the table
             $queryStr = "SHOW TABLES LIKE '".$this->currentContext."'";
             if(isset($this->cache[$queryStr])) {

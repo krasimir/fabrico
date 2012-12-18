@@ -20,7 +20,7 @@
         "bio" => "LONGTEXT"
     ));
 
-    $mysql->freeze = true;
+    // $mysql->freeze = true;
 
     // adding a record
     $record = (object) array(
