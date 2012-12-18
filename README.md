@@ -41,16 +41,16 @@ Fabrico will start to search for the module **View** in /site/libs/ and all the 
 Here are fiew examples:
 
     // requiring Router
-    F::loadModule("Router");
+    $F->loadModule("Router");
 
     // requiring more then one module
-    F::loadModule("Router", "View", "ErrorHandler", "MyCustomModule");
+    $F->loadModule("Router", "View", "ErrorHandler", "MyCustomModule");
 
     // requiring specific php file
-    F::loadResource("libs/configs.php", "external/emailsender.php");
+    $F->loadResource("libs/configs.php", "external/emailsender.php");
 
     // requiring all the php files in a folder and its subfolders
-    F::loadResource("libs/*");
+    $F->loadResource("libs/*");
 
 A valid module is a directory, which matches the name that you pass and contains *index.php*. All the modules should be placed in a subfolder **modules**. For example:
 
