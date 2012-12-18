@@ -35,6 +35,7 @@ Controller:
     class ControllerUsers {
         public function __construct($params) {
             $id = isset($params["id"]) ? $params["id"] : null;
+            $rule = $params["ROUTER_RULE_MATCH"];
             ...
         }   
     }
