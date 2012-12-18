@@ -9,7 +9,7 @@
 ## Routing
 
     // register($pattern, $controller, $method = "ALL")
-    // $method could be any valid request method
+    // $method could be any valid request method or 'ALL'
     $router->register("/users", "ControllerUsers", "GET");
 
 ## Routing with parameter
