@@ -39,6 +39,13 @@ Controller:
         }   
     }
 
+*$params* contains
+
+  - GET parameters
+  - POST parameters
+  - variables passed via the url
+  - *ROUTER_RULE_MATCH* value, which represents the current matched rule
+
 ## Chaining
 
     $router

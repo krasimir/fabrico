@@ -6,7 +6,6 @@
         private $slug;
         private $method;
         
-        public $matchedRule;
         public $params;
         
         public function __construct() {
@@ -44,7 +43,7 @@
                 if($rule->method == $this->method || $rule->method == "ALL") {
                     $match = $this->match($pattern, $this->slug, $this->params);
                     if($match) {
-                        $this->matchedRule = $rule;
+                        $this->params["ROUTER_RULE_MATCH"] = $rule;
                         if(is_callable($controller)) {
                             $controller($this->params);
                         } else if(is_array($controller)) {
