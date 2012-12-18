@@ -1,4 +1,5 @@
 # Application mode
+Module, which could help if you work in different develop environments.
 
 ## Defininng mode
 
