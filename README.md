@@ -264,3 +264,8 @@ And when the manager finishes its job you will have the following file structure
   - [Application mode](https://github.com/krasimir/fabrico/tree/master/src/core/AppMode)
   - [Session manager](https://github.com/krasimir/fabrico/tree/master/src/core/SessionManager)
   - [Former](https://github.com/krasimir/fabrico/tree/master/src/core/Former)
+
+## Troubleshooting
+
+#### Loader can't find new files
+Delete the Loader's cache. It is located in the same directory as *fabrico.php*.
