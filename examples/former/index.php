@@ -11,8 +11,10 @@
     FormerValidation::$MESSAGE_NotEmpty = "Don't leave this field empty!";
 
     // registering the form
-    $form = Former::register("register-user", "/examples/former/", "GET");
-    $form->addTextBox(array(
+    $form = Former::register("register-user", "/examples/former/");
+    $form
+    ->url("/examples/former#new-url")
+    ->addTextBox(array(
         "name" => "username", 
         "label" => "Your name:", 
         "validation" => Former::validation()->NotEmpty()->LengthMoreThen(5)->String()

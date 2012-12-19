@@ -126,6 +126,11 @@ Have in mind that you can chain the controls:
         "job" => "front-end"
     ));
 
+## Changing the url
+
+    $registerForm = Former::get("register-user");
+    $registerForm->url("/new/url/here");
+
 ## Validation
 The data in every of the controls could be validated. Just pass *validation* property along with the others.
 

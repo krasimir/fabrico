@@ -96,6 +96,10 @@
             $this->method = $method;
             $this->key = $key;
         }
+        public function url($url) {
+            $this->url = $url;
+            return $this;
+        }
         public function update($defaultValues = null) {
 
             $elementsMarkup = "";
