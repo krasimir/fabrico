@@ -12,28 +12,28 @@ A common case is that we have to show a html form, submit it and collect its dat
 
 ## Adding controls    
 
-### Text field
+#### Text field
 
     $form->addTextBox(array(
         "name" => "username", 
         "label" => "Your name:"
     ));
 
-### Text area
+#### Text area
 
     $form->addTextArea(array(
         "name" => "description", 
         "label" => "Few words about you:"
     ));
 
-### Password text box
+#### Password text box
 
     $form->addPasswordBox(array(
         "name" => "password", 
         "label" => "Your password:"
     ));
 
-### Drop-down menu
+#### Drop-down menu
 
     $form->addDropDown(array(
         "name" => "city",
@@ -46,7 +46,7 @@ A common case is that we have to show a html form, submit it and collect its dat
         )
     ));
 
-### Radio buttons
+#### Radio buttons
 
     $form->addRadio(array(
         "name" => "job",
@@ -58,7 +58,7 @@ A common case is that we have to show a html form, submit it and collect its dat
         )
     ));
 
-### Checkboxes
+#### Checkboxes
 
     $form->addCheck(array(
         "name" => "special-wishes",
@@ -70,7 +70,7 @@ A common case is that we have to show a html form, submit it and collect its dat
         )
     ));
 
-### File control
+#### File control
 
     $form->addFile(array(
         "name" => "avatar",
@@ -97,6 +97,33 @@ Have in mind that you can chain the controls:
         "name" => "salary", 
         "label" => "Your prefered salary:", 
         "validation" => Former::validation()->NotEmpty()->LengthMoreThen(3)->Int()->LessThen(1450)
+    ));
+
+## Getting the form's markup or data
+
+    $registerForm = Former::get("register-user");
+    if($registerForm->submitted) {
+        // Form is submitted
+        if($registerForm->success) {
+            // the form is submitted successfully
+            $data = $registerForm->data;
+            var_dump($data);
+        } else {
+            // The form is submitted, but doesn't pass the validation. Show it again.
+            $markup = $registerForm->markup;
+            echo $markup;
+        }
+    } else {
+        // The form is still not submitted. Simply show its markup
+        $markup = $registerForm->markup;
+        echo $markup;
+    }
+
+## Adding default values:
+
+    $registerForm = Former::get("register-user", array(
+        "description" => "text here ...", 
+        "job" => "front-end"
     ));
 
 ## Validation
