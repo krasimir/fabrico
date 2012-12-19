@@ -99,7 +99,7 @@
         public function update($defaultValues = null) {
 
             $elementsMarkup = "";
-            $defaultValues = $defaultValues == null ? (object) array() : $defaultValues;
+            $defaultValues = $defaultValues == null ? array() : $defaultValues;
             $this->submitted = $this->read("form-".$this->key) !== false;
             $this->success = $this->submitted ? true : false;
             $this->data = (object) array();
