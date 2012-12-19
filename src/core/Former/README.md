@@ -101,20 +101,13 @@ Have in mind that you can chain the controls:
 
 ## Getting the form's markup or data
 
-    $registerForm = Former::get("register-user");
-    if($registerForm->submitted) {
+    $registerForm = Former::get("register-user", array("description" => "...", "job" => "front-end"));
+    if($registerForm->submitted && $registerForm->success) {
         // Form is submitted
-        if($registerForm->success) {
-            // the form is submitted successfully
-            $data = $registerForm->data;
-            var_dump($data);
-        } else {
-            // The form is submitted, but doesn't pass the validation. Show it again.
-            $markup = $registerForm->markup;
-            echo $markup;
-        }
+        $data = $registerForm->data;
+        var_dump($data);
     } else {
-        // The form is still not submitted. Simply show its markup
+        // The form is still not submitted or it doesn't pass the validations
         $markup = $registerForm->markup;
         echo $markup;
     }

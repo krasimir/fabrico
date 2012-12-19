@@ -13,7 +13,6 @@
     // registering the form
     $form = Former::register("register-user", "/examples/former/");
     $form
-    ->url("/examples/former#new-url")
     ->addTextBox(array(
         "name" => "username", 
         "label" => "Your name:", 
@@ -69,19 +68,12 @@
 
     // then in your controller
     $loginForm = Former::get("register-user", array("description" => "...", "job" => "front-end"));
-    if($loginForm->submitted) {
+    if($loginForm->submitted && $loginForm->success) {
         // Form is submitted
-        if($loginForm->success) {
-            // the form is submitted successfully
-            $data = $loginForm->data;
-            var_dump($data);
-        } else {
-            // The form is submitted, but doesn't pass the validation. Show it again.
-            $markup = $loginForm->markup;
-            echo $markup;
-        }
+        $data = $loginForm->data;
+        var_dump($data);
     } else {
-        // The form is still not submitted. Simply show its markup
+        // The form is still not submitted or it doesn't pass the validations
         $markup = $loginForm->markup;
         echo $markup;
     }
