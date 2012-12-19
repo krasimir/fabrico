@@ -7,6 +7,8 @@ It's purpose is to provide really basic functionalities for building web applica
   - auto-loader - includes files
   - package manager - downloads code
 
+Check the additional core modules [here](https://github.com/krasimir/fabrico#core-modules).
+
 - - -
 
 ## Loader
@@ -261,3 +263,4 @@ And when the manager finishes its job you will have the following file structure
   - [Error handler](https://github.com/krasimir/fabrico/tree/master/src/core/ErrorHandler)
   - [Application mode](https://github.com/krasimir/fabrico/tree/master/src/core/AppMode)
   - [Session manager](https://github.com/krasimir/fabrico/tree/master/src/core/SessionManager)
+  - [Former](https://github.com/krasimir/fabrico/tree/master/src/core/Former)
