@@ -162,6 +162,9 @@ If you need to change the html markup or just to add new logic copy the content 
 
     Former::templatesPath(__DIR__."/");
 
+## CSS styles
+The generated markup require some CSS to look good. It is available in *css* directory.
+
 ## Changing the error messages
 The messages are available here:
 
