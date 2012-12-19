@@ -77,6 +77,28 @@ A common case is that we have to show a html form, submit it and collect its dat
         "label" => "Please choose your avatar:"
     ));
 
+Have in mind that you can chain the controls:
+
+    $form->addTextBox(array(
+        "name" => "username", 
+        "label" => "Your name:", 
+        "validation" => Former::validation()->NotEmpty()->LengthMoreThen(5)->String()
+    ))
+    ->addTextArea(array(
+        "name" => "description", 
+        "label" => "Few words about you:"
+    ))
+    ->addPasswordBox(array(
+        "name" => "password", 
+        "label" => "Your password:", 
+        "validation" => Former::validation()->NotEmpty()->LengthMoreThen(5)
+    ))
+    ->addTextBox(array(
+        "name" => "salary", 
+        "label" => "Your prefered salary:", 
+        "validation" => Former::validation()->NotEmpty()->LengthMoreThen(3)->Int()->LessThen(1450)
+    ));
+
 ## Validation
 The data in every of the controls could be validated. Just pass *validation* property along with the others.
 
