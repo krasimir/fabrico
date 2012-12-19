@@ -84,6 +84,7 @@
         private $url;
         private $method;
         private $key;
+        private $defaultValues;
 
         public $submitted = false;
         public $success = false;
@@ -98,12 +99,13 @@
         }
         public function url($url) {
             $this->url = $url;
+            $this->update($this->defaultValues);
             return $this;
         }
         public function update($defaultValues = null) {
 
             $elementsMarkup = "";
-            $defaultValues = $defaultValues == null ? array() : $defaultValues;
+            $defaultValues = $this->defaultValues = $defaultValues == null ? array() : $defaultValues;
             $this->submitted = $this->read("form-".$this->key) !== false;
             $this->success = $this->submitted ? true : false;
             $this->data = (object) array();
