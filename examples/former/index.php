@@ -67,7 +67,7 @@
     ));
 
     // then in your controller
-    $loginForm = Former::get("register-user", array("description" => "...", "job" => "front-end"));
+    $loginForm = Former::get("register-user", (object) array("description" => "...", "job" => "front-end"));
     if($loginForm->submitted && $loginForm->success) {
         // Form is submitted
         $data = $loginForm->data;

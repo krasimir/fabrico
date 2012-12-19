@@ -105,7 +105,7 @@
         public function update($defaultValues = null) {
 
             $elementsMarkup = "";
-            $defaultValues = $this->defaultValues = $defaultValues == null ? array() : $defaultValues;
+            $defaultValues = $this->defaultValues = $defaultValues == null ? (object) array() : $defaultValues;
             $this->submitted = $this->read("form-".$this->key) !== false;
             $this->success = $this->submitted ? true : false;
             $this->data = (object) array();
@@ -113,7 +113,7 @@
             foreach($this->elements as $el) {
 
                 $value = $this->read($el->props["name"]);
-                $defaultValue = isset($defaultValues[$el->props["name"]]) ? $defaultValues[$el->props["name"]] : "";
+                $defaultValue = isset($defaultValues->{$el->props["name"]}) ? $defaultValues->{$el->props["name"]} : "";
                 $this->data->{$el->props["name"]} = $value;
                 $valid = isset($el->props["validation"]) ? $el->props["validation"]->check($value) : (object) array("status" => true, "message" => "");
 

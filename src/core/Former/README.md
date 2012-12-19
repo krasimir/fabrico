@@ -114,7 +114,7 @@ Have in mind that you can chain the controls:
 
 ## Adding default values:
 
-    $registerForm = Former::get("register-user", array(
+    $registerForm = Former::get("register-user", (object) array(
         "description" => "text here ...", 
         "job" => "front-end"
     ));
