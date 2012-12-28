@@ -176,6 +176,7 @@
             if($resConnect === FALSE) {
                 $this->error("can't connect (check /config/config.json:adapters.".$this.")");
             } else {                
+                mysql_query('SET NAMES utf8', $resConnect);
                 $res = @mysql_select_db($this->dbname, $resConnect);
                 if($res === FALSE) {
                     mysql_query("CREATE DATABASE ".$this->dbname.";");
