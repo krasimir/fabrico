@@ -79,7 +79,7 @@
                     // solving github rate limit problem
                     if($this->gitHubRateLimit === false) {
                         $gitHubRateLimit = $this->request($this->gitEndPoint."rate_limit");
-                    }
+                    }                    
                     if($gitHubRateLimit->rate->remaining <= 5) {
                         $this->log("The GitHub rate limit is reached for you IP. Github credentials are needed:\nusername:");
                         $handle = fopen ("php://stdin","r");
@@ -257,6 +257,8 @@
                     curl_setopt($ch,CURLOPT_URL, $url);
                     curl_setopt($ch,CURLOPT_RETURNTRANSFER,1); 
                     curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,0);
+                    curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+                    curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,0);
                     if($this->gitHubUsername !== false && $this->gitHubPassword !== false) {
                         curl_setopt($ch, CURLOPT_USERPWD, $this->gitHubUsername.":".$this->gitHubPassword);
                         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
@@ -546,7 +548,7 @@
             public function updateCache() {
                 global $FABRICO_TREE;
                 $files = (object) array();
-                $this->readDir($this->rootPath, &$files);
+                $this->readDir($this->rootPath, $files);
                 $FABRICO_TREE = (object) array(
                     "files" => $files
                 );
