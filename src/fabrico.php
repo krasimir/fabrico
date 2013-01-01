@@ -43,9 +43,6 @@
                     }
                     foreach($sets as $set) {
                         $dir = dirname($packageFile)."/".$this->modulesDir;
-                        if(!file_exists($dir)) {
-                            mkdir($dir, 0777);
-                        }
                         if($this->shouldContain($set, array("owner", "repository", "branch"))) {
                             $this->log("repository: /".$set->owner."/".$set->repository, "BLUE", $indent);
                             $this->formatModules($set);
@@ -57,6 +54,8 @@
                                     if(!file_exists($customDir)) {
                                         mkdir($customDir, 0777);
                                     }
+                                } else if(!file_exists($dir)) {
+                                    mkdir($dir, 0777);
                                 }
                                 $this->installModule($module, $set, $customDir != false ? $customDir : $dir, $indent);
                             }
@@ -68,6 +67,8 @@
                                 if(!file_exists($customDir)) {
                                     mkdir($customDir, 0777);
                                 }
+                            } else if(!file_exists($dir)) {
+                                mkdir($dir, 0777);
                             }
                             $this->installFile($set, $customDir != false ? $customDir : $dir, $indent);
                         }
