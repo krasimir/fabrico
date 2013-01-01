@@ -128,6 +128,7 @@ Create a json file, which will store the information about your modules. It shou
     - name /optional/ - by default the name of the directory container is used, but you can specify your own name. For example if the path is *core/ErrorHandler* the name of the module will be *ErrorHandler*.
     - ignoreIfAvailable /optional/ - true or false. If it is true then the module will be installed only if it's missing
     - actionsAfter /optional/ - check *Actions after the download* section below
+    - installIn /optional/ - specify the destination of the module
 - commit /optional/ - by default the manager gets the latest commit, but you can specify a strict commit which you want to use 
 
 #### Fetching content from other source
@@ -135,6 +136,7 @@ Create a json file, which will store the information about your modules. It shou
 - name /required/ - the name of the folder, which will be created in /modules directory
 - ignoreIfAvailable /optional/ - true or false. If it is true then the module will be installed only if it's missing
 - actionsAfter /optional/ - check *Actions after the download* section below
+- installIn /optional/ - specify the destination of the module
 
 ##### Actions after the download
 Fabrico gives you the ability to performe some actions after the module is downloaded. *actionsAfter* parameter could be an object or array of objects with the following format:
@@ -151,6 +153,32 @@ The code above illustrates the the three available types of objects. You can:
 - copy/delete files or directories.
 - execute command via shell
 
+#### Put the module in a custom path
+
+Feel free to use *installIn* property to specify a custom path for your modules. For example:
+
+    {
+        "path": "http://code.jquery.com/jquery-1.8.2.min.js", 
+        "name": "jquery",
+        "installIn": "assets/js/"
+    }
+
+or 
+
+    {
+        "owner": "krasimir",
+        "repository": "fabrico",
+        "branch": "master",
+        "modules": [
+            { 
+                "path": "src/core/ErrorHandler", 
+                "actionsAfter": [
+                    { "type": "cmd", "command": "ls"}
+                ],
+                "installIn": "utils/"
+            }
+        ]
+    }   
 
 At the end you should have the following structure:
 

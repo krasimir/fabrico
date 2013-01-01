@@ -8,14 +8,17 @@
                 "path": "src/core/ErrorHandler", 
                 "actionsAfter": [
                     { "type": "cmd", "command": "ls"}
-                ]
+                ],
+                "installIn": "utils/"
             },
             { "path": "src/core/View" },
             { "path": "src/core/Router" }
         ]
     },
     {
-        "path": "http://code.jquery.com/jquery-1.8.2.min.js", "name": "jquery"
+        "path": "http://code.jquery.com/jquery-1.8.2.min.js", 
+        "name": "jquery",
+        "installIn": "assets/js/"
     },
     {
         "path": "http://twitter.github.com/bootstrap/assets/bootstrap.zip", 
@@ -27,7 +30,7 @@
         "branch": "master",
         "modules": [
             { 
-                "path": "tests/simpleapp/custom/TestWidget",
+                "path": "examples/simpleapp/custom/TestWidget",
                 "actionsAfter": [
                     {"type": "replace", "file": "config.php", "searchFor": "DB_HOST_VALUE", "replaceWith": "mydbhost.com"},
                     {"type": "copy", "path": "config.php", "to": "config_backup"},

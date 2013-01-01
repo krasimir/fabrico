@@ -2,8 +2,8 @@
 
     require(__DIR__."/../../src/fabrico.php");
 
-    $F->loadModule("ErrorHandler", "Router", "View", "TestWidget");
-    $F->loadResource("resources/*");
+    $F->loadModule("Router", "View", "TestWidget");
+    $F->loadResource("resources/*", "utils/ErrorHandler/index.php");
     
     /******************************************************/
 

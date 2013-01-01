@@ -50,11 +50,26 @@
                             $this->log("repository: /".$set->owner."/".$set->repository, "BLUE", $indent);
                             $this->formatModules($set);
                             foreach($set->modules as $module) {
-                                $this->installModule($module, $set, $dir, $indent);
+                                // check for custom destination path
+                                $customDir = false;
+                                if(isset($module->installIn)) {
+                                    $customDir = dirname($packageFile)."/".$module->installIn;
+                                    if(!file_exists($customDir)) {
+                                        mkdir($customDir, 0777);
+                                    }
+                                }
+                                $this->installModule($module, $set, $customDir != false ? $customDir : $dir, $indent);
                             }
                         } else if($this->shouldContain($set, array("path", "name"))) {
                             $this->log("file: ".$set->path, "BLUE", $indent);
-                            $this->installFile($set, $dir, $indent);
+                            $customDir = false;
+                            if(isset($set->installIn)) {
+                                $customDir = dirname($packageFile)."/".$set->installIn;
+                                if(!file_exists($customDir)) {
+                                    mkdir($customDir, 0777);
+                                }
+                            }
+                            $this->installFile($set, $customDir != false ? $customDir : $dir, $indent);
                         }
                     }
                 }
