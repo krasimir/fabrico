@@ -1,5 +1,11 @@
 <?php
 
+    /* 
+        TODO: 
+            a) pass a request object (asoc array) to ::get method 
+            b) validation by callback (class + method)
+    */
+
     class Former {
 
         private static $forms;

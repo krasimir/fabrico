@@ -8,6 +8,9 @@
     /******************************************************/
 
     View::$root = __DIR__;
+    View::$forEachView = array(
+        "globalVar" => "global variable"
+    );
 
     class CheckSession {
         public function __construct($params) {

@@ -17,3 +17,9 @@
         "title" => "Fabrico",
         "content" => "It works!"
     ));
+
+## If you want to pass variables to every of the views:
+
+    View::$forEachView = array(
+        "globalVar" => "global variable"
+    );
