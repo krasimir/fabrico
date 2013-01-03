@@ -153,26 +153,63 @@ The code above illustrates the the three available types of objects. You can:
 - copy/delete files or directories.
 - execute command via shell
 
+An example:
+
+    [
+      {
+          "owner": "krasimir",
+          "repository": "fabrico",
+          "branch": "master",
+          "modules": [
+              { 
+                  "path": "src/core/ErrorHandler", 
+                  "actionsAfter": [
+                      { "type": "cmd", "command": "ls"}
+                  ]
+              }
+          ]
+      },
+      {
+          "owner": "krasimir",
+          "repository": "fabrico",
+          "branch": "master",
+          "modules": [
+              { 
+                  "path": "examples/simpleapp/custom/TestWidget",
+                  "actionsAfter": [
+                      {"type": "replace", "file": "config.php", "searchFor": "DB_HOST_VALUE", "replaceWith": "mydbhost.com"},
+                      {"type": "copy", "path": "config.php", "to": "config_backup"},
+                      {"type": "copy", "path": "modules.json", "to": "config_backup"},
+                      {"type": "copy", "path": "things-to-backup", "to": "config_backup"},
+                      {"type": "delete", "path": "config_backup/modules.json"},
+                      {"type": "delete", "path": "config_backup/things-to-backup"}
+                  ]
+              }
+          ]        
+      }
+    ]
+
 #### Executing custom actions, which are not related to any specific module
 You can do that by simply adding the same object used in *actionsAfter*. For example:
 
-  [
-    {
-        "type": "cmd", "command": "ls"
-    },
-    {
-        "owner": "krasimir",
-        "repository": "fabrico",
-        "branch": "master",
-        "modules": [
-            { "path": "" }
-        ]
-    },
-    {
-        "path": "http://code.jquery.com/jquery-1.8.2.min.js", 
-        "name": "jquery",
-        "installIn": "assets/js/"
-    }
+    [
+      {
+          "type": "cmd", "command": "ls"
+      },
+      {
+          "owner": "krasimir",
+          "repository": "fabrico",
+          "branch": "master",
+          "modules": [
+              { "path": "" }
+          ]
+      },
+      {
+          "path": "http://code.jquery.com/jquery-1.8.2.min.js", 
+          "name": "jquery",
+          "installIn": "assets/js/"
+      }
+    ]
 
 #### Put the module in a custom path
 
