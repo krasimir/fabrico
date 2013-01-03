@@ -138,7 +138,7 @@ Create a json file, which will store the information about your modules. It shou
 - actionsAfter /optional/ - check *Actions after the download* section below
 - installIn /optional/ - specify the destination of the module
 
-##### Actions after the download
+#### Actions after the download
 Fabrico gives you the ability to performe some actions after the module is downloaded. *actionsAfter* parameter could be an object or array of objects with the following format:
 
     "actionsAfter": [
