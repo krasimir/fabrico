@@ -90,19 +90,6 @@ Inspired by [npm](https://npmjs.org/) and [bundler](http://gembundler.com/), the
 
 ### Usage
 
-Let's say that you have the following structure:
-
-    site
-      └ libs
-        └ something
-      └ assets
-        └ css
-        └ js
-      └ controllers
-      └ views
-      └ fabrico
-        └ fabrico.php
-
 Create a json file, which will store the information about your modules. It should contain something like that:
 
     [
@@ -238,29 +225,15 @@ or
         ]
     }   
 
-At the end you should have the following structure:
-
-    site
-      └ libs
-        └ something
-          └ fabrico.json
-      └ assets
-        └ css
-        └ js
-      └ controllers
-      └ views
-      └ fabrico
-        └ fabrico.php
-
 Run fabrico.php via the command line and provide a path to your json file.
 
     php [path to fabrico.php] [path to .json file]
 
-In this case:
+For example:
 
     php ./site/fabrico/fabrico.php ./site/libs/something/fabrico.json
 
-The manager will create directory *modules* in *./site/libs/something* and will place everything there.
+If you don't use *installIn* property the manager will create directory *modules* and will place everything there.
 
 ### Versioning
 
