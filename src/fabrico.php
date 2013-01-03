@@ -71,6 +71,8 @@
                                 mkdir($dir, 0777);
                             }
                             $this->installFile($set, $customDir != false ? $customDir : $dir, $indent);
+                        } else if($this->shouldContain($set, array("type"))) {
+
                         }
                     }
                 }
@@ -375,65 +377,67 @@
                             $module->actionsAfter = array($module->actionsAfter);
                         }
                         foreach($module->actionsAfter as $action) {
-                            if(isset($action->type)) {
-                                switch ($action->type) {
-                                    case "cmd":
-                                        if($this->shouldContain($action, array("command"), true, $indent+3)) {
-                                            $output = array();
-                                            exec("cd ".$dir." && ".$action->command, $output);
-                                            $this->log("> ".$action->command, "MAGENTA", $indent+2); 
-                                            foreach ($output as $line) {
-                                                $this->log("| ".$line, "MAGENTA", $indent+2); 
-                                            }
-                                        }
-                                    break;
-                                    case "replace":
-                                        if($this->shouldContain($action, array("file", "searchFor", "replaceWith"), true, $indent+3)) {
-                                            $fileContent = file_get_contents($dir."/".$action->file);
-                                            $fileContent = str_replace($action->searchFor, $action->replaceWith, $fileContent);
-                                            file_put_contents($dir."/".$action->file, $fileContent);
-                                            $this->log("> file ".$dir."/".$action->file." updated", "MAGENTA", $indent+3);
-                                        }
-                                    break;
-                                    case "copy": 
-                                        if($this->shouldContain($action, array("path", "to"), true, $indent+3)) {
-                                            if(!file_exists($dir."/".$action->to)) {
-                                                mkdir($dir."/".$action->to, 0777);
-                                            }
-                                            $output = array();
-                                            exec("cp -r ".$dir."/".$action->path." ".$dir."/".$action->to);
-                                            $this->log("> coping ".$action->path." to ".$action->to, "MAGENTA", $indent+3); 
-                                            foreach ($output as $line) {
-                                                $this->log("| ".$line, "MAGENTA", $indent+3); 
-                                            }
-                                        }
-                                    break;  
-                                    case "delete":
-                                        if($this->shouldContain($action, array("path"), true, $indent+3)) {
-                                            if(file_exists($dir."/".$action->path)) {
-                                                if(is_file($dir."/".$action->path)) {
-                                                    if(unlink($dir."/".$action->path)) {
-                                                        $this->log("> ".$action->path." deleted", "MAGENTA", $indent+3); 
-                                                    }
-                                                } else if(is_dir($dir."/".$action->path)) {
-                                                    $this->rmdir_recursive($dir."/".$action->path);
-                                                    $this->log("> ".$action->path." deleted", "MAGENTA", $indent+3); 
-                                                }
-                                                
-                                            }
-                                        }
-                                    break;                                
-                                    default:
-                                        $this->error("Wrong action type '".$action->type."'", $indent+3);
-                                    break;
-                                }
-                            } else {
-                                $this->error("Every action should have 'type' property.", $indent+3);
-                            }
+                            $this->performAction($action, $dir, $indent);
                         }
                     }
                 }
-
+                private function performAction($action, $dir, $indent) {
+                    if(isset($action->type)) {
+                        switch ($action->type) {
+                            case "cmd":
+                                if($this->shouldContain($action, array("command"), true, $indent+3)) {
+                                    $output = array();
+                                    exec("cd ".$dir." && ".$action->command, $output);
+                                    $this->log("> ".$action->command, "MAGENTA", $indent+2); 
+                                    foreach ($output as $line) {
+                                        $this->log("| ".$line, "MAGENTA", $indent+2); 
+                                    }
+                                }
+                            break;
+                            case "replace":
+                                if($this->shouldContain($action, array("file", "searchFor", "replaceWith"), true, $indent+3)) {
+                                    $fileContent = file_get_contents($dir."/".$action->file);
+                                    $fileContent = str_replace($action->searchFor, $action->replaceWith, $fileContent);
+                                    file_put_contents($dir."/".$action->file, $fileContent);
+                                    $this->log("> file ".$dir."/".$action->file." updated", "MAGENTA", $indent+3);
+                                }
+                            break;
+                            case "copy": 
+                                if($this->shouldContain($action, array("path", "to"), true, $indent+3)) {
+                                    if(!file_exists($dir."/".$action->to)) {
+                                        mkdir($dir."/".$action->to, 0777);
+                                    }
+                                    $output = array();
+                                    exec("cp -r ".$dir."/".$action->path." ".$dir."/".$action->to);
+                                    $this->log("> coping ".$action->path." to ".$action->to, "MAGENTA", $indent+3); 
+                                    foreach ($output as $line) {
+                                        $this->log("| ".$line, "MAGENTA", $indent+3); 
+                                    }
+                                }
+                            break;  
+                            case "delete":
+                                if($this->shouldContain($action, array("path"), true, $indent+3)) {
+                                    if(file_exists($dir."/".$action->path)) {
+                                        if(is_file($dir."/".$action->path)) {
+                                            if(unlink($dir."/".$action->path)) {
+                                                $this->log("> ".$action->path." deleted", "MAGENTA", $indent+3); 
+                                            }
+                                        } else if(is_dir($dir."/".$action->path)) {
+                                            $this->rmdir_recursive($dir."/".$action->path);
+                                            $this->log("> ".$action->path." deleted", "MAGENTA", $indent+3); 
+                                        }
+                                        
+                                    }
+                                }
+                            break;                                
+                            default:
+                                $this->error("Wrong action type '".$action->type."'", $indent+3);
+                            break;
+                        }
+                    } else {
+                        $this->error("Every action should have 'type' property.", $indent+3);
+                    }
+                }
             }
         }
         
