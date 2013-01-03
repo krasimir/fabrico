@@ -153,6 +153,27 @@ The code above illustrates the the three available types of objects. You can:
 - copy/delete files or directories.
 - execute command via shell
 
+#### Executing custom actions, which are not related to any specific module
+You can do that by simply adding the same object used in *actionsAfter*. For example:
+
+  [
+    {
+        "type": "cmd", "command": "ls"
+    },
+    {
+        "owner": "krasimir",
+        "repository": "fabrico",
+        "branch": "master",
+        "modules": [
+            { "path": "" }
+        ]
+    },
+    {
+        "path": "http://code.jquery.com/jquery-1.8.2.min.js", 
+        "name": "jquery",
+        "installIn": "assets/js/"
+    }
+
 #### Put the module in a custom path
 
 Feel free to use *installIn* property to specify a custom path for your modules. For example:

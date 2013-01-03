@@ -1,5 +1,8 @@
 [
     {
+        "type": "cmd", "command": "ls"
+    },
+    {
         "owner": "krasimir",
         "repository": "fabrico",
         "branch": "master",

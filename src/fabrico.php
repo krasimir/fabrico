@@ -72,7 +72,7 @@
                             }
                             $this->installFile($set, $customDir != false ? $customDir : $dir, $indent);
                         } else if($this->shouldContain($set, array("type"))) {
-
+                            $this->performAction($set, dirname($packageFile), $indent);
                         }
                     }
                 }
