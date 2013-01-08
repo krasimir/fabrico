@@ -541,7 +541,7 @@
                         }
                     }
                     return true;
-                } else {
+                } else {                    
                     return false;
                 }
             }
@@ -590,6 +590,13 @@
 
         global $F;
         $F = new FabricoLoader();
+
+        function fabricoAutoload($class) {
+            global $F;
+            $F->updateCache();
+            $F->loadResource($class);
+        }
+        spl_autoload_register('fabricoAutoload');
 
     }
 
