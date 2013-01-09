@@ -118,7 +118,7 @@ By default the data source is *$_POST* and the default values is *null*.
 
 ## Adding default values:
 
-    $registerForm = Former::get("register-user", (object) array(
+    $registerForm = Former::get("register-user", $_POST, (object) array(
         "description" => "text here ...", 
         "job" => "front-end"
     ));
