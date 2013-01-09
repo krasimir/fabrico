@@ -77,6 +77,20 @@ A common case is that we have to show a html form, submit it and collect its dat
         "label" => "Please choose your avatar:"
     ));
 
+#### Plugins
+
+##### Adding WYSIWYG editor
+Former supports [TinyMCE](http://www.tinymce.com/). To use it you should include the following file into your page:
+
+    <script src="[path to former]/plugins/tinymce/tiny_mce.js" type="text/javascript"></script>
+
+Require the editor:
+    
+    $form->addTinyEditor(array(
+        "name" => "richtext",
+        "label" => "Add more information about you:"
+    ));
+
 Have in mind that you can chain the controls:
 
     $form->addTextBox(array(
@@ -181,17 +195,3 @@ The messages are available here:
     FormerValidation::$MESSAGE_Int = "Wrong value.";
     FormerValidation::$MESSAGE_String = "Wrong value.";
     FormerValidation::$MESSAGE_Float = "Wrong value.";
-
-## Plugins
-
-#### Adding WYSIWYG editor
-Former supports [TinyMCE](http://www.tinymce.com/). To use it you should include the following file into your page:
-
-    <script src="[path to former]/plugins/tinymce/tiny_mce.js" type="text/javascript"></script>
-
-Require the editor:
-    
-    $form->addTinyEditor(array(
-        "name" => "richtext",
-        "label" => "Add more information about you:"
-    ));
