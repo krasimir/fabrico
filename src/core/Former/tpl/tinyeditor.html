@@ -7,27 +7,10 @@
     <br class="clear" />
 </div>
 <script>
-$(document).ready(function() {
-    var editor = new TINY.editor.edit('editor', {
-        id: 'editor-{name}',
-        width: $("#editor-{name}").width(),
-        height: $("#editor-{name}").height(),
-        cssclass: 'tinyeditor',
-        controlclass: 'tinyeditor-control',
-        rowclass: 'tinyeditor-header',
-        dividerclass: 'tinyeditor-divider',
-        controls: ['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|',
-            'orderedlist', 'unorderedlist', '|', 'outdent', 'indent', '|', 'leftalign',
-            'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n',
-            'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'print'],
-        footer: true,
-        fonts: ['Verdana','Arial','Georgia','Trebuchet MS'],
-        xhtml: true,
-        cssfile: 'custom.css',
-        bodyid: 'editor',
-        footerclass: 'tinyeditor-footer',
-        toggle: {text: 'source', activetext: 'wysiwyg', cssclass: 'toggle'},
-        resize: {cssclass: 'resize'}
+    tinyMCE.init({
+        mode : "exact",
+        elements : "editor-{name}",
+        theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect",
+        theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor"
     });
-});
 </script>

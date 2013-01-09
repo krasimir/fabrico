@@ -185,16 +185,13 @@ The messages are available here:
 ## Plugins
 
 #### Adding WYSIWYG editor
-Former supports [TinyEditor](http://www.scriptiny.com/2010/02/javascript-wysiwyg-editor/). To use it you should include the following files into your page:
+Former supports [TinyMCE](http://www.tinymce.com/). To use it you should include the following files into your page:
 
-    <script src="[path to former]/plugins/TinyEditor/jquery.js" type="text/javascript"></script>
-    <script src="[path to former]/plugins/TinyEditor/tiny.editor.packed.js" type="text/javascript"></script>
-    <link href="[path to former]/plugins/TinyEditor/tinyeditor.css" rel="stylesheet" type="text/css" />
+    <script src="[path to former]/plugins/tinymce/jscripts/tiny_mce/tiny_mce.js" type="text/javascript"></script>
 
 Require the editor:
     
     $form->addTinyEditor(array(
-        "name" => "ricktext",
+        "name" => "richtext",
         "label" => "Add more information about you:"
     ));
-    
