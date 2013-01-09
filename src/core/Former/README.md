@@ -91,7 +91,7 @@ Require the editor:
         "label" => "Add more information about you:"
     ));
 
-Have in mind that you can chain the controls:
+#### Chaining the controls definition:
 
     $form->addTextBox(array(
         "name" => "username", 
