@@ -101,7 +101,11 @@ Have in mind that you can chain the controls:
 
 ## Getting the form's markup or data
 
-    $registerForm = Former::get("register-user", array("description" => "...", "job" => "front-end"));
+    Former::get({name of the form}, {data source - associative array}, {default values});
+
+By default the data source is *$_POST* and the default values is *null*.
+    
+    $registerForm = Former::get("register-user", $_POST, (object) array("description" => "...", "job" => "front-end"));
     if($registerForm->submitted && $registerForm->success) {
         // Form is submitted
         $data = $registerForm->data;

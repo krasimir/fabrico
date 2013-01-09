@@ -20,9 +20,9 @@
             }
             return self::$forms->$key = new FormerForm($url, $method, $key);
         }
-        public static function get($key, $defaultValues = null) {
+        public static function get($key, $dataSource = null, $defaultValues = null) {
             if(isset(self::$forms->$key)) {
-                return self::$forms->$key->update($defaultValues);
+                return self::$forms->$key->update($dataSource, $defaultValues);
             } else {
                 throw new Exception("There is no form associated with key=".$key);
             }
@@ -91,6 +91,7 @@
         private $method;
         private $key;
         private $defaultValues;
+        private $dataSource;
 
         public $submitted = false;
         public $success = false;
@@ -108,7 +109,9 @@
             $this->update($this->defaultValues);
             return $this;
         }
-        public function update($defaultValues = null) {
+        public function update($dataSource = null, $defaultValues = null) {
+
+            $this->dataSource = $dataSource === null ? $_POST : $dataSource;
 
             $elementsMarkup = "";
             $defaultValues = $this->defaultValues = $defaultValues == null ? (object) array() : $defaultValues;
@@ -206,10 +209,8 @@
         // request parameters
         private function read($key) {
             $data = null;
-            if(isset($_GET[$key])) {
-                $data = $_GET[$key];
-            } else if(isset($_POST[$key])) {
-                $data = $_POST[$key];
+            if(isset($this->dataSource[$key])) {
+                $data = $this->dataSource[$key];
             }
             if($data !== null) {
                 if(is_array($data)) {
