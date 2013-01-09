@@ -1,4 +1,7 @@
 <link rel="stylesheet" type="text/css" href="../../src/core/Former/css/styles.css" />
+<link href="../../src/core/Former/plugins/TinyEditor/tinyeditor.css" rel="stylesheet" type="text/css" />
+<script src="../../src/core/Former/plugins/TinyEditor/jquery.js" type="text/javascript"></script>
+<script src="../../src/core/Former/plugins/TinyEditor/tiny.editor.packed.js" type="text/javascript"></script>
 <div style="width: 400px;">
 <?php
 
@@ -64,6 +67,11 @@
     ->addFile(array(
         "name" => "avatar",
         "label" => "Please choose your avatar:"
+    ))
+    ->addTinyEditor(array(
+        "name" => "richtext",
+        "label" => "Add more information about you:", 
+        "validation" => Former::validation()->NotEmpty()
     ));
 
     // then in your controller

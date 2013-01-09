@@ -106,7 +106,7 @@
         }
         public function url($url) {
             $this->url = $url;
-            $this->update($this->defaultValues);
+            $this->update($this->dataSource, $this->defaultValues);
             return $this;
         }
         public function update($dataSource = null, $defaultValues = null) {
@@ -204,6 +204,10 @@
         }
         public function addFile($props) {
             $this->elements []= (object) array("type" => "file", "props" => $props);
+            return $this;
+        }
+        public function addTinyEditor($props) {
+            $this->elements []= (object) array("type" => "tinyeditor", "props" => $props);
             return $this;
         }
         // request parameters
