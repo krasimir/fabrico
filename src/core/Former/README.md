@@ -91,6 +91,19 @@ Require the editor:
         "label" => "Add more information about you:"
     ));
 
+##### Adding date picker
+To use it you should include the following files into your page:
+
+    <script src="[path to former]/plugins/datepicker/datepicker.js" type="text/javascript"></script>
+    <link href="[path to former]/plugins/datepicker/datepicker.css" rel="stylesheet" type="text/css" />
+
+Require the picker:
+
+    ->addDatePicker(array(
+        "name" => "date",
+        "label" => "The date:"
+    ));
+
 #### Chaining the controls definition:
 
     $form->addTextBox(array(
