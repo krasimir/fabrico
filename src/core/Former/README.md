@@ -172,6 +172,25 @@ Available validators:
     ->Int()
     ->Float()
     ->String()
+    ->custom()
+
+#### Custom validation
+The method *custom* accepts anonymous function, which you can use to implement a custom validation. However the response is strictly defined with properties *status* and *message*. For example:
+
+    ->addDatePicker(array(
+        "name" => "date",
+        "label" => "The date:",
+        "validation" => Former::validation()->NotEmpty()->custom(function($value) {
+            $maxDate = mktime(0, 0, 0, 2, 1, 2013);
+            $value = explode("/", $value);
+            $setDate = mktime(0, 0, 0, $value[1], $value[0], $value[2]);
+            if($maxDate < $setDate) {
+                return (object) array("status" => false, "message" => "The date should be less then 01 February 2013.");
+            } else {
+                return (object) array("status" => true, "message" => "");
+            }
+        })
+    ))
 
 ## Custom html templates
 If you need to change the html markup or just to add new logic copy the content of *tpl* directory in a new place. After that just set the new path like that:

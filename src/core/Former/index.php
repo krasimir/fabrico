@@ -75,6 +75,14 @@
                         case "Int": $failed = !is_numeric($value); break;
                         case "Float": $failed = !is_numeric($value); break;
                         case "String": $failed = is_numeric($value); break;
+                        case "custom": 
+                            if(is_callable($filter->args[0])) {
+                                $result = $filter->args[0]($value);
+                                if($result->status === false) {
+                                    return $result;
+                                }
+                            }
+                        break;
                     }
                     if($failed) {
                         return (object) array("status" => false, "message" => FormerValidation::${"MESSAGE_".$filter->type});
@@ -124,7 +132,7 @@
                 $value = $this->read($el->props["name"]);
                 $defaultValue = isset($defaultValues->{$el->props["name"]}) ? $defaultValues->{$el->props["name"]} : "";
                 $this->data->{$el->props["name"]} = $value;
-                $valid = isset($el->props["validation"]) ? $el->props["validation"]->check($value) : (object) array("status" => true, "message" => "");
+                $valid = isset($el->props["validation"]) && $this->submitted ? $el->props["validation"]->check($value) : (object) array("status" => true, "message" => "");
 
                 $optionsMarkup = '';
                 if($el->type == "dropdown") {

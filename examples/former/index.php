@@ -76,7 +76,16 @@
     ->addDatePicker(array(
         "name" => "date",
         "label" => "The date:",
-        "validation" => Former::validation()->NotEmpty()
+        "validation" => Former::validation()->NotEmpty()->custom(function($value) {
+            $maxDate = mktime(0, 0, 0, 2, 1, 2013);
+            $value = explode("/", $value);
+            $setDate = mktime(0, 0, 0, $value[1], $value[0], $value[2]);
+            if($maxDate < $setDate) {
+                return (object) array("status" => false, "message" => "The date should be less then 01 February 2013.");
+            } else {
+                return (object) array("status" => true, "message" => "");
+            }
+        })
     ));
 
     // then, in your controller
