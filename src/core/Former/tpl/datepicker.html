@@ -1,0 +1,14 @@
+<div class="former-element">
+    {error}
+    <label>{label}</label>
+    <div class="form-element-controls">
+        <input type="text" name="{name}" value="{value}" id="datepicker-{name}" />
+    </div>
+    <br class="clear" />
+</div>
+<script type="text/javascript">   
+    new datepickr('datepicker-{name}', {
+        'fullCurrentMonth': true,
+        'dateFormat': 'd/m/Y'
+    });
+</script>

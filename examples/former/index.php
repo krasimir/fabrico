@@ -1,5 +1,7 @@
 <link rel="stylesheet" type="text/css" href="../../src/core/Former/css/styles.css" />
 <script src="../../src/core/Former/plugins/tinymce/tiny_mce.js" type="text/javascript"></script>
+<script src="../../src/core/Former/plugins/datepicker/datepicker.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="../../src/core/Former/plugins/datepicker/datepicker.css" />
 <div style="width: 400px;">
 <?php
 
@@ -70,9 +72,14 @@
         "name" => "richtext",
         "label" => "Add more information about you:", 
         "validation" => Former::validation()->NotEmpty()
+    ))
+    ->addDatePicker(array(
+        "name" => "date",
+        "label" => "The date:",
+        "validation" => Former::validation()->NotEmpty()
     ));
 
-    // then in your controller
+    // then, in your controller
     $loginForm = Former::get("register-user", $_POST, (object) array("description" => "...", "job" => "front-end"));
     if($loginForm->submitted && $loginForm->success) {
         // Form is submitted

@@ -178,36 +178,9 @@
             ));
             return $this;
         }
-        public function addTextBox($props) {
-            $this->elements []= (object) array("type" => "textbox", "props" => $props);
-            return $this;
-        }
-        public function addTextArea($props) {
-            $this->elements []= (object) array("type" => "textarea", "props" => $props);
-            return $this;
-        }
-        public function addPasswordBox($props) {
-            $this->elements []= (object) array("type" => "passwordbox", "props" => $props);
-            return $this;
-        }
-        public function addDropDown($props) {
-            $this->elements []= (object) array("type" => "dropdown", "props" => $props);
-            return $this;
-        }
-        public function addRadio($props) {
-            $this->elements []= (object) array("type" => "radio", "props" => $props);
-            return $this;
-        }
-        public function addCheck($props) {
-            $this->elements []= (object) array("type" => "check", "props" => $props);
-            return $this;
-        }
-        public function addFile($props) {
-            $this->elements []= (object) array("type" => "file", "props" => $props);
-            return $this;
-        }
-        public function addTinyEditor($props) {
-            $this->elements []= (object) array("type" => "tinyeditor", "props" => $props);
+        public function __call($name, $arguments) {
+            $type = strtolower(str_replace("add", "", $name));
+            $this->elements []= (object) array("type" => $type, "props" => $arguments[0]);
             return $this;
         }
         // request parameters
