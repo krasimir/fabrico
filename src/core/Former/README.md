@@ -6,15 +6,15 @@ A common case is that we have to show a html form, submit it and collect its dat
 
 ## Usage
 
-1. [Registering a new form](https://github.com/krasimir/fabrico#core-modules).
-2. [Adding controls](https://github.com/krasimir/fabrico#core-modules).
-3. [Accessing the form](https://github.com/krasimir/fabrico#core-modules).
-4. [Getting form's response](https://github.com/krasimir/fabrico#core-modules).
-5. [Validation](https://github.com/krasimir/fabrico#core-modules).
-6. [Changing the action url](https://github.com/krasimir/fabrico#core-modules).
-7. [Custom html templates](https://github.com/krasimir/fabrico#core-modules).
-8. [CSS styles](https://github.com/krasimir/fabrico#core-modules).
-9. [Changing the error messages](https://github.com/krasimir/fabrico#core-modules).
+1. [Registering a new form](#1-registering-a-new-form).
+2. [Adding controls](#2-adding-controls).
+3. [Accessing the form](#3-accessing-the-form).
+4. [Getting form's response](#4-getting-forms-response).
+5. [Validation](#5-validation).
+6. [Changing the action url](#6-changing-the-action-url).
+7. [Custom html templates](#7-custom-html-templates).
+8. [CSS styles](#8-css-styles).
+9. [Changing the error messages](#9-changing-the-error-messages).
 
 - - -
 
