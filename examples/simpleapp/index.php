@@ -1,6 +1,6 @@
 <?php
 
-    require(__DIR__."/../../src/fabrico.php");
+    require(__DIR__."/../../lib/fabrico.php");
 
     $F->loadModule("Router", "View", "TestWidget");
     $F->loadResource("resources/*", "utils/ErrorHandler/index.php");

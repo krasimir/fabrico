@@ -8,14 +8,14 @@
         "branch": "master",
         "modules": [
             { 
-                "path": "src/core/ErrorHandler", 
+                "path": "lib/core/ErrorHandler", 
                 "actionsAfter": [
                     { "type": "cmd", "command": "ls"}
                 ],
                 "installIn": "utils/"
             },
-            { "path": "src/core/View" },
-            { "path": "src/core/Router" }
+            { "path": "lib/core/View" },
+            { "path": "lib/core/Router" }
         ]
     },
     {

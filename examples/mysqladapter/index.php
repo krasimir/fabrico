@@ -1,6 +1,6 @@
 <?php
 
-    require("../../src/core/DBAdapters/MySQL/index.php");
+    require("../../lib/core/DBAdapters/MySQL/index.php");
 
     // initializing
     $mysql = new MySQLAdapter((object) array(

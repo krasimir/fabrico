@@ -149,7 +149,7 @@ An example:
           "branch": "master",
           "modules": [
               { 
-                  "path": "src/core/ErrorHandler", 
+                  "path": "lib/core/ErrorHandler", 
                   "actionsAfter": [
                       { "type": "cmd", "command": "ls"}
                   ]
@@ -216,7 +216,7 @@ or
         "branch": "master",
         "modules": [
             { 
-                "path": "src/core/ErrorHandler", 
+                "path": "lib/core/ErrorHandler", 
                 "actionsAfter": [
                     { "type": "cmd", "command": "ls"}
                 ],
@@ -269,9 +269,9 @@ The main job of the manager is really simple - to download files. This means tha
             "repository": "fabrico",
             "branch": "master",
             "modules": [
-                { "path": "src/core/ErrorHandler" },
-                { "path": "src/core/View" },
-                { "path": "src/core/Router" }
+                { "path": "lib/core/ErrorHandler" },
+                { "path": "lib/core/View" },
+                { "path": "lib/core/Router" }
             ]
         },
         {
@@ -316,13 +316,13 @@ And when the manager finishes its job you will have the following file structure
 
 ## Core modules
 
-  - [Router](https://github.com/krasimir/fabrico/tree/master/src/core/Router)
-  - [Template engine](https://github.com/krasimir/fabrico/tree/master/src/core/View)
-  - [Database adapters](https://github.com/krasimir/fabrico/tree/master/src/core/DBAdapters)
-  - [Error handler](https://github.com/krasimir/fabrico/tree/master/src/core/ErrorHandler)
-  - [Application mode](https://github.com/krasimir/fabrico/tree/master/src/core/AppMode)
-  - [Session manager](https://github.com/krasimir/fabrico/tree/master/src/core/SessionManager)
-  - [Former](https://github.com/krasimir/fabrico/tree/master/src/core/Former)
+  - [Router](https://github.com/krasimir/fabrico/tree/master/lib/core/Router)
+  - [Template engine](https://github.com/krasimir/fabrico/tree/master/lib/core/View)
+  - [Database adapters](https://github.com/krasimir/fabrico/tree/master/lib/core/DBAdapters)
+  - [Error handler](https://github.com/krasimir/fabrico/tree/master/lib/core/ErrorHandler)
+  - [Application mode](https://github.com/krasimir/fabrico/tree/master/lib/core/AppMode)
+  - [Session manager](https://github.com/krasimir/fabrico/tree/master/lib/core/SessionManager)
+  - [Former](https://github.com/krasimir/fabrico/tree/master/lib/core/Former)
 
 ## Troubleshooting
 
