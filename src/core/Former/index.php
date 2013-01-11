@@ -20,9 +20,9 @@
             }
             return self::$forms->$key = new FormerForm($url, $method, $key);
         }
-        public static function get($key, $dataSource = null, $defaultValues = null) {
+        public static function get($key) {
             if(isset(self::$forms->$key)) {
-                return self::$forms->$key->update($dataSource, $defaultValues);
+                return self::$forms->$key;
             } else {
                 throw new Exception("There is no form associated with key=".$key);
             }

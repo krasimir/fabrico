@@ -92,7 +92,8 @@
     ));
 
     // then, in your controller
-    $loginForm = Former::get("register-user", $_POST, (object) array("description" => "...", "job" => "front-end"));
+    $loginForm = Former::get("register-user");
+    $loginForm->update(array_merge($_POST, $_FILES), (object) array("description" => "...", "job" => "front-end"));
     if($loginForm->submitted && $loginForm->success) {
         // Form is submitted
         $data = $loginForm->data;
