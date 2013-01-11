@@ -107,6 +107,10 @@
             $this->query->desc = " DESC";
             return $this;
         }
+        public function limit($str) {
+            $this->query->limit = " LIMIT ".$str;
+            return $this;
+        }
         public function where($str) {
             if(isset($this->query->where)) {
                 $this->query->where .= $str;
@@ -253,6 +257,7 @@
                 $str .= isset($this->query->order) ? $this->query->order : "";
                 $str .= isset($this->query->asc) ? $this->query->asc : "";
                 $str .= isset($this->query->desc) ? $this->query->desc : "";
+                $str .= isset($this->query->limit) ? $this->query->limit : "";
             } else if(isset($this->query->insert)) {
                 $str = $this->query->insert;
             } else if(isset($this->query->delete)) {

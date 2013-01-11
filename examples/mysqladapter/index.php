@@ -48,7 +48,7 @@
     $user = $mysql->users->order("password")->get();
 
     // getting user order by password value (ascending)
-    $user = $mysql->users->order("password")->asc()->get();
+    $user = $mysql->users->order("password")->asc()->limit("0,2")->get();
 
     // getting user order by password value (descending)
     $user = $mysql->users->order("password")->desc()->get();
