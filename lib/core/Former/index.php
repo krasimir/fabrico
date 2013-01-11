@@ -162,10 +162,15 @@
                     }
                 }
 
+                $value = $value == false ? $defaultValue : (!is_array($value) ? $value : "");
+                if($el->type == "file") {
+                    $info = pathinfo($value);
+                    $value = $info["basename"];
+                }
                 $elementsMarkup .= former_view($el->type.".html", array(
                     "name" => $el->props["name"],
                     "label" => isset($el->props["label"]) ? $el->props["label"] : $el->props["name"],
-                    "value" => $value == false ? $defaultValue : (!is_array($value) ? $value : ""),
+                    "value" => $value,
                     "error" => $this->submitted && $valid->status == false ? former_view("error.html", array(
                         "message" => $valid->message
                     )) : "",
