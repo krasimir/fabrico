@@ -12,6 +12,17 @@ A common case is that we have to show a html form, submit it and collect its dat
 
 ## Adding controls    
 
+    addTextBox
+    addTextArea
+    addPasswordBox
+    addDropDown
+    addRadio
+    addCheck
+    addFile
+    ----------------
+    addTinyEditor
+    addDatePicker
+
 #### Text field
 
     $form->addTextBox(array(
