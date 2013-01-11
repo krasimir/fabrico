@@ -166,7 +166,7 @@ There is no need to keep the reponse of *Former::register* and pass it around yo
     $form = Former::get("unique-name-of-your-form");
 
 ### 4. Getting form's response
-The response of the form could be html markup or the submitted data. Before to try to get some of these things you should populate the form with the *update* method:
+The response of the form could be html markup or the submitted data. Before to try to get some of these things you should populate the form by using the *update* method:
 
     $form->update([data source - associative array], [default values - an object]);
 
