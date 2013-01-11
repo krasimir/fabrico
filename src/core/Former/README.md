@@ -19,6 +19,7 @@ A common case is that we have to show a html form, submit it and collect its dat
     addRadio
     addCheck
     addFile
+    addHiddenField
     ----------------
     addTinyEditor
     addDatePicker
@@ -86,6 +87,12 @@ A common case is that we have to show a html form, submit it and collect its dat
     $form->addFile(array(
         "name" => "avatar",
         "label" => "Please choose your avatar:"
+    ));
+
+#### Add hidden field
+
+    $form->addHiddenField(array(
+        "name" => "hiddenID"
     ));
 
 #### Plugins

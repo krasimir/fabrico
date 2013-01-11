@@ -86,6 +86,9 @@
                 return (object) array("status" => true, "message" => "");
             }
         })
+    ))
+    ->addHiddenField(array(
+        "name" => "hiddenID"
     ));
 
     // then, in your controller
