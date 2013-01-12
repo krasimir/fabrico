@@ -152,7 +152,7 @@
                             if(in_array($optionValue, $value === false ? array() : $value)) {
                                 $checked = "checked='checked'";
                             }
-                        } else if(in_array($optionValue, $defaultValue)) {
+                        } else if(in_array($optionValue, $defaultValue === false ? array() : $defaultValue)) {
                             $checked = "checked='checked'";
                         }
                         $optionsMarkup .= former_view($el->type."option.html", array(
