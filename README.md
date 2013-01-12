@@ -18,7 +18,7 @@ Fabrico is PHP micro framework. It's purpose is to provide really basic function
 
 The easier way is to download the files directly and check the documentation of every of the modules.
 
-Fabrico is also available for *composer*
+Fabrico is also available for *composer*:
 
     {
         "require": {
