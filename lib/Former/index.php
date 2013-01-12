@@ -146,7 +146,7 @@
                 } else if($el->type == "radio" || $el->type == "check") {
                     foreach($el->props["options"] as $optionValue => $optionLabel) {
                         $checked = "";
-                        if($value == false && $optionValue == $defaultValue && !$this->submitted) {
+                        if($value == false && in_array($optionValue, $defaultValue) && !$this->submitted) {
                             $checked = "checked='checked'";
                         } else if($optionValue == $value) {
                             $checked = "checked='checked'";
@@ -170,7 +170,7 @@
                 $elementsMarkup .= former_view($el->type.".html", array(
                     "name" => $el->props["name"],
                     "label" => isset($el->props["label"]) ? $el->props["label"] : $el->props["name"],
-                    "value" => $value,
+                    "value" => is_array($value) ? null : $value,
                     "error" => $this->submitted && $valid->status == false ? former_view("error.html", array(
                         "message" => $valid->message
                     )) : "",

@@ -93,7 +93,12 @@
 
     // then, in your controller
     $loginForm = Former::get("register-user");
-    $loginForm->update(array_merge($_POST, $_FILES), (object) array("description" => "...", "job" => "front-end", "avatar" => "dir/dir/myfile.jpg"));
+    $loginForm->update(array_merge($_POST, $_FILES), (object) array(
+        "description" => "...", 
+        "job" => array("front-end"), 
+        "avatar" => "dir/dir/myfile.jpg",
+        "special-wishes" => array("w1", "w2")
+    ));
     if($loginForm->submitted && $loginForm->success) {
         // Form is submitted
         $data = $loginForm->data;

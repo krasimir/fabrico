@@ -170,18 +170,22 @@ The response of the form could be html markup or the submitted data. Before to t
 
     $form->update([data source - associative array], [default values - an object]);
 
-The data source could be $_POST, $_GET, $_FILES or something else. For example:
+The data source could be $_POST, $_GET, $_FILES or something else. By default is $_POST. For example:
 
     $dataSource = array_merge($_POST, $_FILES);
-    $defaultValues = (object) array("key" => "value");
-    $form->update($dataSource, $defaultValues);
+    $form->update($dataSource);
 
-Here is a full example:
+The default values is an object like:
     
     $dataSource = array_merge($_POST, $_FILES);
-    $defaultValues = (object) array("key" => "value");
+    $defaultValues = (object) array("description" => "...", "cities" => array("c1", "c2"));
     $form = Former::get("register-user");
     $form->update($dataSource, $defaultValues);
+
+Have in mind that the default value for radio and checkboxes should be array.
+
+Here is an example of how to process the form:
+
     if($form->submitted && $form->success) {
         // Form is submitted
         $data = $form->data;
@@ -191,6 +195,8 @@ Here is a full example:
         $markup = $form->markup;
         echo $markup;
     }
+
+    
 
 ### 5. Validation
 The data in every of the controls could be validated. Just pass *validation* property along with the others.
