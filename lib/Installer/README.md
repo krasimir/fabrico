@@ -56,7 +56,6 @@ The json file should countain an array of objects. Every object should have:
     - installIn /optional/ - specify the destination of the module
 - commit /optional/ - by default the manager gets the latest commit, but you can specify a strict commit which you want to use 
 
-
     [
       {
         "owner": "krasimir",
@@ -76,7 +75,6 @@ The json file should countain an array of objects. Every object should have:
 - ignoreIfAvailable /optional/ - true or false. If it is true then the module will be installed only if it's missing
 - actionsAfter /optional/ - check *Actions after the download* section below
 - installIn /optional/ - specify the destination of the module
-
 
     [
       {
