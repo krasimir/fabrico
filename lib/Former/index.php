@@ -130,7 +130,7 @@
             foreach($this->elements as $el) {
 
                 $value = $this->read($el->props["name"]);
-                $defaultValue = isset($defaultValues->{$el->props["name"]}) ? $defaultValues->{$el->props["name"]} : "";
+                $defaultValue = isset($defaultValues->{$el->props["name"]}) ? $defaultValues->{$el->props["name"]} : false;
                 $this->data->{$el->props["name"]} = $value;
                 $valid = isset($el->props["validation"]) && $this->submitted ? $el->props["validation"]->check($value) : (object) array("status" => true, "message" => "");
 
@@ -146,7 +146,7 @@
                 } else if($el->type == "radio" || $el->type == "check") {
                     foreach($el->props["options"] as $optionValue => $optionLabel) {
                         $checked = "";
-                        if($value == false && in_array($optionValue, $defaultValue) && !$this->submitted) {
+                        if($value == false && in_array($optionValue, $defaultValue ? $defaultValue : array()) && !$this->submitted) {
                             $checked = "checked='checked'";
                         } else if($optionValue == $value) {
                             $checked = "checked='checked'";
