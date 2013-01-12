@@ -1,6 +1,6 @@
 <?php
 
-    require(__DIR__."/../../lib/Loader.php");
+    require(__DIR__."/modules/Autoloader/Autoloader.php");
 
     $F->loadModule("Router", "View", "TestWidget");
     $F->loadResource("resources/*", "utils/ErrorHandler/index.php");

@@ -1,11 +1,11 @@
-<link rel="stylesheet" type="text/css" href="../../lib/core/Former/css/styles.css" />
-<script src="../../lib/core/Former/plugins/tinymce/tiny_mce.js" type="text/javascript"></script>
-<script src="../../lib/core/Former/plugins/datepicker/datepicker.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" href="../../lib/core/Former/plugins/datepicker/datepicker.css" />
+<link rel="stylesheet" type="text/css" href="../../lib/Former/css/styles.css" />
+<script src="../../lib/Former/plugins/tinymce/tiny_mce.js" type="text/javascript"></script>
+<script src="../../lib/Former/plugins/datepicker/datepicker.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="../../lib/Former/plugins/datepicker/datepicker.css" />
 <div style="width: 400px;">
 <?php
 
-    require("../../lib/core/Former/index.php");
+    require("../../lib/Former/index.php");
 
     // setting templates path
     // Former::templatesPath(__DIR__."/");
