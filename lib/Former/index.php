@@ -1,11 +1,5 @@
 <?php
 
-    /* 
-        TODO: 
-            a) pass a request object (asoc array) to ::get method 
-            b) validation by callback (class + method)
-    */
-
     class Former {
 
         private static $forms;
@@ -64,7 +58,7 @@
                 foreach($this->filters as $filter) {
                     $failed = false;
                     switch($filter->type) {
-                        case "NotEmpty": $failed = $value === "" || $value === null; break;
+                        case "NotEmpty": $failed = $value === "" || $value === null || $value === false; break;
                         case "LengthMoreThen": $failed = strlen($value) < $filter->args[0]; break;
                         case "LengthLessThen": $failed = strlen($value) >= $filter->args[0]; break;
                         case "ValidEmail": $failed = !preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $value); break;
@@ -122,16 +116,15 @@
             $this->dataSource = $dataSource === null ? $_POST : $dataSource;
 
             $elementsMarkup = "";
-            $defaultValues = $this->defaultValues = $defaultValues == null ? (object) array() : $defaultValues;
+            $this->defaultValues = $defaultValues === null ? (object) array() : $defaultValues;
             $this->submitted = $this->read("form-".$this->key) !== false;
             $this->success = $this->submitted ? true : false;
             $this->data = (object) array();
 
             foreach($this->elements as $el) {
 
-                $value = $this->read($el->props["name"]);
                 $defaultValue = isset($defaultValues->{$el->props["name"]}) ? $defaultValues->{$el->props["name"]} : false;
-                $this->data->{$el->props["name"]} = $value;
+                $value = $this->data->{$el->props["name"]} = $this->submitted ? $this->read($el->props["name"]) : $defaultValue;
                 $valid = isset($el->props["validation"]) && $this->submitted ? $el->props["validation"]->check($value) : (object) array("status" => true, "message" => "");
 
                 $optionsMarkup = '';
@@ -140,17 +133,26 @@
                         $optionsMarkup .= former_view($el->type."option.html", array(
                             "value" => $optionValue,
                             "label" => $optionLabel,
-                            "selected" => $value == false && !$this->submitted ? ($optionValue == $defaultValue ? "selected='selected'" : "") : ($optionValue == $value ? "selected='selected'" : "")
+                            "selected" => $this->submitted ? ($optionValue == $value ? "selected='selected'" : "") : ($optionValue == $defaultValue ? "selected='selected'" : "")
                         ));
                     }
-                } else if($el->type == "radio" || $el->type == "check") {
+                } else if($el->type == "radio") {
+                    foreach($el->props["options"] as $optionValue => $optionLabel) {
+                        $optionsMarkup .= former_view($el->type."option.html", array(
+                            "value" => $optionValue,
+                            "label" => $optionLabel,
+                            "name" => $el->props["name"],
+                            "checked" => $this->submitted ? ($optionValue == $value ? "checked='checked'" : "") : ($optionValue == $defaultValue ? "checked='checked'" : "")
+                        ));
+                    }
+                } else if($el->type == "check") {
                     foreach($el->props["options"] as $optionValue => $optionLabel) {
                         $checked = "";
-                        if($value == false && in_array($optionValue, $defaultValue ? $defaultValue : array()) && !$this->submitted) {
-                            $checked = "checked='checked'";
-                        } else if($optionValue == $value) {
-                            $checked = "checked='checked'";
-                        } else if($value != false && is_array($value) && in_array($optionValue, $value)) {
+                        if($this->submitted) {
+                            if(in_array($optionValue, $value === false ? array() : $value)) {
+                                $checked = "checked='checked'";
+                            }
+                        } else if(in_array($optionValue, $defaultValue)) {
                             $checked = "checked='checked'";
                         }
                         $optionsMarkup .= former_view($el->type."option.html", array(
@@ -162,10 +164,13 @@
                     }
                 }
 
-                $value = $value == false ? $defaultValue : (!is_array($value) ? $value : "");
                 if($el->type == "file") {
-                    $info = pathinfo($value);
-                    $value = $info["basename"];
+                    if($this->submitted) {
+                        $value = "";
+                    } else {
+                        $info = pathinfo($defaultValue);
+                        $value = $info["basename"];
+                    }                    
                 }
                 $elementsMarkup .= former_view($el->type.".html", array(
                     "name" => $el->props["name"],

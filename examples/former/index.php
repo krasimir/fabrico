@@ -53,20 +53,22 @@
             "front-end" => "Front-end developer",
             "back-end" => "Back-end developer"
         ),
-        "validation" => Former::validation()->Not("none")
+        "validation" => Former::validation()->NotEmpty()->Not("none")
     ))
     ->addCheck(array(
         "name" => "special-wishes",
         "label" => "Special wishes:",
         "options" => array(
-            "w1" => "fresh water",
+            "w1" => "wrong choise",
             "w2" => "fruits",
             "w3" => "dentist"
-        )
+        ),
+        "validation" => Former::validation()->NotEmpty()->Not("w1")
     ))
     ->addFile(array(
         "name" => "avatar",
-        "label" => "Please choose your avatar:"
+        "label" => "Please choose your avatar:",
+        "validation" => Former::validation()->NotEmpty()
     ))
     ->addTinyEditor(array(
         "name" => "richtext",
@@ -95,7 +97,7 @@
     $loginForm = Former::get("register-user");
     $loginForm->update(array_merge($_POST, $_FILES), (object) array(
         "description" => "...", 
-        "job" => array("front-end"), 
+        "job" => "front-end", 
         "avatar" => "dir/dir/myfile.jpg",
         "special-wishes" => array("w1", "w2")
     ));

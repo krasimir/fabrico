@@ -182,7 +182,7 @@ The default values is an object like:
     $form = Former::get("register-user");
     $form->update($dataSource, $defaultValues);
 
-Have in mind that the default value for radio and checkboxes should be array.
+Have in mind that the default value for checkboxes should be array.
 
 Here is an example of how to process the form:
 
