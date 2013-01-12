@@ -15,7 +15,8 @@
                 "installIn": "utils/"
             },
             { "path": "lib/View" },
-            { "path": "lib/Router" }
+            { "path": "lib/Router" },
+            { "path": "lib/Autoloader" }
         ]
     },
     {
