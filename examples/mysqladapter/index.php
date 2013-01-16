@@ -7,7 +7,7 @@
         "host" => "localhost",
         "user" => "root",
         "pass" => "",
-        "dbname" => "fabrico_mysqladapter_test"
+        "dbname" => "krasimir_mysqladapter_test"
     ));
 
     // defining tables/contexts
@@ -20,7 +20,7 @@
         "bio" => "LONGTEXT"
     ));
 
-    // $mysql->freeze = true;
+    $mysql->freeze = false;
 
     // adding a record
     $record = (object) array(
@@ -54,8 +54,9 @@
     $user = $mysql->users->order("password")->desc()->get();
 
     // execute custom mysql query
-    $res = $mysql->action("SELECT * FROM users WHERE id > 30");
+    $res = $mysql->action("SELECT * FROM users ORDER By position DESC");
 
-    var_dump($mysql->queries);die();
+    var_dump($mysql->queries);
+    var_dump($res);
     
 ?>

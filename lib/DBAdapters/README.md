@@ -1,10 +1,11 @@
 # Adapters
 
-A wrapper around MySQL functions with friendly API. The module creates the database, tables and columns automatically, based on definition.
+An ORM like adapter for managing database. The module creates tables and columns automatically, based on your context definition.
 
 - - -
 
 ## MySQL
+The module uses [PDO](http://php.net/manual/en/book.pdo.php), so you should it installed in your server.
 
 ### Initializing
 

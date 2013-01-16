@@ -10,6 +10,7 @@
         private $user;
         private $pass;
         private $dbname;
+        private $dbh;
 
         private $currentContext;
         private $query;
@@ -126,8 +127,7 @@
         }
         public function action($queryStr = false, $useCache = true) {
 
-            $this->checkDatabase();
-            
+            $this->checkServerSettings();
             if($queryStr === false) {
                 $this->checkContext();
                 $this->checkContextSchema();
@@ -139,28 +139,19 @@
                 $this->queries []= $queryStr." (cached)";
                 return $this->cache[$queryStr];
             } else {
-                $res = mysql_query($queryStr);
-                if(is_resource($res)) {
+                try {
+                    $pdos = $this->dbh->prepare($queryStr);
+                    $pdos->execute();
+                    $res = $pdos->fetchAll(PDO::FETCH_CLASS);
                     $this->queries []= $queryStr;
-                    if(mysql_num_rows($res) === 0) {
-                        return $this->cache[$queryStr] = mysql_fetch_object($res);
-                    } else {
-                        $rows = array();
-                        while($row = mysql_fetch_object($res)) {
-                            $rows []= $row;
-                        }
-                        return $this->cache[$queryStr] = $rows;
-                    }
-                } else if($res === true) {
-                    $this->queries []= $queryStr;
-                } else {
-                    $this->queries []= $queryStr." (failed)";
+                    $this->cache[$queryStr] = $res;
+                    return $res;
+                } catch(PDOException $e) {
+                    $this->error($e->getMessage());
                 }
-                return $res;
             }
         }
-        private function checkDatabase() {        
-            
+        private function checkServerSettings() {
             // checks
             if($this->host === null) {
                 $this->error("missing property 'host' in '".$this);
@@ -175,22 +166,12 @@
                 $this->error("missing property 'pass' in '".$this);
             }
             
-            // connecting and select db
-            $resConnect = @mysql_connect($this->host, $this->user, $this->pass);
-            if($resConnect === FALSE) {
-                $this->error("can't connect (check /config/config.json:adapters.".$this.")");
-            } else {                
-                mysql_query('SET NAMES utf8', $resConnect);
-                $res = @mysql_select_db($this->dbname, $resConnect);
-                if($res === FALSE) {
-                    mysql_query("CREATE DATABASE ".$this->dbname.";");
-                    $res = @mysql_select_db($this->dbname, $resConnect);
-                    if($res === FALSE) {
-                        $this->error("can't select database");
-                    }
-                }
+            try {                  
+                $this->dbh = new PDO("mysql:host=".$this->host.";dbname=".$this->dbname, $this->user, $this->pass);
+                $this->dbh->exec(mysql_query('SET NAMES utf8'));
+            } catch(PDOException $e) {
+                $this->error($e->getMessage());
             }
-
         }
         private function checkContext() {
             if($this->freeze) return;
@@ -199,52 +180,52 @@
             }
             // checking/creating the table
             $queryStr = "SHOW TABLES LIKE '".$this->currentContext."'";
-            if(isset($this->cache[$queryStr])) {
-                $this->queries []= $queryStr." (cached)";
-                $res = $this->cache[$queryStr];
-            } else {
+            if(!isset($this->cache[$queryStr])) {
                 $this->queries []= $queryStr;
-                $res = $this->cache[$queryStr] = mysql_query($queryStr);
-            }
-            if($res === FALSE || mysql_num_rows($res) === 0) {
-                $queryStr = "
-                    CREATE TABLE IF NOT EXISTS `".$this->currentContext."` (
-                        `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-                        `position` bigint(20) unsigned NOT NULL,
-                        PRIMARY KEY (`ID`)
-                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-                ";
-                $this->queries []= $queryStr;
-                $res = mysql_query($queryStr);
+                $pdos = $this->dbh->query($queryStr);
+                $res = $this->cache[$queryStr] = $pdos->fetchAll();
+                if(count($res) === 0) {
+                    $queryStr = "
+                        CREATE TABLE IF NOT EXISTS `".$this->currentContext."` (
+                            `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                            `position` bigint(20) unsigned NOT NULL,
+                            PRIMARY KEY (`ID`)
+                        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+                    ";
+                    $this->queries []= $queryStr;
+                    $r = $this->dbh->exec($queryStr);
+                }
             }
         }
         private function checkContextSchema() {
             if($this->freeze) return;            
             if(isset($this->contexts->{$this->currentContext})) {
                
-                // add columns to the table
-                $tableFieldsRes = mysql_query("SHOW COLUMNS FROM ".$this->currentContext);
-                $tableFields = array();
-                while($tableField = mysql_fetch_row($tableFieldsRes)) {
-                    $tableFields []= $tableField;
-                }
-                $schema = $this->contexts->{$this->currentContext};
-                foreach($schema as $field => $value) {                    
-                    $add = true;
-                    if(count($tableFields) > 0) {
-                        foreach($tableFields as $tableField) {
-                            if($field == $tableField[0]) {
-                                $add = false;
+                try {
+                    // add columns to the table
+                    $pdos = $this->dbh->prepare("SHOW COLUMNS FROM ".$this->currentContext);
+                    $pdos->execute();
+                    $tableFields = $pdos->fetchAll();
+                    $schema = $this->contexts->{$this->currentContext};
+                    foreach($schema as $field => $value) {                    
+                        $add = true;
+                        if(count($tableFields) > 0) {
+                            foreach($tableFields as $tableField) {
+                                if($field == $tableField["Field"]) {
+                                    $add = false;
+                                }
                             }
                         }
-                    }
-                    if($add) {
-                        $res = mysql_query("ALTER TABLE ".$this->currentContext." ADD ".$field." ".$value." ");                        
-                        if($res === false) {
-                            $this->error("Can't add column with query = ALTER TABLE ".$this->currentContext." ADD ".$field." ".$value." ");
+                        if($add) {
+                            $queryStr = "ALTER TABLE ".$this->currentContext." ADD ".$field." ".$value." ";
+                            $this->queries []= $queryStr;
+                            $res = $this->dbh->exec($queryStr);
                         }
                     }
-                }            
+                } catch(PDOException $e) {
+                    $this->error($e->getMessage());
+                }
+
             } else {
                 $this->error("Missing schema for context ".$this->currentContext."! Please use defineContext method");
             }
