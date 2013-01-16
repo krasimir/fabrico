@@ -88,7 +88,7 @@ The json file should countain an array of objects. Every object should have:
 ## Update your modules
 The installer normally skips modules, which are already installed. So, to force an update pass *update* parameter at the end of the console's call. For example:
 
-  php ./Installer.php ./install.json update
+    php ./Installer.php ./install.json update
 
 ## Actions after the download
 Fabrico gives you the ability to performe some actions after the module is downloaded. *actionsAfter* parameter could be an object or array of objects with the following format:
