@@ -4,6 +4,7 @@ Inspired by [npm](https://npmjs.org/) and [bundler](http://gembundler.com/), the
 
 - [Basic Usage](https://github.com/krasimir/fabrico/tree/master/lib/Installer#basic-usage)
 - [Installer file format](https://github.com/krasimir/fabrico/tree/master/lib/Installer#json-file-format)
+- [Update your modules](https://github.com/krasimir/fabrico/tree/master/lib/Installer#update-your-modules)
 - [Actions after the download](https://github.com/krasimir/fabrico/tree/master/lib/Installer#actions-after-download)
 - [Put the module in a custom path](https://github.com/krasimir/fabrico/tree/master/lib/Installer#put-the-module-in-a-custom-path)
 - [Versioning](https://github.com/krasimir/fabrico/tree/master/lib/Installer#versioning)
@@ -40,7 +41,7 @@ For example:
 
 The installer will parse your json and will download the content into *./site/libs/something/modules/* directory. 
 
-## JSON file format
+## Installer file format
 
 The json file should countain an array of objects. Every object should have:
 
@@ -83,6 +84,11 @@ The json file should countain an array of objects. Every object should have:
         "installIn": "assets/js/"
       }
     ]
+
+## Update your modules
+The installer normally skips modules, which are already installed. So, to force an update pass *update* parameter at the end of the console's call. For example:
+
+  php ./Installer.php ./install.json update
 
 ## Actions after the download
 Fabrico gives you the ability to performe some actions after the module is downloaded. *actionsAfter* parameter could be an object or array of objects with the following format:
