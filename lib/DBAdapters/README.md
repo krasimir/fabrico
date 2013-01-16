@@ -5,7 +5,7 @@ An ORM like adapter for managing database. The module creates tables and columns
 - - -
 
 ## MySQL
-The module uses [PDO](http://php.net/manual/en/book.pdo.php), so you should it installed in your server.
+The module uses [PDO](http://php.net/manual/en/book.pdo.php), so you should have it installed in your server.
 
 ### Initializing
 
