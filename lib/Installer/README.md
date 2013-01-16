@@ -3,7 +3,7 @@
 Inspired by [npm](https://npmjs.org/) and [bundler](http://gembundler.com/), the installer could download content from various sources, including GitHub. It is not meant to be only for PHP based application, but for any other kind of software. You can install modules by specifying owner, repository, branch, directory and commit. You can also use it to download just a file or a zip archive. It is very similar to package manager, but has some additional features.
 
 - [Basic Usage](https://github.com/krasimir/fabrico/tree/master/lib/Installer#basic-usage)
-- [Installer file format](https://github.com/krasimir/fabrico/tree/master/lib/Installer#installer-file-format)
+- [Installer file format](https://github.com/krasimir/fabrico/tree/master/lib/Installer#json-file-format)
 - [Actions after the download](https://github.com/krasimir/fabrico/tree/master/lib/Installer#actions-after-download)
 - [Put the module in a custom path](https://github.com/krasimir/fabrico/tree/master/lib/Installer#put-the-module-in-a-custom-path)
 - [Versioning](https://github.com/krasimir/fabrico/tree/master/lib/Installer#versioning)
