@@ -70,6 +70,10 @@
         "label" => "Please choose your avatar:",
         "validation" => Former::validation()->NotEmpty()
     ))
+    ->addImage(array(
+        "name" => "picture",
+        "label" => "Please choose picture:"
+    ))
     ->addTinyEditor(array(
         "name" => "richtext",
         "label" => "Add more information about you:", 
