@@ -4,7 +4,7 @@
         "repository": "fabrico",
         "branch": "master",
         "modules": [
-            { "path": "src/core/View" }
+            { "path": "lib/View" }
         ]
     }
 ]
