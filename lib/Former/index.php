@@ -164,7 +164,7 @@
                     }
                 }
 
-                if($el->type == "file") {
+                if($el->type == "file" || $el->type == "image") {
                     if($this->submitted) {
                         $value = "";
                     } else {
