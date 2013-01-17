@@ -36,6 +36,7 @@ The next thing that you should do is to add controls to the form. I.e. the field
     addRadio
     addCheck
     addFile
+    addImage
     addHiddenField
     addTinyEditor
     addDatePicker
@@ -103,6 +104,13 @@ Examples:
 #### File control
 
     $form->addFile(array(
+        "name" => "resume",
+        "label" => "Please upload your resume:"
+    ));
+
+#### Image control
+
+    $form->addImage(array(
         "name" => "avatar",
         "label" => "Please choose your avatar:"
     ));
