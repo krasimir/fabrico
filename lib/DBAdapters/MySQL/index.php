@@ -168,7 +168,7 @@
             
             try {                  
                 $this->dbh = new PDO("mysql:host=".$this->host.";dbname=".$this->dbname, $this->user, $this->pass);
-                $this->dbh->exec(mysql_query('SET NAMES utf8'));
+                $this->dbh->exec('SET NAMES utf8');
             } catch(PDOException $e) {
                 $this->error($e->getMessage());
             }
