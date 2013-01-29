@@ -1,7 +1,7 @@
 <?php
 
     session_start();
-    require(__DIR__."/../../src/core/SessionManager/index.php");
+    require(dirname(__FILE__)."/../../src/core/SessionManager/index.php");
 
     $key = "secret".rand(0, 10000);
     $value = rand(0, 10000);

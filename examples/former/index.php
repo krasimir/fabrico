@@ -8,7 +8,7 @@
     require("../../lib/Former/index.php");
 
     // setting templates path
-    // Former::templatesPath(__DIR__."/");
+    // Former::templatesPath(dirname(__FILE__)."/");
 
     // setting custom error message
     FormerValidation::$MESSAGE_NotEmpty = "Don't leave this field empty!";

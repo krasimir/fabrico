@@ -1,13 +1,13 @@
 <?php
 
-    require(__DIR__."/modules/Autoloader/Autoloader.php");
+    require(dirname(__FILE__)."/modules/Autoloader/Autoloader.php");
 
     $F->loadModule("Router", "View", "TestWidget");
     $F->loadResource("resources/*", "utils/ErrorHandler/index.php");
     
     /******************************************************/
 
-    View::$root = __DIR__;
+    View::$root = dirname(__FILE__);
     View::$forEachView = array(
         "globalVar" => "global variable"
     );
